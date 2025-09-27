@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>EX Research</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+    "three/examples/jsm/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+  }
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  @font-face {
+    font-family: 'Epmarugo';
+    src: url('./assets/epmarugo.ttf') format('truetype');
+  }
+  
+  html,body{height:100%;margin:0;background:#111;color:#ddd;font-family: 'Inter', Roboto, Arial; overflow: hidden;}
+  #canvas-wrap { width:100%; height:100%; }
+  #loader { position: absolute; right: 12px; top: 12px; color: #bbb; font-size:13px; }
+  
+  /* UI Overlay */
+  #ui-overlay {
+    position: absolute;
+    left: 60px;
+    top: 60px;
+    z-index: 100;
+    pointer-events: none;
+  }
+  
+  #title {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+  
+  #subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-weight: 300;
+    color: #cccccc;
+    margin: 8px 0 32px 0;
+    opacity: 0.9;
+    letter-spacing: 0.05em;
+  }
+  
+  #enter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 32px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    backdrop-filter: blur(20px);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  
+  #enter-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+  
+  #enter-btn::after {
+    content: '→';
+    font-size: 18px;
+    transition: transform 0.3s ease;
+  }
+  
+  #enter-btn:hover::after {
+    transform: translateX(4px);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    #ui-overlay {
+      left: 30px;
+      top: 40px;
+      right: 30px;
+    }
+    
+    #title {
+      font-size: clamp(2rem, 10vw, 3.5rem);
+    }
+    
+    #subtitle {
+      font-size: clamp(0.9rem, 3vw, 1.2rem);
+    }
+    
+    #enter-btn {
+      padding: 14px 28px;
+      font-size: 15px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    #ui-overlay {
+      left: 20px;
+      top: 30px;
+      right: 20px;
+    }
+  }
+  
+  /* Subtle animation for the UI */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  #ui-overlay > * {
+    animation: fadeInUp 0.8s ease forwards;
+  }
+  
+  #title { animation-delay: 0.2s; }
+  #subtitle { animation-delay: 0.4s; }
+  #enter-btn { animation-delay: 0.6s; }
+</style>
+</head>
+<body>
+<div id="canvas-wrap"></div>
+
+<div id="ui-overlay" style="display: none;">
+  <h1 id="title">EX Research</h1>
+  <p id="subtitle">Interactive Material Studies</p>
+  <button id="enter-btn">Enter Experience</button>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
+
+const container = document.getElementById('canvas-wrap');
+const loaderLabel = document.getElementById('loader');
+
+let renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2) : 1);
+renderer.setSize(window.innerWidth, window.innerHeight);
+container.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0b0b0b);
+
+const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 0, 2.8);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enablePan = false;
+controls.enableZoom = false;
+controls.enabled = false; // we will use our own mouse tilt
+
+// lights
+const ambient = new THREE.AmbientLight(0xffffff, 0.35);
+scene.add(ambient);
+
+const pointLight = new THREE.PointLight(0xffffff, 0.8, 10, 2);
+pointLight.position.set(0, 0.8, 1.6);
+scene.add(pointLight);
+
+// plane (card) - sized to leave proper padding around edges
+const aspect = 1.6;
+const cardScale = 2.0; // Balanced scale with good padding
+const planeGeo = new THREE.PlaneGeometry(1.6 * cardScale, 1.0 * cardScale, 64, 64);
+
+// load textures from assets
+const textureLoader = new THREE.TextureLoader();
+
+// load material textures
+const colorTex = textureLoader.load('./assets/color.jpg');
+const displacementTex = textureLoader.load('./assets/displacement.jpg');
+const normalTex = textureLoader.load('./assets/normal.jpg');
+const roughnessTex = textureLoader.load('./assets/roughness.jpg');
+
+// load environment map for reflections
+const exrLoader = new EXRLoader();
+let envMapTexture = null;
+exrLoader.load('./assets/sky.exr', (texture) => {
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  envMapTexture = texture;
+  // Update shader uniforms when loaded
+  if (uniforms && uniforms.u_envMap) {
+    uniforms.u_envMap.value = texture;
+    uniforms.u_hasEnvMap.value = true;
+  }
+});
+
+// configure texture properties
+[colorTex, displacementTex, normalTex, roughnessTex].forEach(tex => {
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.anisotropy = 4;
+});
+
+// Create text texture for UI on card - always visible version
+function createTextTexture(isHovered = false) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 1024;
+  const ctx = canvas.getContext('2d');
+  
+  // Clear canvas
+  ctx.fillStyle = 'rgba(0,0,0,0)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  // Calculate safe area - much more conservative margins to ensure visibility
+  const aspectRatio = window.innerWidth / window.innerHeight;
+  
+  // Use extremely safe margins and center the content
+  const safeMarginX = 250; // Much larger left margin
+  const safeMarginY = 200; // Larger top margin
+  const maxContentWidth = 520; // Much more conservative content width
+  const rightMargin = 254; // Large right margin to prevent cutoff
+  
+  // Responsive font sizes - smaller overall to fit better
+  let titleSize, subtitleSize, buttonSize;
+  
+  if (aspectRatio < 0.8) {
+    // Very narrow (phone portrait)
+    titleSize = 60;
+    subtitleSize = 24;
+    buttonSize = 22;
+  } else if (aspectRatio < 1.2) {
+    // Narrow (tablet portrait, small windows)
+    titleSize = 70;
+    subtitleSize = 28;
+    buttonSize = 26;
+  } else {
+    // Wide (desktop, tablet landscape)
+    titleSize = 80;
+    subtitleSize = 32;
+    buttonSize = 30;
+  }
+  
+  // Set up text styling
+  ctx.fillStyle = '#000000';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  
+  // Main title
+  ctx.font = `bold ${titleSize}px Inter, Arial`;
+  ctx.fillText('EX Research', safeMarginX, safeMarginY);
+  
+  // Calculate title height for spacing
+  const titleHeight = titleSize * 1.2;
+  
+  // Subtitle - word wrapped within safe area
+  ctx.font = `400 ${subtitleSize}px Inter, Arial`;
+  const subtitle = 'EX Research helps you stay ahead of the internet.';
+  
+  const words = subtitle.split(' ');
+  let line = '';
+  let y = safeMarginY + titleHeight + 25;
+  const lineHeight = subtitleSize * 1.3;
+  
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line + words[n] + ' ';
+    const metrics = ctx.measureText(testLine);
+    const testWidth = metrics.width;
+    
+    if (testWidth > maxContentWidth && n > 0) {
+      ctx.fillText(line, safeMarginX, y);
+      line = words[n] + ' ';
+      y += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, safeMarginX, y);
+  
+  // Button - positioned with safe margins
+  const buttonText = 'Enter';
+  const buttonX = safeMarginX;
+  const buttonY = y + 60; // Fixed spacing below subtitle
+  const buttonPadding = 30;
+  const buttonHeight = 50;
+  
+  // Ensure button doesn't go too low
+  const finalButtonY = Math.min(buttonY, 1024 - 250);
+  
+  ctx.font = `bold ${buttonSize}px Inter, Arial`;
+  const buttonMetrics = ctx.measureText(buttonText);
+  const buttonWidth = buttonMetrics.width + buttonPadding * 2;
+  
+  if (isHovered) {
+    // Filled button for hover state
+    ctx.fillStyle = '#000000';
+    ctx.beginPath();
+    ctx.roundRect(buttonX, finalButtonY, buttonWidth, buttonHeight, 25);
+    ctx.fill();
+    
+    // White text on black background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(buttonText, buttonX + buttonPadding, finalButtonY + (buttonHeight - buttonSize) / 2);
+  } else {
+    // Outlined button for normal state
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(buttonX, finalButtonY, buttonWidth, buttonHeight, 25);
+    ctx.stroke();
+    
+    // Black text
+    ctx.fillStyle = '#000000';
+    ctx.fillText(buttonText, buttonX + buttonPadding, finalButtonY + (buttonHeight - buttonSize) / 2);
+  }
+  
+  // Store button coordinates for click detection
+  createTextTexture.lastButtonBounds = {
+    x: buttonX / 1024,
+    y: 1 - (finalButtonY + buttonHeight) / 1024,
+    width: buttonWidth / 1024,
+    height: buttonHeight / 1024
+  };
+  
+  return canvas;
+}
+
+const textCanvas = createTextTexture();
+const textTexture = new THREE.CanvasTexture(textCanvas);
+textTexture.wrapS = textTexture.wrapT = THREE.ClampToEdgeWrapping;
+textTexture.anisotropy = 4;
+
+// === Scene-to-Texture Setup ===
+// Create a separate scene that will be rendered to texture
+const sceneTexture = new THREE.Scene();
+sceneTexture.background = new THREE.Color(0xf0f0f0); // light background for better ink contrast
+
+// Camera for the scene texture
+const sceneCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+sceneCamera.position.set(0, 0, 5);
+
+// Render target for scene-to-texture - higher resolution for crisp detail
+const renderTarget = new THREE.WebGLRenderTarget(1024, 1024, {
+  minFilter: THREE.LinearFilter,
+  magFilter: THREE.LinearFilter,
+  format: THREE.RGBAFormat,
+  generateMipmaps: false,
+  samples: 4 // antialiasing for smoother edges
+});
+
+// Add some interesting objects to the scene
+const sceneObjects = [];
+
+// Rotating cubes with more saturated colors for better ink effect
+for (let i = 0; i < 8; i++) {
+  const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+  const material = new THREE.MeshPhongMaterial({ 
+    color: new THREE.Color().setHSL(i / 8, 0.9, 0.5), // more saturated, darker
+    shininess: 80,
+    specular: 0x222222
+  });
+  const cube = new THREE.Mesh(geometry, material);
+  
+  // Position cubes in a circle
+  const angle = (i / 8) * Math.PI * 2;
+  cube.position.x = Math.cos(angle) * 2;
+  cube.position.y = Math.sin(angle) * 2;
+  cube.position.z = Math.sin(angle * 2) * 0.5;
+  
+  sceneTexture.add(cube);
+  sceneObjects.push(cube);
+}
+
+// Add a central spinning torus - darker for better ink effect, higher resolution
+const torusGeometry = new THREE.TorusGeometry(1, 0.3, 32, 128); // doubled resolution
+const torusMaterial = new THREE.MeshPhongMaterial({ 
+  color: 0x996600, // darker gold for better ink absorption
+  shininess: 60,
+  specular: 0x333333,
+  transparent: true,
+  opacity: 0.9
+});
+const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+sceneTexture.add(torus);
+sceneObjects.push(torus);
+
+// Add lighting to the scene
+const sceneAmbient = new THREE.AmbientLight(0x404040, 0.4);
+sceneTexture.add(sceneAmbient);
+
+const sceneDirectional = new THREE.DirectionalLight(0xffffff, 0.8);
+sceneDirectional.position.set(5, 5, 5);
+sceneTexture.add(sceneDirectional);
+
+const scenePoint = new THREE.PointLight(0xff4444, 0.6, 10);
+scenePoint.position.set(-3, 2, 3);
+sceneTexture.add(scenePoint);
+
+// base shader material
+const uniforms = {
+  u_time: { value: 0.0 },
+  u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+  u_sceneTexture: { value: renderTarget.texture },
+  u_paperColor: { value: colorTex },
+  u_displacement: { value: displacementTex },
+  u_normal: { value: normalTex },
+  u_roughness: { value: roughnessTex },
+  u_textTexture: { value: textTexture },
+  u_envMap: { value: null },
+  u_hasEnvMap: { value: false }, // Boolean to track if env map is loaded
+  u_lightPos: { value: new THREE.Vector3(0.0, 0.8, 1.6) },
+  u_specularPower: { value: 60.0 }, // Increased for more plastic-like shine
+  u_grainAmount: { value: 0.02 }, // Reduced for smoother surface
+  u_reflectivity: { value: 0.4 }, // New parameter for reflection strength
+};
+
+const vert = /* glsl */`
+  varying vec2 vUv;
+  varying vec3 vPos;
+  varying vec3 vNormal;
+  varying vec3 vWorldPos;
+  varying vec3 vWorldNormal;
+  uniform sampler2D u_displacement;
+  
+  void main(){
+    vUv = uv;
+    vNormal = normal;
+    vPos = position;
+    
+    // displacement mapping for surface detail
+    float displacement = texture2D(u_displacement, uv).r;
+    vec3 pos = position + normal * displacement * 0.05;
+    
+    // Calculate world position and normal for reflections
+    vec4 worldPos = modelMatrix * vec4(pos, 1.0);
+    vWorldPos = worldPos.xyz;
+    vWorldNormal = normalize(normalMatrix * normal);
+    
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  }
+`;
+
+const frag = /* glsl */`
+  precision highp float;
+  varying vec2 vUv;
+  varying vec3 vWorldPos;
+  varying vec3 vWorldNormal;
+  uniform sampler2D u_sceneTexture;
+  uniform sampler2D u_paperColor;
+  uniform sampler2D u_displacement;
+  uniform sampler2D u_normal;
+  uniform sampler2D u_roughness;
+  uniform sampler2D u_textTexture;
+  uniform sampler2D u_envMap;
+  uniform bool u_hasEnvMap;
+  uniform vec3 u_lightPos;
+  uniform float u_time;
+  uniform float u_specularPower;
+  uniform float u_grainAmount;
+  uniform float u_reflectivity;
+
+  // simple sRGB->linear & back helpers (approx)
+  vec3 toLinear(vec3 c){ return pow(c, vec3(2.2)); }
+  vec3 toGamma(vec3 c){ return pow(c, vec3(1.0/2.2)); }
+
+  // noise function for paper grain effects
+  float noise(vec2 uv) {
+    return fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453);
+  }
+
+  void main(){
+    vec2 uv = vUv;
+
+    // sample material properties
+    vec3 nmap = texture2D(u_normal, uv).rgb;
+    float roughness = texture2D(u_roughness, uv).r;
+    float displacement = texture2D(u_displacement, uv).r;
+    
+    // decode normal map: map from [0,1] to [-1,1]
+    vec3 n = normalize(vec3(nmap.r*2.0-1.0, nmap.g*2.0-1.0, nmap.b*2.0-1.0));
+
+    // paper grain affects UV sampling - ink sits in paper fibers
+    vec2 paperGrain = (nmap.rg - 0.5) * 0.003;
+    vec2 sceneUV = uv + paperGrain;
+    
+    // sample scene texture cleanly
+    vec3 sceneColor = texture2D(u_sceneTexture, sceneUV).rgb;
+    
+    // sample text texture
+    vec4 textSample = texture2D(u_textTexture, uv);
+    float textAlpha = textSample.a;
+    
+    // text goes in front of shapes - we'll handle this after lighting
+    vec3 combinedContent = sceneColor;
+
+    // convert combined content to ink-like appearance
+    float luminance = dot(combinedContent, vec3(0.299, 0.587, 0.114));
+    
+    // ink density based on luminance - darker areas = more ink
+    float inkDensity = 1.0 - smoothstep(0.1, 0.9, luminance);
+    
+    // ink absorption varies with paper texture
+    float paperAbsorption = mix(0.7, 1.0, displacement);
+    inkDensity *= paperAbsorption;
+    
+    // ink bleeding effect - spread ink based on paper roughness
+    float bleeding = roughness * 0.5;
+    vec2 bleedOffset = vec2(
+      sin(uv.x * 100.0 + u_time) * bleeding * 0.002,
+      cos(uv.y * 100.0 + u_time) * bleeding * 0.002
+    );
+    vec3 bleedColor = texture2D(u_sceneTexture, uv + bleedOffset).rgb;
+    sceneColor = mix(sceneColor, bleedColor, bleeding * 0.3);
+
+    // use actual paper color texture as base
+    vec3 paperBase = texture2D(u_paperColor, uv).rgb;
+    
+    // add subtle noise variations on top of the texture
+    vec2 paperNoise = vec2(
+      noise(uv * 80.0),
+      noise(uv * 80.0 + vec2(1.0, 1.0))
+    );
+    paperBase += (paperNoise.x - 0.5) * 0.015;
+
+    // ink sits ON the paper - multiply blend for realistic ink effect
+    vec3 inkColor = mix(vec3(0.05, 0.05, 0.1), sceneColor * 0.3, 0.7);
+    vec3 baseColor = mix(paperBase, inkColor, inkDensity * 0.8);
+
+    // paper texture modulates the final color
+    float paperTexture = mix(0.95, 1.05, displacement);
+    baseColor *= paperTexture;
+
+    // lighting (Enhanced for plastic-like appearance)
+    vec3 pos = vec3(0.0,0.0,0.0);
+    vec3 lightDir = normalize(u_lightPos - pos);
+    vec3 N = normalize(n);
+    float lambert = max(dot(N, lightDir), 0.0);
+
+    // view direction for camera
+    vec3 V = normalize(cameraPosition - vWorldPos);
+    vec3 H = normalize(lightDir + V);
+    
+    // Enhanced specular for plastic-like shine
+    // Reduce roughness effect for more consistent glossiness
+    float plasticRoughness = roughness * 0.3 + 0.1; // Keep it quite smooth
+    float specPower = mix(u_specularPower * 3.0, u_specularPower * 0.8, plasticRoughness);
+    float spec = pow(max(dot(N, H), 0.0), specPower);
+    
+    // Environment reflections for plastic look
+    vec3 reflectionDir = reflect(-V, N);
+    vec3 envReflection = vec3(0.0);
+    
+    // Sample environment map if available
+    if (u_hasEnvMap) {
+      // Convert reflection direction to equirectangular UV
+      float phi = atan(reflectionDir.z, reflectionDir.x);
+      float theta = acos(reflectionDir.y);
+      vec2 envUV = vec2(phi / (2.0 * 3.14159) + 0.5, theta / 3.14159);
+      envReflection = texture2D(u_envMap, envUV).rgb;
+    }
+    
+    // Fresnel effect for more realistic reflections
+    float fresnel = pow(1.0 - max(dot(N, V), 0.0), 3.0);
+    float reflectionStrength = mix(u_reflectivity * 0.3, u_reflectivity, fresnel);
+    
+    // Ink areas are less reflective than paper
+    float inkReflectivity = mix(reflectionStrength, reflectionStrength * 0.2, inkDensity);
+    float inkSpecular = mix(0.8, 0.3, inkDensity); // ink is less shiny but still glossy
+
+    // Combine lighting
+    vec3 diffuse = baseColor * (0.3 + lambert * 0.9);
+    vec3 specular = vec3(spec * inkSpecular);
+    vec3 reflection = envReflection * inkReflectivity;
+    
+    vec3 lit = diffuse + specular + reflection;
+
+    // subtle edge vignette to mimic a card
+    float d = distance(uv, vec2(0.5, 0.5));
+    lit *= 1.0 - smoothstep(0.48, 0.8, d)*0.12;
+
+    // reduced grain for plastic-like smoothness
+    float grain = (noise(uv * 150.0 + u_time * 0.01) - 0.5) * u_grainAmount;
+    lit += grain;
+
+    // slight color boost for plastic vibrancy
+    lit *= vec3(1.05, 1.02, 1.0);
+
+    // Now layer text on top of everything - more visible and bold
+    if (textAlpha > 0.3) {
+      // Text appears as very dark, bold ink on top of the surface
+      vec3 textInk = vec3(0.0, 0.0, 0.0); // Pure black for maximum contrast
+      
+      // Text still interacts with paper grain but less so for better visibility
+      vec2 textGrain = paperGrain * 0.2;
+      vec4 textSampleGrained = texture2D(u_textTexture, uv + textGrain);
+      float grainedAlpha = textSampleGrained.a;
+      
+      // Make text more opaque and bold
+      float textOpacity = smoothstep(0.3, 0.8, grainedAlpha);
+      
+      // Apply text with strong contrast
+      float textPaperInteraction = mix(0.9, 1.0, displacement);
+      lit = mix(lit, lit * 0.1 + textInk * textPaperInteraction, textOpacity);
+    }
+
+    gl_FragColor = vec4(toGamma(lit), 1.0);
+  }
+`;
+
+const mat = new THREE.ShaderMaterial({
+  uniforms,
+  vertexShader: vert,
+  fragmentShader: frag,
+  transparent: false,
+  // doubleSided not necessary but sometimes helpful
+});
+
+const mesh = new THREE.Mesh(planeGeo, mat);
+scene.add(mesh);
+
+// slightly rotate and position the large card
+mesh.rotation.x = -0.01;
+mesh.rotation.y = 0.05;
+mesh.position.set(0, 0, 0);
+
+// subtle floating animation
+let clock = new THREE.Clock();
+
+// handle resize
+window.addEventListener('resize', onWindowResize);
+function onWindowResize(){
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w,h);
+  camera.aspect = w/h;
+  camera.updateProjectionMatrix();
+  uniforms.u_resolution.value.set(w,h);
+  
+  // Regenerate text texture for new aspect ratio
+  if (!hasInteracted) {
+    const newCanvas = createTextTexture(isButtonHovered);
+    textTexture.image = newCanvas;
+    textTexture.needsUpdate = true;
+  }
+}
+
+// mouse tilt / light follow
+let mouse = {x:0,y:0};
+window.addEventListener('mousemove', (e) => {
+  const nx = (e.clientX / window.innerWidth) * 2 - 1;
+  const ny = - (e.clientY / window.innerHeight) * 2 + 1;
+  mouse.x = nx;
+  mouse.y = ny;
+});
+
+// animate
+function animate(){
+  requestAnimationFrame(animate);
+  const time = clock.getElapsedTime();
+  uniforms.u_time.value = time;
+
+  // animate scene objects
+  sceneObjects.forEach((obj, index) => {
+    if (obj.geometry.type === 'BoxGeometry') {
+      // Rotate cubes individually
+      obj.rotation.x = time * 0.5 + index * 0.5;
+      obj.rotation.y = time * 0.3 + index * 0.3;
+      obj.rotation.z = time * 0.7 + index * 0.1;
+      
+      // Make them orbit around the center
+      const angle = (index / 8) * Math.PI * 2 + time * 0.2;
+      obj.position.x = Math.cos(angle) * 2;
+      obj.position.y = Math.sin(angle) * 2;
+      obj.position.z = Math.sin(angle * 2 + time) * 0.5;
+    } else if (obj.geometry.type === 'TorusGeometry') {
+      // Rotate the central torus
+      obj.rotation.x = time * 0.4;
+      obj.rotation.y = time * 0.6;
+      obj.rotation.z = time * 0.2;
+    }
+  });
+
+  // animate scene camera for dynamic perspective
+  sceneCamera.position.x = Math.sin(time * 0.1) * 2;
+  sceneCamera.position.y = Math.cos(time * 0.15) * 1;
+  sceneCamera.lookAt(0, 0, 0);
+
+  // render scene to texture
+  renderer.setRenderTarget(renderTarget);
+  renderer.render(sceneTexture, sceneCamera);
+  renderer.setRenderTarget(null);
+
+  // map mouse to tilt & light for main card - reduced tilt for larger card
+  const tiltX = THREE.MathUtils.lerp(mesh.rotation.x, -mouse.y * 0.08 - 0.01, 0.08);
+  const tiltY = THREE.MathUtils.lerp(mesh.rotation.y, mouse.x * 0.15 + 0.05, 0.08);
+  mesh.rotation.x = tiltX;
+  mesh.rotation.y = tiltY;
+
+  // move light around a bit and follow mouse
+  const targetLightX = mouse.x * 1.2;
+  const targetLightY = mouse.y * 0.8 + 0.6;
+  pointLight.position.x = THREE.MathUtils.lerp(pointLight.position.x, targetLightX, 0.06);
+  pointLight.position.y = THREE.MathUtils.lerp(pointLight.position.y, targetLightY, 0.06);
+  pointLight.position.z = THREE.MathUtils.lerp(pointLight.position.z, 1.6, 0.06);
+  uniforms.u_lightPos.value.copy(pointLight.position);
+
+  // render main scene
+  renderer.render(scene, camera);
+}
+animate();
+
+// update loader text when textures are loaded
+colorTex.onLoad = () => {
+  loaderLabel.textContent = '3D Scene Card loaded. Move mouse to tilt and shift the light.';
+};
+
+// Card interaction for the button area
+let hasInteracted = false;
+let isButtonHovered = false;
+
+// Function to check if mouse is over button area
+function checkButtonHover(event) {
+  if (hasInteracted) return false;
+  
+  const rect = renderer.domElement.getBoundingClientRect();
+  const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
+  const intersects = raycaster.intersectObject(mesh);
+  
+  if (intersects.length > 0) {
+    const uv = intersects[0].uv;
+    
+    // Use dynamic button bounds from the text texture function
+    const bounds = createTextTexture.lastButtonBounds || {
+      x: 60 / 1024, y: 1 - (500 + 70) / 1024, width: 200 / 1024, height: 70 / 1024
+    };
+    
+    return (uv.x >= bounds.x && uv.x <= bounds.x + bounds.width &&
+            uv.y >= bounds.y && uv.y <= bounds.y + bounds.height);
+  }
+  
+  return false;
+}
+
+// Mouse move handler for hover detection
+renderer.domElement.addEventListener('mousemove', (event) => {
+  if (hasInteracted) return;
+  
+  const wasHovered = isButtonHovered;
+  isButtonHovered = checkButtonHover(event);
+  
+  // Update button appearance if hover state changed
+  if (wasHovered !== isButtonHovered) {
+    const newCanvas = createTextTexture(isButtonHovered);
+    textTexture.image = newCanvas;
+    textTexture.needsUpdate = true;
+    
+    // Update cursor
+    renderer.domElement.style.cursor = isButtonHovered ? 'pointer' : 'default';
+  }
+});
+
+// Mouse leave handler
+renderer.domElement.addEventListener('mouseleave', () => {
+  if (hasInteracted) return;
+  
+  if (isButtonHovered) {
+    isButtonHovered = false;
+    const newCanvas = createTextTexture(false);
+    textTexture.image = newCanvas;
+    textTexture.needsUpdate = true;
+    renderer.domElement.style.cursor = 'default';
+  }
+});
+
+renderer.domElement.addEventListener('click', (event) => {
+  if (hasInteracted) return;
+  
+  // Get click position in normalized device coordinates
+  const rect = renderer.domElement.getBoundingClientRect();
+  const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  
+  // Create raycaster
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
+  
+  // Check intersection with card
+  const intersects = raycaster.intersectObject(mesh);
+  
+  if (intersects.length > 0) {
+    const uv = intersects[0].uv;
+    
+     // Check if click is in button area using dynamic bounds
+     const bounds = createTextTexture.lastButtonBounds || {
+       x: 60 / 1024, y: 1 - (500 + 70) / 1024, width: 200 / 1024, height: 70 / 1024
+     };
+    
+    if (uv.x >= bounds.x && uv.x <= bounds.x + bounds.width &&
+        uv.y >= bounds.y && uv.y <= bounds.y + bounds.height) {
+      
+      // Button was clicked!
+      hasInteracted = true;
+      loaderLabel.textContent = 'Experience started - Move mouse to interact with the card';
+      
+      // Create new text texture without the UI elements
+      const newTextCanvas = document.createElement('canvas');
+      newTextCanvas.width = 1024;
+      newTextCanvas.height = 1024;
+      const ctx = newTextCanvas.getContext('2d');
+      ctx.fillStyle = 'rgba(0,0,0,0)';
+      ctx.fillRect(0, 0, newTextCanvas.width, newTextCanvas.height);
+      
+      // Update the texture
+      textTexture.image = newTextCanvas;
+      textTexture.needsUpdate = true;
+      
+      // You could add additional functionality here
+    }
+  }
+});
+
+// Optional: Add keyboard support (Enter key)
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !hasInteracted) {
+    // Simulate button click
+    hasInteracted = true;
+    loaderLabel.textContent = 'Experience started - Move mouse to interact with the card';
+    
+    // Clear text
+    const newTextCanvas = document.createElement('canvas');
+    newTextCanvas.width = 1024;
+    newTextCanvas.height = 1024;
+    const ctx = newTextCanvas.getContext('2d');
+    ctx.fillStyle = 'rgba(0,0,0,0)';
+    ctx.fillRect(0, 0, newTextCanvas.width, newTextCanvas.height);
+    
+    textTexture.image = newTextCanvas;
+    textTexture.needsUpdate = true;
+  }
+});
+
+
+</script>
+</body>
+</html>
