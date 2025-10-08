@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>EX Research</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+		<link rel="stylesheet" href="https://unpkg.com/7.css">
+		<style>
+
+			@font-face {
+				font-family: 'ff7';
+				src: url('assets/Final_Fantasy_VII.ttf') format('truetype');
+			}
+
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				width: 100%;
+				height: 100%;
+			}
+			
+			#homepage-ui {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				z-index: 200;
+				pointer-events: none;
+				font-family: 'Arial Narrow', monospace;
+			}
+
+			.agency-card {
+				max-width: 480px;
+				width: 90%;
+				pointer-events: auto;
+				animation: cardPopIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+				transform: scale(0);
+				animation-delay: 0.3s;
+				background-color: #ffffff;
+				/* subtle inward fades toward the black before/after tabs */
+				background: linear-gradient(to bottom, #000000 0%, #ffffff 5%, #ffffff 95%, #000000 100%);
+				border: 1px solid black;
+				border-radius: 8px;
+				border-top-right-radius: 0;
+				border-bottom-left-radius: 0;
+				position: relative;
+				/* overflow: hidden; */
+			}
+
+			.agency-card::before {
+				content: '';
+				text-align: right;
+				background-color: black;
+				padding: 0 12px;
+				font-size: 8px;
+				display: flex;
+				align-items: center;
+				justify-content: right;
+				position: absolute;
+				border-radius: 10px 10px 0 0;
+				top: -20px;
+				right: -1px;
+				border: none;
+				width:120px;
+				height: 21px;
+				box-sizing: border-box;
+				z-index: -1;
+				clip-path: polygon(18% 0, 100% 0, 100% 100%, 0% 100%);
+			}
+
+			.agency-card::after {
+				content: '';
+				text-align: right;
+				background-color: black;
+				padding: 0 12px;
+				font-size: 8px;
+				display: flex;
+				align-items: center;
+				justify-content: right;
+				position: absolute;
+				border-radius: 0px 0px 10px 10px;
+				bottom: -20px;
+				left: -1px;
+				border: none;
+				width:120px;
+				height: 21px;
+				box-sizing: border-box;
+				z-index: -1;
+				clip-path: polygon( 0 0, 100% 0, 82% 100%, 0% 100%);
+			}
+
+			.card-body {
+				padding: 32px;
+				text-align: center;
+			}
+
+
+			#enter-button {
+				background: #c0c0c0; /* classic gray */
+				color: #000000;
+				padding: 12px 28px;
+				font-size: 14px;
+				font-weight: 700;
+				letter-spacing: 0.02em;
+				text-transform: none;
+				border-radius: 0;
+				cursor: pointer;
+				position: relative;
+				border: 2px solid #ffffff; /* top/left light */
+				border-right-color: #404040; /* right dark */
+				border-bottom-color: #404040; /* bottom dark */
+				box-shadow:
+					inset 1px 1px 0 #dfdfdf,
+					inset -1px -1px 0 #808080,
+					0 0 0 1px #000000; /* outer black keyline like old UI */
+				transition: background-color .12s ease;
+			}
+
+			#enter-button:hover {
+				background: #dcdcdc;
+			}
+
+			#enter-button:active {
+				background: #b5b5b5;
+				border-color: #404040; /* top/left dark when pressed */
+				border-right-color: #ffffff; /* right/bottom light when pressed */
+				border-bottom-color: #ffffff;
+				box-shadow:
+					inset -1px -1px 0 #dfdfdf,
+					inset 1px 1px 0 #808080,
+					0 0 0 1px #000000;
+			}
+
+			#enter-button:focus {
+				outline: 1px dotted #000000;
+				outline-offset: 2px;
+			}
+			
+			#main-title {
+				font-size: 60px;
+				font-weight: 300;
+				color: #000000;
+				margin: 0 0 24px 0;
+				font-family: 'Arial Narrow', monospace;
+				line-height: 1.1;
+				display: flex;
+				align-items: baseline;
+				justify-content: center;
+				flex-wrap: wrap;
+				letter-spacing: -1px;
+			}
+
+			.letter {
+				display: inline-block;
+				transition: transform 0.3s ease;
+			}
+
+			.letter.small {
+				font-size: 0.6em;
+				font-weight: normal;
+			}
+
+			.letter.medium {
+				font-size: 0.8em;
+				font-weight:900;
+			}
+			.letter.medium-light {
+				font-size: 0.8em;
+				font-weight:100;
+			}
+
+			.letter.big {
+				font-size: 1em;
+				font-weight: 900;
+			}
+
+			.letter.huge {
+				font-size: 1.3em;
+				font-weight: 900;
+			}
+
+			.letter:hover {
+				transform: scale(1.2) rotate(-5deg);
+				color: #0066cc;
+			}
+
+			@keyframes cardPopIn {
+				0% {
+					transform: scale(0) rotateY(-10deg);
+					opacity: 0;
+				}
+				50% {
+					transform: scale(1.05) rotateY(0deg);
+					opacity: 1;
+				}
+				100% {
+					transform: scale(1) rotateY(0deg);
+					opacity: 1;
+				}
+			}
+			
+			#subtitle {
+				font-size: 20px;
+				color: black;
+				margin: 0 0 32px 0;
+				line-height: 1.5;
+				font-weight: 400;
+				font-style: italic;
+			}
+			
+			.hidden {
+				display: none !important;
+			}
+			
+			.cloud-image {
+				position: fixed;
+				z-index: 150;
+				pointer-events: none;
+				transform-origin: center center;
+				opacity: 1;
+				filter: brightness(1.1) contrast(1.1);
+			}
+			
+			.hud-scanner {
+				position: fixed;
+				width: 20px;
+				height: 20px;
+				border: 2px solid #4a90e2;
+				background: rgba(74, 144, 226, 0.15);
+				z-index: 160;
+				pointer-events: none;
+				transition: all 0.4s ease;
+				box-shadow: 
+					0 0 8px rgba(74, 144, 226, 0.4),
+					inset 0 0 8px rgba(74, 144, 226, 0.2);
+			}
+			
+			.hud-scanner.scanning {
+				border-color: #2ecc71;
+				background: rgba(46, 204, 113, 0.15);
+				box-shadow: 
+					0 0 15px rgba(46, 204, 113, 0.6),
+					inset 0 0 10px rgba(46, 204, 113, 0.3);
+			}
+			
+			.hud-scanner::before {
+				content: '';
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 6px;
+				height: 6px;
+				background: currentColor;
+				border-radius: 50%;
+				transform: translate(-50%, -50%);
+				box-shadow: 0 0 4px currentColor;
+			}
+			
+			.hud-scanner::after {
+				content: attr(data-status);
+				position: absolute;
+				bottom: -35px;
+				right: -50px;
+				font-family: 'Epmarugo', monospace;
+				font-size: 10px;
+				color: black;
+				white-space: nowrap;
+				font-weight: bold;
+				text-shadow: 1px 1px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white;
+			}
+			
+
+			.hud-scanner-frame {
+				position: absolute;
+				top: -3px;
+				left: -3px;
+				right: -3px;
+				bottom: -3px;
+				border: 1px solid currentColor;
+				opacity: 0.6;
+				pointer-events: none;
+			}
+			
+			.hud-scanner-corners {
+				position: absolute;
+				top: -6px;
+				left: -6px;
+				right: -6px;
+				bottom: -6px;
+				pointer-events: none;
+			}
+			
+			.hud-scanner-corners::before,
+			.hud-scanner-corners::after {
+				content: '';
+				position: absolute;
+				width: 8px;
+				height: 8px;
+				border: 1px solid black;
+				opacity: 0.8;
+			}
+			
+			.hud-scanner-corners::before {
+				top: 0;
+				left: 0;
+				border-right: none;
+				border-bottom: none;
+			}
+			
+			.hud-scanner-corners::after {
+				bottom: 0;
+				right: 0;
+				border-left: none;
+				border-top: none;
+			}
+
+
+			
+		</style>
+	</head>
+	<body>
+		<div id="homepage-ui">
+			<div class="agency-card">
+				<div class="card-body">
+					<h1 id="main-title">
+						<span class="letter medium-light">EX</span>
+						<span class="letter small">&nbsp;</span>
+						<span class="letter medium">R</span><span class="letter medium">e</span><span class="letter medium">s</span><span class="letter medium">e</span><span class="letter medium">a</span><span class="letter medium">r</span><span class="letter medium">c</span><span class="letter medium">h</span>
+					</h1>
+					<p id="subtitle">The world's most online agency.</p>
+					<button id="enter-button">ENTER</button>
+				</div>
+			</div>
+		</div>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+					"three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+				}
+			}
+		</script>
+
+		
+
+		<script type="module">
+			import { MarchingCubesScene } from './threejs-marching.js';
+			import { Chatboxes2D } from './chatboxes-2d.js';
+
+			let container;
+			let marchingScene;
+			let chatboxesScene;
+
+			// Initialize the application
+			init();
+
+			function init() {
+				// Create container for Three.js scene
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				// Initialize the Three.js marching cubes scene
+				marchingScene = new MarchingCubesScene(container);
+
+				// Initialize the 2D chatboxes scene
+				chatboxesScene = new Chatboxes2D();
+
+				// Initialize default control values
+				window.chatboxControls = {
+					visible: true,
+					speed: 2.0,
+					connectionDistance: 12.0,
+					spawnRate: 2.0,
+					pixelation: 2,
+					style: 'classic' // 'classic' or 'ff7'
+				};
+
+				window.cloudControls = {
+					enabled: true,
+					spawnRate: 0.5, // clouds per second
+					scannerCount: 4
+				};
+				
+				window.cloudDebug = {
+					status: 'Waiting...'
+				};
+
+				// Set up the main render loop that coordinates both scenes
+				function animate() {
+					// Render the Three.js scene
+					marchingScene.render();
+
+					// Draw 2D chatboxes overlay
+					if (window.chatboxControls && window.chatboxControls.visible) {
+						chatboxesScene.drawChatboxes();
+					}
+				}
+
+				// Start the animation loop
+				marchingScene.getRenderer().setAnimationLoop(animate);
+
+				// Handle window resize
+				window.addEventListener('resize', () => {
+					marchingScene.onWindowResize();
+					chatboxesScene.onWindowResize();
+				});
+			}
+
+		</script>
+	</body>
+</html>
