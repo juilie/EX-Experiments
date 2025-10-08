@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - gpgpu - water</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+				text-align:center;
+			}
+
+			a {
+				color:#0078ff;
+			}
+
+			#info {
+				color: #ffffff;
+				position: absolute;
+				top: 10px;
+				width: 100%;
+			}
+
+
+			/* Title card styles (matching marchingFix) */
+			#homepage-ui {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				z-index: 200;
+				pointer-events: none;
+				font-family: 'Arial Narrow', monospace;
+			}
+
+			.agency-card {
+				max-width: 480px;
+				width: 90%;
+				pointer-events: auto;
+				animation: cardPopIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+				transform: scale(0);
+				animation-delay: 0.3s;
+				background-color: #ffffff;
+				background: linear-gradient(to bottom, #00002d 0%, #00002d 5%, #000000 95%, #000000 100%);
+				border: 1px solid black;
+				border-radius: 8px;
+				border-top-right-radius: 0;
+				border-bottom-left-radius: 0;
+				position: relative;
+			}
+
+			.agency-card::before {
+				content: '';
+				text-align: right;
+				background-color: #00002d;
+				padding: 0 12px;
+				font-size: 8px;
+				display: flex;
+				align-items: center;
+				justify-content: right;
+				position: absolute;
+				border-radius: 10px 10px 0 0;
+				top: -20px;
+				right: -1px;
+				border: none;
+				width:120px;
+				height: 21px;
+				box-sizing: border-box;
+				z-index: -1;
+				clip-path: polygon(18% 0, 100% 0, 100% 100%, 0% 100%);
+			}
+
+			.agency-card::after {
+				content: '';
+				text-align: right;
+				background-color: black;
+				padding: 0 12px;
+				font-size: 8px;
+				display: flex;
+				align-items: center;
+				justify-content: right;
+				position: absolute;
+				border-radius: 0px 0px 10px 10px;
+				bottom: -20px;
+				left: -1px;
+				border: none;
+				width:120px;
+				height: 21px;
+				box-sizing: border-box;
+				z-index: -1;
+				clip-path: polygon( 0 0, 100% 0, 82% 100%, 0% 100%);
+			}
+
+			.card-body { padding: 32px; text-align: center; }
+
+			#enter-button {
+				background: #c0c0c0;
+				color: #000000;
+				padding: 12px 28px;
+				font-size: 14px;
+				font-weight: 700;
+				letter-spacing: 0.02em;
+				text-transform: none;
+				border-radius: 0;
+				cursor: pointer;
+				position: relative;
+				border: 2px solid #ffffff;
+				border-right-color: #404040;
+				border-bottom-color: #404040;
+				box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #808080, 0 0 0 1px #000000;
+				transition: background-color .12s ease;
+			}
+			#enter-button:hover { background: #dcdcdc; }
+			#enter-button:active {
+				background: #b5b5b5;
+				border-color: #404040;
+				border-right-color: #ffffff;
+				border-bottom-color: #ffffff;
+				box-shadow: inset -1px -1px 0 #dfdfdf, inset 1px 1px 0 #808080, 0 0 0 1px #000000;
+			}
+			#enter-button:focus { outline: 1px dotted #000000; outline-offset: 2px; }
+
+			#main-title {
+				font-size: 6em;
+				font-weight: 300;
+				color: rgb(241, 215, 0);
+				margin: 0 0 24px 0;
+				font-family: 'Arial Narrow', monospace;
+				line-height: 1.1;
+				display: flex;
+				align-items: baseline;
+				justify-content: center;
+				flex-wrap: wrap;
+				letter-spacing: -1px;
+			}
+			.letter { display: inline-block; transition: transform 0.3s ease; }
+			.letter.small { font-size: 0.6em; font-weight: normal; }
+			.letter.medium { font-size: 0.8em; font-weight:900; }
+			.letter.medium-light { font-size: 0.8em; font-weight:100; }
+			.letter.big { font-size: 1em; font-weight: 900; }
+			.letter.huge { font-size: 1.3em; font-weight: 900; }
+			.letter:hover { transform: scale(1.2) rotate(-5deg); color: #0066cc; }
+
+			@keyframes cardPopIn {
+				0% { transform: scale(0) rotateY(-10deg); opacity: 0; }
+				50% { transform: scale(1.05) rotateY(0deg); opacity: 1; }
+				100% { transform: scale(1) rotateY(0deg); opacity: 1; }
+			}
+
+			#subtitle { font-size: 20px; color: rgb(228, 228, 228);; margin: 0 0 32px 0; line-height: 1.5; font-weight: 400; font-style: italic; }
+			.hidden { display: none !important; }
+		</style>
+		<!-- Three.js core -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<!-- Three.js addons -->
+<script src="https://cdn.jsdelivr.net/npm/fflate@0.7.4/umd/index.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/math/SimplexNoise.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/stats.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/misc/GPUComputationRenderer.js"></script>
+<!-- Postprocessing -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+
+<!-- lil-gui -->
+<script src="https://cdn.jsdelivr.net/npm/lil-gui@0.17.0/dist/lil-gui.umd.min.js"></script>
+	</head>
+	<body>
+		<div id="homepage-ui">
+			<div class="agency-card">
+				<div class="card-body">
+					<h1 id="main-title">
+						<span class="letter medium-light">EX</span>
+						<span class="letter small">&nbsp;</span>
+						<span class="letter medium">R</span><span class="letter medium">e</span><span class="letter medium">s</span><span class="letter medium">e</span><span class="letter medium">a</span><span class="letter medium">r</span><span class="letter medium">c</span><span class="letter medium">h</span>
+					</h1>
+					<p id="subtitle">The world's most online agency.</p>
+					<button id="enter-button">ENTER</button>
+				</div>
+			</div>
+		</div>
+
+		<div id="info" style="display: none;">
+			<a href="http://threejs.org" target="_blank">three.js</a> - <span id="waterSize"></span> webgl gpgpu water<br/>
+			Select <span id="options"></span> water size<br/>
+			Move mouse to disturb water.<br>
+			Press mouse button to orbit around. 'W' key toggles wireframe.
+		</div>
+
+		<script>
+			(function(){
+				var homepageUI = document.getElementById('homepage-ui');
+				var enterButton = document.getElementById('enter-button');
+				if (enterButton && homepageUI) {
+					enterButton.addEventListener('click', function(){
+						homepageUI.classList.add('hidden');
+						console.log('Welcome to EX Research!');
+					});
+				}
+			})();
+		</script>
+
+
+		<!-- This is the 'compute shader' for the water heightmap: -->
+		<script id="heightmapFragmentShader" type="x-shader/x-fragment">
+
+			#include <common>
+
+			uniform vec2 mousePos;
+			uniform float mouseSize;
+			uniform float viscosityConstant;
+
+			#define deltaTime ( 1.0 / 60.0 )
+			#define GRAVITY_CONSTANT ( resolution.x * deltaTime * 3.0 )
+
+			void main()	{
+
+				vec2 cellSize = 1.0 / resolution.xy;
+
+				vec2 uv = gl_FragCoord.xy * cellSize;
+
+				// heightmapValue.x == height
+				// heightmapValue.y == velocity
+				// heightmapValue.z, heightmapValue.w not used
+				vec4 heightmapValue = texture2D( heightmap, uv );
+
+				// Get neighbours
+				vec4 north = texture2D( heightmap, uv + vec2( 0.0, cellSize.y ) );
+				vec4 south = texture2D( heightmap, uv + vec2( 0.0, - cellSize.y ) );
+				vec4 east = texture2D( heightmap, uv + vec2( cellSize.x, 0.0 ) );
+				vec4 west = texture2D( heightmap, uv + vec2( - cellSize.x, 0.0 ) );
+
+				float sump = north.x + south.x + east.x + west.x - 4.0 * heightmapValue.x;
+
+				float accel = sump * GRAVITY_CONSTANT;
+
+				// Dynamics
+				heightmapValue.y += accel;
+				heightmapValue.x += heightmapValue.y * deltaTime;
+
+				// Viscosity
+				heightmapValue.x += sump * viscosityConstant;
+
+				// Mouse influence
+				float mousePhase = clamp( length( ( uv - vec2( 0.5 ) ) * BOUNDS - vec2( mousePos.x, - mousePos.y ) ) * PI / mouseSize, 0.0, PI );
+				heightmapValue.x += cos( mousePhase ) + 1.0;
+
+				gl_FragColor = heightmapValue;
+
+			}
+
+		</script>
+
+		<!-- This is just a smoothing 'compute shader' for using manually: -->
+		<script id="smoothFragmentShader" type="x-shader/x-fragment">
+
+			uniform sampler2D texture;
+
+			void main()	{
+
+				vec2 cellSize = 1.0 / resolution.xy;
+
+				vec2 uv = gl_FragCoord.xy * cellSize;
+
+				// Computes the mean of texel and 4 neighbours
+				vec4 textureValue = texture2D( texture, uv );
+				textureValue += texture2D( texture, uv + vec2( 0.0, cellSize.y ) );
+				textureValue += texture2D( texture, uv + vec2( 0.0, - cellSize.y ) );
+				textureValue += texture2D( texture, uv + vec2( cellSize.x, 0.0 ) );
+				textureValue += texture2D( texture, uv + vec2( - cellSize.x, 0.0 ) );
+
+				textureValue /= 5.0;
+
+				gl_FragColor = textureValue;
+
+			}
+
+		</script>
+
+		<!-- This is the water visualization shader, copied from the MeshPhongMaterial and modified: -->
+		<script id="waterVertexShader" type="x-shader/x-vertex">
+
+			uniform sampler2D heightmap;
+
+			#define PHONG
+
+			varying vec3 vViewPosition;
+
+			#ifndef FLAT_SHADED
+
+				varying vec3 vNormal;
+
+			#endif
+
+			#include <common>
+			#include <uv_pars_vertex>
+			#include <uv2_pars_vertex>
+			#include <displacementmap_pars_vertex>
+			#include <envmap_pars_vertex>
+			#include <color_pars_vertex>
+			#include <morphtarget_pars_vertex>
+			#include <skinning_pars_vertex>
+			#include <shadowmap_pars_vertex>
+			#include <logdepthbuf_pars_vertex>
+			#include <clipping_planes_pars_vertex>
+
+			void main() {
+
+				vec2 cellSize = vec2( 1.0 / WIDTH, 1.0 / WIDTH );
+
+				#include <uv_vertex>
+				#include <uv2_vertex>
+				#include <color_vertex>
+
+				// # include <beginnormal_vertex>
+				// Compute normal from heightmap
+				vec3 objectNormal = vec3(
+					( texture2D( heightmap, uv + vec2( - cellSize.x, 0 ) ).x - texture2D( heightmap, uv + vec2( cellSize.x, 0 ) ).x ) * WIDTH / BOUNDS,
+					( texture2D( heightmap, uv + vec2( 0, - cellSize.y ) ).x - texture2D( heightmap, uv + vec2( 0, cellSize.y ) ).x ) * WIDTH / BOUNDS,
+					1.0 );
+				//<beginnormal_vertex>
+
+				#include <morphnormal_vertex>
+				#include <skinbase_vertex>
+				#include <skinnormal_vertex>
+				#include <defaultnormal_vertex>
+
+			#ifndef FLAT_SHADED // Normal computed with derivatives when FLAT_SHADED
+
+				vNormal = normalize( transformedNormal );
+
+			#endif
+
+				//# include <begin_vertex>
+				float heightValue = texture2D( heightmap, uv ).x;
+				vec3 transformed = vec3( position.x, position.y, heightValue );
+				//<begin_vertex>
+
+				#include <displacementmap_vertex>
+				#include <morphtarget_vertex>
+				#include <skinning_vertex>
+				#include <project_vertex>
+				#include <logdepthbuf_vertex>
+				#include <clipping_planes_vertex>
+
+				vViewPosition = - mvPosition.xyz;
+
+				#include <worldpos_vertex>
+				#include <envmap_vertex>
+				#include <shadowmap_vertex>
+
+			}
+
+		</script>
+
+		<script>
+			// import * as THREE from 'three';
+			// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+			// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+			// import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+			// import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+			// import { SimplexNoise } from 'three/examples/jsm/math/SimplexNoise.js';
+			// import Stats from 'three/examples/jsm/libs/stats.module.js';
+			// import { GUI } from 'lil-gui';
+			// import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer.js';
+			// import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
+
+			// Add WebGL detector
+			function checkWebGLSupport() {
+				try {
+					const canvas = document.createElement('canvas');
+					return !!(window.WebGLRenderingContext && 
+						(canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+				} catch (e) {
+					return false;
+				}
+			}
+			
+			if (!checkWebGLSupport()) {
+				document.body.innerHTML = '<div style="text-align:center;padding:20px;color:white;">Your browser does not support WebGL, which is required for this page.</div>';
+				throw new Error('WebGL not supported');
+			}
+
+			var hash = document.location.hash.substr( 1 );
+			if ( hash ) hash = parseInt( hash, 0 );
+
+			// Texture width for simulation
+			var WIDTH = hash || 128;
+			var NUM_TEXELS = WIDTH * WIDTH;
+
+			// Water size in system units
+			var BOUNDS = 512;
+			var BOUNDS_HALF = BOUNDS * 0.5;
+
+			var container, stats;
+			var camera, scene, renderer, controls, gamepad;
+			var composer, ditherPass;
+			// Auto-spawn balls without keyboard
+			var autoSpawnBalls = true;
+			var spawnIntervalMs = 500; // base interval
+			var nextSpawnAt = (typeof performance !== 'undefined' ? performance.now() : Date.now()) + spawnIntervalMs;
+			// Mouse sway config
+			var cameraMouseAmplitude = 10; // units to sway
+			var mouseOffset = new THREE.Vector2(0, 0);
+			var mouseOffsetSmoothed = new THREE.Vector2(0, 0);
+			var lastAppliedCamOffset = new THREE.Vector3(0, 0, 0);
+			// Gentle auto-orbit around center
+var autoOrbitEnabled = false;
+			var autoOrbitSpeed = 0.05; // radians per second (very subtle)
+			var autoOrbitAngle = 0;
+			var orbitCenter = new THREE.Vector3(0, 0, 0);
+			var orbitRadius = 350;
+			var orbitHeight = 120;
+			var lastTime = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+// Mouse-driven orbit offsets
+var mouseOrbitAngleAmplitude = 0.6; // radians at screen edge
+var mouseOrbitHeightAmplitude = 60; // units up/down at screen edge
+			var mouseMoved = false;
+			var mouseCoords = new THREE.Vector2();
+			var raycaster = new THREE.Raycaster();
+
+			var waterMesh;
+			var meshRay;
+			var gpuCompute;
+			var heightmapVariable;
+			var waterUniforms;
+			var smoothShader;
+
+			// Cave environment objects
+			var caveMeshes = [];
+
+			var simplex = new THREE.SimplexNoise();
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			document.getElementById( 'waterSize' ).innerText = WIDTH + ' x ' + WIDTH;
+
+			function change(n) {
+				location.hash = n;
+				location.reload();
+				return false;
+			}
+
+
+			var options = '';
+			for ( var i = 4; i < 10; i++ ) {
+				var j = Math.pow( 2, i );
+				options += '<a href="#" onclick="return change(' + j + ')">' + j + 'x' + j + '</a> ';
+			}
+			document.getElementById('options').innerHTML = options;
+
+			init();
+			animate();
+			
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 );
+				camera.position.set( 0, 200, 350 );
+				// Initialize orbit from current camera placement
+				orbitHeight = camera.position.y;
+				orbitRadius = Math.sqrt(camera.position.x * camera.position.x + camera.position.z * camera.position.z);
+
+				scene = new THREE.Scene();
+
+				var sun = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
+				sun.position.set( 300, 400, 175 );
+				// scene.add( sun );
+
+				var sun2 = new THREE.DirectionalLight( 0x40A040, 0.6 );
+				sun2.position.set( -100, 350, -200 );
+				// scene.add( sun2 );
+
+				// Add ambient light for better cave visibility
+				var ambientLight = new THREE.AmbientLight(0x333333);
+				// scene.add(ambientLight);
+
+				var directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1.0);
+				directionalLight.position.set(1, 1, 1);
+				// scene.add(directionalLight);
+
+				var fog = new THREE.Fog(0x000000, 1000, 3000);
+				scene.fog = fog;
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setClearColor( 0x000000 );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				// Postprocessing composer and dithering pass
+				composer = new THREE.EffectComposer( renderer );
+				var renderPass = new THREE.RenderPass( scene, camera );
+				composer.addPass( renderPass );
+
+				var DitherShader = {
+					uniforms: {
+						tDiffuse: { value: null },
+						resolution: { value: new THREE.Vector2( window.innerWidth, window.innerHeight ) },
+						colorNum: { value: 4.0 },
+						pixelSize: { value: 2.0 }
+					},
+					vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 ); }',
+					fragmentShader: [
+						'precision highp float;',
+						'varying vec2 vUv;',
+						'uniform sampler2D tDiffuse;',
+						'uniform vec2 resolution;',
+						'uniform float colorNum;',
+						'uniform float pixelSize;',
+						'const float bayerMatrix8x8[64] = float[64](',
+						'    0.0/64.0, 48.0/64.0, 12.0/64.0, 60.0/64.0,  3.0/64.0, 51.0/64.0, 15.0/64.0, 63.0/64.0,',
+						'  32.0/64.0, 16.0/64.0, 44.0/64.0, 28.0/64.0, 35.0/64.0, 19.0/64.0, 47.0/64.0, 31.0/64.0,',
+						'    8.0/64.0, 56.0/64.0,  4.0/64.0, 52.0/64.0, 11.0/64.0, 59.0/64.0,  7.0/64.0, 55.0/64.0,',
+						'  40.0/64.0, 24.0/64.0, 36.0/64.0, 20.0/64.0, 43.0/64.0, 27.0/64.0, 39.0/64.0, 23.0/64.0,',
+						'    2.0/64.0, 50.0/64.0, 14.0/64.0, 62.0/64.0,  1.0/64.0, 49.0/64.0, 13.0/64.0, 61.0/64.0,',
+						'  34.0/64.0, 18.0/64.0, 46.0/64.0, 30.0/64.0, 33.0/64.0, 17.0/64.0, 45.0/64.0, 29.0/64.0,',
+						'  10.0/64.0, 58.0/64.0,  6.0/64.0, 54.0/64.0,  9.0/64.0, 57.0/64.0,  5.0/64.0, 53.0/64.0,',
+						'  42.0/64.0, 26.0/64.0, 38.0/64.0, 22.0/64.0, 41.0/64.0, 25.0/64.0, 37.0/64.0, 21.0/64.0',
+						');',
+						'void main(){',
+						'  vec2 normalizedPixelSize = pixelSize / resolution;',
+						'  vec2 uvPixel = normalizedPixelSize * floor(vUv / normalizedPixelSize);',
+						'  vec4 color = texture2D( tDiffuse, uvPixel );',
+						'  int x = int(uvPixel.x * resolution.x) % 8;',
+						'  int y = int(uvPixel.y * resolution.y) % 8;',
+						'  float threshold = bayerMatrix8x8[y * 8 + x] - 0.25;',
+						'  vec3 c = color.rgb + threshold;',
+						'  c.r = floor(c.r * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);',
+						'  c.g = floor(c.g * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);',
+						'  c.b = floor(c.b * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);',
+						'  gl_FragColor = vec4(c, color.a);',
+						'}'
+					].join('\n')
+				};
+
+				ditherPass = new THREE.ShaderPass( DitherShader );
+				ditherPass.renderToScreen = true;
+				composer.addPass( ditherPass );
+
+				window.addEventListener('gamepadconnected', (e)=>{
+					gamepad = e.gamepad;
+					console.log('Gamepad connected:', gamepad);
+				});
+				window.addEventListener('gamepaddisconnected', (e)=>{
+					gamepad = null;
+					console.log('Gamepad disconnected');
+				});
+
+				// Create cave environment
+				createCaveEnvironment();
+
+				// Removed FPS stats panel
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+
+				document.addEventListener( 'keydown', function( event ) {
+
+					// W Pressed: Toggle wireframe
+					if ( event.keyCode === 87 ) {
+
+						waterMesh.material.wireframe = ! waterMesh.material.wireframe;
+						waterMesh.material.needsUpdate = true;
+
+					}
+
+				} , false );
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+
+				var gui = new lil.GUI();
+				if (gui && typeof gui.hide === 'function') gui.hide();
+
+				var effectController = {
+					mouseSize: 20.0,
+					viscosity: 0.03
+				};
+
+				var valuesChanger = function() {
+
+					heightmapVariable.material.uniforms.mouseSize.value = effectController.mouseSize;
+					heightmapVariable.material.uniforms.viscosityConstant.value = effectController.viscosity;
+
+				};
+
+				gui.add( effectController, "mouseSize", 1.0, 100.0, 1.0 ).onChange( valuesChanger );
+				gui.add( effectController, "viscosity", 0.0, 0.1, 0.001 ).onChange( valuesChanger );
+				var buttonSmooth = {
+				    smoothWater: function() {
+					smoothWater();
+				    }
+				};
+				gui.add( buttonSmooth, 'smoothWater' );
+
+
+				initWater();
+
+				valuesChanger();
+
+				// Add scene management tools
+				setupSceneManagement(gui);
+				let orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+
+			}
+
+			var cameraQuat = new THREE.Quaternion();
+			var cameraPitch = 0;
+			var cameraYaw = 0;
+			var MAX_PITCH = Math.PI / 2;
+
+			function updateCameraWithGamepad() {
+				if (navigator.getGamepads && navigator.getGamepads()[0]) {
+					gamepad = navigator.getGamepads()[0];
+				}
+				
+				if (gamepad) {
+					const leftStickX = gamepad.axes[0];
+					const leftStickY = gamepad.axes[1];
+					const rightStickX = gamepad.axes[2];
+					const rightStickY = gamepad.axes[3];
+
+					cameraYaw -= rightStickX * 0.05;
+					cameraPitch -= rightStickY * 0.05;
+					cameraPitch = Math.max(-MAX_PITCH, Math.min(MAX_PITCH, cameraPitch));
+					
+					const euler = new THREE.Euler(cameraPitch, cameraYaw, 0, 'YXZ');
+					camera.quaternion.setFromEuler(euler);
+					
+					const moveSpeed = 3;
+					
+					const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+					const right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+					
+
+					forward.y = 0;
+					right.y = 0;
+
+					camera.position.addScaledVector(forward, -leftStickY * moveSpeed);
+					camera.position.addScaledVector(right, leftStickX * moveSpeed);
+				}
+			}
+
+			function createCaveEnvironment() {
+				// Fixed cave dimensions
+				var caveWidth =2500;
+				var caveDepth = 2500;
+				var caveHeight = 1500;
+				
+				// Load textures
+				var textureLoader = new THREE.TextureLoader();
+				
+				// Rock texture for walls
+				var rockTexture = textureLoader.load(
+					'assets/textures/stone/cavefloor1_Base_Color.png',
+					function(texture) {
+						// Success callback
+						rockTexture = texture;
+						rockTexture.wrapS = THREE.RepeatWrapping;
+						rockTexture.wrapT = THREE.RepeatWrapping;
+						rockTexture.repeat.set(5, 3);
+						wallMaterial.map = rockTexture;
+						wallMaterial.needsUpdate = true;
+					},
+					undefined,
+					function(err) {
+						// Error callback
+						console.error('An error happened while loading texture:', err);
+					}
+				);
+				
+				// Optional: Load normal map for more detail
+				var rockNormalMap = textureLoader.load('assets/textures/stone/cavefloor1_Normal.png');
+				rockNormalMap.wrapS = THREE.RepeatWrapping;
+				rockNormalMap.wrapT = THREE.RepeatWrapping;
+				rockNormalMap.repeat.set(5, 3);
+				
+				// Floor texture
+				var floorTexture = textureLoader.load('assets/textures/stone/cavefloor1_Base_Color.png');
+				floorTexture.wrapS = THREE.RepeatWrapping;
+				floorTexture.wrapT = THREE.RepeatWrapping;
+				floorTexture.repeat.set(8, 8);
+				
+				// Create materials with textures
+				var wallMaterial = new THREE.MeshPhysicalMaterial({ 
+					map: rockTexture,
+					normalMap: rockNormalMap,
+					side: THREE.DoubleSide,
+					roughness: 1.0,
+					metalness: 0.0,
+					color: new THREE.Color(0x777777),
+					bumpScale: 0.5
+				});
+				
+				var floorMaterial = new THREE.MeshPhysicalMaterial({ 
+					map: floorTexture,
+					side: THREE.DoubleSide,
+					roughness: 0.6,
+					emissive: new THREE.Color(0x404040),
+					emissiveIntensity: 0.6
+				});
+				wallMaterial.needsUpdate = true;
+				floorMaterial.needsUpdate = true;
+				
+				// Use the same material for ceiling but with different repeat
+				var ceilingTexture = rockTexture.clone();
+				ceilingTexture.repeat.set(6, 6);
+				var ceilingNormalMap = rockNormalMap ? rockNormalMap.clone() : null;
+				if (ceilingNormalMap) ceilingNormalMap.repeat.set(6, 6);
+				
+				var ceilingMaterial = new THREE.MeshPhysicalMaterial({ 
+					map: ceilingTexture,
+					normalMap: ceilingNormalMap,
+					side: THREE.DoubleSide,
+					roughness: 0.9,
+					metalness: 0.0,
+					color: new THREE.Color(0x666666)
+				});
+				
+				// Create flat floor
+				var floorGeometry = new THREE.PlaneBufferGeometry(caveWidth, caveDepth);
+				var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+				floor.rotation.x = -Math.PI / 2;
+				floor.position.y = -20;
+				scene.add(floor);
+				caveMeshes.push(floor);
+				
+				// Back wall
+				var backWallGeometry = new THREE.PlaneBufferGeometry(caveWidth, caveHeight);
+				var backWall = new THREE.Mesh(backWallGeometry, wallMaterial);
+				backWall.position.z = -caveDepth/2;
+				backWall.position.y = caveHeight/2 - 20;
+				scene.add(backWall);
+				caveMeshes.push(backWall);
+				
+				// Front wall
+				var frontWallGeometry = new THREE.PlaneBufferGeometry(caveWidth, caveHeight);
+				var frontWall = new THREE.Mesh(frontWallGeometry, wallMaterial);
+				frontWall.position.z = caveDepth/2;
+				frontWall.position.y = caveHeight/2 - 20;
+				frontWall.rotation.y = Math.PI;
+				scene.add(frontWall);
+				caveMeshes.push(frontWall);
+				
+				// Left wall
+				var leftWallGeometry = new THREE.PlaneBufferGeometry(caveDepth, caveHeight);
+				var leftWall = new THREE.Mesh(leftWallGeometry, wallMaterial);
+				leftWall.rotation.y = Math.PI / 2;
+				leftWall.position.x = -caveWidth/2;
+				leftWall.position.y = caveHeight/2 - 20;
+				scene.add(leftWall);
+				caveMeshes.push(leftWall);
+				
+				// Right wall
+				var rightWallGeometry = new THREE.PlaneBufferGeometry(caveDepth, caveHeight);
+				var rightWall = new THREE.Mesh(rightWallGeometry, wallMaterial);
+				rightWall.rotation.y = -Math.PI / 2;
+				rightWall.position.x = caveWidth/2;
+				rightWall.position.y = caveHeight/2 - 20;
+				scene.add(rightWall);
+				caveMeshes.push(rightWall);
+				
+				// Ceiling
+				var ceilingGeometry = new THREE.PlaneBufferGeometry(caveWidth, caveDepth);
+				var ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
+				ceiling.rotation.x = Math.PI / 2;
+				ceiling.position.y = caveHeight - 20;
+				scene.add(ceiling);
+				caveMeshes.push(ceiling);
+				
+				// Add some subtle colored lighting
+				var blueLight = new THREE.PointLight(0x4466cc, 0.5, 500);
+				blueLight.position.set(caveWidth/4, caveHeight/2, -caveDepth/4);
+				// scene.add(blueLight);
+				
+				var tealLight = new THREE.PointLight(0x44ccaa, 0.5, 500);
+				tealLight.position.set(-caveWidth/4, caveHeight/3, caveDepth/4);
+				// scene.add(tealLight);
+			}
+
+			function setupSceneManagement(gui) {
+				// Add a grid helper for positioning
+				// const gridHelper = new THREE.GridHelper(1000, 20);
+				// scene.add(gridHelper);
+				
+				// Add axis helper - fix for older Three.js versions
+				// const axisHelper =  new THREE.AxesHelper(50);
+				// scene.add(axisHelper);
+				
+				// Create the model manager
+				window.modelManager = {
+					models: {},
+					
+					// Load a model with proper scaling and positioning
+					loadModel: function(path, name, options = {}) {
+						const defaults = {
+							position: [0, 0, 0],
+							rotation: [0, 0, 0],
+							scale: 1,
+							onLoad: null,
+							mtlPath: null // Add option for MTL path
+						};
+						
+						const settings = {...defaults, ...options};
+						
+						// Choose loader based on file extension
+						const extension = path.split('.').pop().toLowerCase();
+						let loader;
+						
+						if (extension === 'gltf' || extension === 'glb') {
+							loader = new THREE.GLTFLoader();
+							// Load the model directly
+							this.loadWithLoader(loader, path, name, settings);
+						} else if (extension === 'obj') {
+							// For OBJ files, check if we have an MTL file
+							if (settings.mtlPath) {
+								// First load the materials
+								const mtlLoader = new THREE.MTLLoader();
+								mtlLoader.load(
+									settings.mtlPath,
+									(materials) => {
+										// Configure materials
+										materials.preload();
+										
+										// Create OBJ loader and set materials
+										const objLoader = new THREE.OBJLoader();
+										objLoader.setMaterials(materials);
+										
+										// Now load the model with materials
+										this.loadWithLoader(objLoader, path, name, settings);
+									},
+									(xhr) => {
+										console.log(`${name} MTL ${(xhr.loaded / xhr.total * 100).toFixed(0)}% loaded`);
+									},
+									(error) => {
+										console.error(`Error loading MTL for ${name}:`, error);
+										// If MTL fails, try loading OBJ without materials
+										const objLoader = new THREE.OBJLoader();
+										this.loadWithLoader(objLoader, path, name, settings);
+									}
+								);
+							} else {
+								// No MTL specified, load OBJ directly
+								loader = new THREE.OBJLoader();
+								this.loadWithLoader(loader, path, name, settings);
+							}
+						} else if (extension === 'fbx') {
+							loader = new THREE.FBXLoader();
+							this.loadWithLoader(loader, path, name, settings);
+						} else {
+							console.error('Unsupported file format:', extension);
+							return;
+						}
+					},
+					
+					// Helper method to load with a configured loader
+					loadWithLoader: function(loader, path, name, settings) {
+						loader.load(
+							path,
+							(object) => {
+								// Handle different model formats
+								let model;
+								if (object.scene) {
+									model = object.scene;
+								} else {
+									model = object;
+								}
+								
+								// Apply transformations
+								model.position.set(...settings.position);
+								model.rotation.set(...settings.rotation);
+								
+								if (typeof settings.scale === 'number') {
+									model.scale.set(settings.scale, settings.scale, settings.scale);
+								} else {
+									model.scale.set(...settings.scale);
+								}
+								
+								// Add to scene and store reference
+								scene.add(model);
+								this.models[name] = model;
+								
+								// Optional callback
+								if (settings.onLoad) settings.onLoad(model);
+							},
+							(xhr) => {
+								console.log(`${name} ${(xhr.loaded / xhr.total * 100).toFixed(0)}% loaded`);
+							},
+							(error) => {
+								console.error(`Error loading ${name}:`, error);
+							}
+						);
+					},
+					
+					// Remove a model from the scene
+					removeModel: function(name) {
+						if (this.models[name]) {
+							scene.remove(this.models[name]);
+							delete this.models[name];
+						}
+					}
+				};
+				
+				// Create scene editor
+				window.sceneEditor = {
+					selectedObject: null,
+					
+					// Select an object by name
+					select: function(name) {
+						this.selectedObject = modelManager.models[name];
+						console.log(`Selected: ${name}`);
+						return this.selectedObject;
+					},
+					
+					// Move selected object
+					move: function(x, y, z) {
+						if (!this.selectedObject) return;
+						this.selectedObject.position.set(x, y, z);
+					},
+					
+					// Rotate selected object (in radians)
+					rotate: function(x, y, z) {
+						if (!this.selectedObject) return;
+						this.selectedObject.rotation.set(x, y, z);
+					},
+					
+					// Scale selected object
+					scale: function(scale) {
+						if (!this.selectedObject) return;
+						if (typeof scale === 'number') {
+							this.selectedObject.scale.set(scale, scale, scale);
+						} else {
+							this.selectedObject.scale.set(...scale);
+						}
+					},
+					
+					// Get position of selected object
+					getPosition: function() {
+						if (!this.selectedObject) return null;
+						return this.selectedObject.position;
+					},
+					
+					// Toggle grid visibility
+					toggleGrid: function() {
+						gridHelper.visible = !gridHelper.visible;
+					},
+					
+					// Toggle axis helper visibility
+					toggleAxis: function() {
+						axisHelper.visible = !axisHelper.visible;
+					}
+				};
+				
+				// Group creation function
+				window.createGroup = function(name, position = [0, 0, 0]) {
+					const group = new THREE.Group();
+					group.position.set(...position);
+					scene.add(group);
+					modelManager.models[name] = group;
+					return group;
+				};
+				
+				// Create instanced meshes for repeated objects
+				window.createInstancedRocks = function(count, modelPath) {
+					// First load the model to get its geometry
+					new GLTFLoader().load(modelPath, (gltf) => {
+						// Extract the first mesh from the model
+						let originalMesh;
+						gltf.scene.traverse((child) => {
+							if (child.isMesh && !originalMesh) {
+								originalMesh = child;
+							}
+						});
+						
+						if (!originalMesh) return;
+						
+						// Create instanced mesh
+						const instancedMesh = new THREE.InstancedMesh(
+							originalMesh.geometry,
+							originalMesh.material,
+							count
+						);
+						
+						// Set positions and scales for each instance
+						const dummy = new THREE.Object3D();
+						for (let i = 0; i < count; i++) {
+							// Random position on the floor
+							dummy.position.set(
+								(Math.random() - 0.5) * 900,
+								-20,
+								(Math.random() - 0.5) * 900
+							);
+							
+							// Random scale
+							const scale = 0.5 + Math.random() * 0.5;
+							dummy.scale.set(scale, scale, scale);
+							
+							// Random rotation
+							dummy.rotation.y = Math.random() * Math.PI * 2;
+							
+							dummy.updateMatrix();
+							instancedMesh.setMatrixAt(i, dummy.matrix);
+						}
+						
+						scene.add(instancedMesh);
+					});
+				};
+				
+				// Create a stalactite cluster
+				window.createStalactiteCluster = function(centerX, centerZ) {
+					const group = new THREE.Group();
+					
+					// Add 3-5 stalactites in a cluster
+					const count = 3 + Math.floor(Math.random() * 3);
+					
+					for (let i = 0; i < count; i++) {
+						// Load the model directly into the group
+						new GLTFLoader().load('assets/models/stalactite.glb', (gltf) => {
+							const model = gltf.scene;
+							
+							// Random position within cluster
+							const offsetX = (Math.random() - 0.5) * 30;
+							const offsetZ = (Math.random() - 0.5) * 30;
+							model.position.set(offsetX, 0, offsetZ);
+							
+							// Random scale and rotation
+							const scale = 0.7 + Math.random() * 0.6;
+							model.scale.set(scale, scale, scale);
+							model.rotation.y = Math.random() * Math.PI * 2;
+							
+							group.add(model);
+						});
+					}
+					
+					// Position the entire group
+					group.position.set(centerX, caveHeight - 20, centerZ);
+					scene.add(group);
+					return group;
+				};
+				
+				// Save scene layout to JSON
+				window.saveSceneLayout = function() {
+					const layout = {
+						models: {}
+					};
+					
+					// Save each model's transform
+					Object.keys(modelManager.models).forEach(name => {
+						const model = modelManager.models[name];
+						layout.models[name] = {
+							position: [model.position.x, model.position.y, model.position.z],
+							rotation: [model.rotation.x, model.rotation.y, model.rotation.z],
+							scale: model.scale.x // Assuming uniform scale
+						};
+					});
+					
+					// Convert to JSON string
+					const jsonString = JSON.stringify(layout, null, 2);
+					
+					// In a real app, you'd save this to a file or localStorage
+					console.log(jsonString);
+					localStorage.setItem('caveSceneLayout', jsonString);
+					return jsonString;
+				};
+				
+				// Load scene from saved layout
+				window.loadSceneLayout = function(layoutJSON) {
+					const layout = typeof layoutJSON === 'string' ? 
+						JSON.parse(layoutJSON) : 
+						JSON.parse(localStorage.getItem('caveSceneLayout'));
+					
+					if (!layout) return false;
+					
+					// Apply saved transforms to models
+					Object.keys(layout.models).forEach(name => {
+						if (modelManager.models[name]) {
+							const model = modelManager.models[name];
+							const data = layout.models[name];
+							
+							model.position.set(...data.position);
+							model.rotation.set(...data.rotation);
+							
+							if (typeof data.scale === 'number') {
+								model.scale.set(data.scale, data.scale, data.scale);
+							} else {
+								model.scale.set(...data.scale);
+							}
+						}
+					});
+					
+					return true;
+				};
+				
+				// Add GUI controls for scene management
+				const sceneFolder = gui.addFolder('Scene Management');
+				sceneFolder.add(sceneEditor, 'toggleGrid').name('Toggle Grid');
+				sceneFolder.add(sceneEditor, 'toggleAxis').name('Toggle Axis');
+				sceneFolder.add(window, 'saveSceneLayout').name('Save Scene');
+				sceneFolder.add(window, 'loadSceneLayout').name('Load Scene');
+				
+
+                modelManager.loadModel('assets/models/Willow_Tree.glb', 'Willow_Tree', {
+                    position: [300, -20, -300],
+                    rotation: [0, 0, 0],
+                    scale: 20,
+                    onLoad: (model) => {
+                        console.log('Willow Tree loaded');
+                        
+                        // Create an array of magical glass colors
+                        const leafColors = [
+                            0xff5555, // Red
+                            0xff9955, // Orange
+                            0xffff55, // Yellow
+                            0x55ff55, // Green
+                            0x55ffff, // Cyan
+                            0x5555ff, // Blue
+                            0xff55ff, // Magenta
+                            0xaa55ff, // Purple
+                            0xff55aa, // Pink
+                            0x55ffaa  // Mint
+                        ];
+                        
+                        // Track leaf count for color distribution
+                        let leafCount = 0;
+                        
+                        // Apply materials to the model
+                        model.traverse((child) => {
+                            if (child.isMesh) {
+                                // For trunk and branches - brown glass material
+                                if (child.name.includes('trunk') || child.name.includes('branch')) {
+                                    // Create a wood-like glass material
+                                    if (THREE.MeshPhysicalMaterial) {
+                                        child.material = new THREE.MeshPhysicalMaterial({
+                                            color: 0x8B4513,      // Brown color
+                                            metalness: 0.1,
+                                            roughness: 0.3,       // Slightly rougher for wood texture
+                                            transmission: 0.4,    // Semi-transparent
+                                            transparent: true,
+                                            opacity: 0.9,
+                                            clearcoat: 0.8,
+                                            clearcoatRoughness: 0.2,
+                                            side: THREE.DoubleSide
+                                        });
+                                    } else {
+                                        child.material = new THREE.MeshStandardMaterial({
+                                            color: 0x8B4513,
+                                            metalness: 0.1,
+                                            roughness: 0.3,
+                                            transparent: true,
+                                            opacity: 0.9,
+                                            side: THREE.DoubleSide
+                                        });
+                                    }
+                                } 
+                                // For leaves - colorful glass materials
+                                else {
+                                    // Select a color from the array
+                                    const colorIndex = leafCount % leafColors.length;
+                                    const leafColor = leafColors[colorIndex];
+                                    leafCount++;
+                                    
+                                    // Create a glass-like material with the selected color
+                                    if (THREE.MeshPhysicalMaterial) {
+                                        child.material = new THREE.MeshPhysicalMaterial({
+                                            color: leafColor,
+                                            metalness: 0.1,
+                                            roughness: 0.1,
+                                            transmission: 0.7,
+                                            transparent: true,
+                                            opacity: 0.8,
+                                            clearcoat: 1.0,
+                                            clearcoatRoughness: 0.1,
+                                            side: THREE.DoubleSide,
+                                            emissive: leafColor,
+                                            emissiveIntensity: 0.2 // Slight glow effect
+                                        });
+                                    } else {
+                                        child.material = new THREE.MeshStandardMaterial({
+                                            color: leafColor,
+                                            metalness: 0.1,
+                                            roughness: 0.1,
+                                            transparent: true,
+                                            opacity: 0.8,
+                                            side: THREE.DoubleSide,
+                                            emissive: leafColor,
+                                            emissiveIntensity: 0.2
+                                        });
+                                    }
+                                }
+                                
+                                // Enable shadows
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                            }
+                        });
+                        
+                        // Add a point light inside the tree for magical glow
+                        const treeLight = new THREE.PointLight(0xffffff, 1.5, 100);
+                        treeLight.position.set(0, 80, 0); // Position inside the tree
+                        // model.add(treeLight);
+                        
+                        console.log('Magical glass willow tree created');
+                    }
+                });
+
+				modelManager.loadModel('assets/models/RockWalkway03.fbx', 'RockWalkway03', {
+					position: [0, -10, 250],
+					rotation: [0, Math.PI, 0],
+					scale: 0.04,
+					onLoad: (model) => {
+						console.log('RockWalkway03 loaded', model);
+						
+						// Debug: Add bounding box to visualize model size and position
+						const box = new THREE.Box3().setFromObject(model);
+						// const helper = new THREE.Box3Helper(box, 0xff0000);
+						// scene.add(helper);
+						
+						// Log model dimensions
+						const size = new THREE.Vector3();
+						box.getSize(size);
+						console.log('Model dimensions:', size);
+						
+						// Fix inverted normals and apply materials
+						model.traverse((child) => {
+							if (child.isMesh) {
+								console.log('Mesh found:', child.name);
+								
+								
+								// Apply a rock-like material
+								child.material = new THREE.MeshStandardMaterial({
+									color: 0x888888,
+									roughness: 0.9,
+									metalness: 0.1,
+									side: THREE.DoubleSide // Render both sides of faces as a fallback
+								});
+								
+								// Try to load and apply textures
+								const textureLoader = new THREE.TextureLoader();
+								textureLoader.load('assets/textures/stone/cavefloor1_Base_Color.png', 
+									texture => {
+										texture.wrapS = THREE.RepeatWrapping;
+										texture.wrapT = THREE.RepeatWrapping;
+										texture.repeat.set(1, 1);
+										child.material.map = texture;
+										child.material.needsUpdate = true;
+									}
+								);
+								
+								textureLoader.load('assets/textures/stone/cavefloor1_Normal.png',
+									texture => {
+										texture.wrapS = THREE.RepeatWrapping;
+										texture.wrapT = THREE.RepeatWrapping;
+										texture.repeat.set(1, 1);
+										child.material.normalMap = texture;
+										child.material.needsUpdate = true;
+									}
+								);
+								
+								// Enable shadows
+								// child.castShadow = true;
+								// child.receiveShadow = true;
+							}
+						});
+					}
+				});
+				modelManager.loadModel('assets/models/RockWalkway03.fbx', 'RockWalkway03', {
+					position: [0, -10, -250],
+					rotation: [0, 0, 0],
+					scale: 0.04,
+					onLoad: (model) => {
+						console.log('RockWalkway03 loaded', model);
+						
+						// Debug: Add bounding box to visualize model size and position
+						const box = new THREE.Box3().setFromObject(model);
+						// const helper = new THREE.Box3Helper(box, 0xff0000);
+						// scene.add(helper);
+						
+						// Log model dimensions
+						const size = new THREE.Vector3();
+						box.getSize(size);
+						console.log('Model dimensions:', size);
+						
+						// Fix inverted normals and apply materials
+						model.traverse((child) => {
+							if (child.isMesh) {
+								console.log('Mesh found:', child.name);
+								
+								
+								// Apply a rock-like material
+								child.material = new THREE.MeshStandardMaterial({
+									color: 0x888888,
+									roughness: 0.9,
+									metalness: 0.1,
+									side: THREE.DoubleSide // Render both sides of faces as a fallback
+								});
+								
+								// Try to load and apply textures
+								const textureLoader = new THREE.TextureLoader();
+								textureLoader.load('assets/textures/stone/cavefloor1_Base_Color.png', 
+									texture => {
+										texture.wrapS = THREE.RepeatWrapping;
+										texture.wrapT = THREE.RepeatWrapping;
+										texture.repeat.set(1, 1);
+										child.material.map = texture;
+										child.material.needsUpdate = true;
+									}
+								);
+								
+								textureLoader.load('assets/textures/stone/cavefloor1_Normal.png',
+									texture => {
+										texture.wrapS = THREE.RepeatWrapping;
+										texture.wrapT = THREE.RepeatWrapping;
+										texture.repeat.set(1, 1);
+										child.material.normalMap = texture;
+										child.material.needsUpdate = true;
+									}
+								);
+								
+								// Enable shadows
+								// child.castShadow = true;
+								// child.receiveShadow = true;
+							}
+						});
+					}
+				});
+
+				modelManager.loadModel('assets/models/CaveWalls3.fbx', 'CaveWalls3', {
+					position: [250, -40, 0],
+					rotation: [0, -Math.PI/2, 0],
+					scale: 0.04,
+					onLoad: (model) => {
+						console.log('CaveWalls3 loaded', model);
+						model.traverse((child) => {
+							if (child.isMesh) {
+								child.material = new THREE.MeshPhysicalMaterial({
+									color: 0x888888,
+									roughness: 0.9,
+									metalness: 0.1,
+									side: THREE.DoubleSide // Render both sides of faces as a fallback
+								});
+								
+								// Try to load and apply textures
+								const textureLoader = new THREE.TextureLoader();
+								textureLoader.load('assets/textures/stone/cavefloor1_Base_Color.png', 
+									texture => {
+										texture.wrapS = THREE.RepeatWrapping;
+										texture.wrapT = THREE.RepeatWrapping;
+										texture.repeat.set(1, 1);
+										child.material.map = texture;
+										child.material.needsUpdate = true;
+									}
+								);
+								
+								textureLoader.load('assets/textures/stone/cavefloor1_Normal.png',
+									texture => {
+										texture.wrapS = THREE.RepeatWrapping;
+										texture.wrapT = THREE.RepeatWrapping;
+										texture.repeat.set(1, 1);
+										child.material.normalMap = texture;
+										child.material.needsUpdate = true;
+									}
+								);
+							}
+						});
+					}
+				});
+				modelManager.loadModel('assets/models/CaveWalls3.fbx', 'CaveWalls3', {
+					position: [-250, -40, 0],
+					rotation: [0, Math.PI/2, 0],
+					scale: 0.04,
+					onLoad: (model) => {
+						console.log('CaveWalls3 loaded', model);
+						model.traverse((child) => {
+							if (child.isMesh) {
+								child.material = new THREE.MeshPhysicalMaterial({
+									color: 0x888888,
+									roughness: 0.9,
+									metalness: 0.1,
+									side: THREE.DoubleSide // Render both sides of faces as a fallback
+								});
+								
+								// Try to load and apply textures
+								const textureLoader = new THREE.TextureLoader();
+								textureLoader.load('assets/textures/stone/cavefloor1_Base_Color.png', 
+									texture => {
+										texture.wrapS = THREE.RepeatWrapping;
+										texture.wrapT = THREE.RepeatWrapping;
+										texture.repeat.set(1, 1);
+										child.material.map = texture;
+										child.material.needsUpdate = true;
+									}
+								);
+								
+								textureLoader.load('assets/textures/stone/cavefloor1_Normal.png',
+									texture => {
+										texture.wrapS = THREE.RepeatWrapping;
+										texture.wrapT = THREE.RepeatWrapping;
+										texture.repeat.set(1, 1);
+										child.material.normalMap = texture;
+										child.material.needsUpdate = true;
+									}
+								);
+							}
+						});
+					}
+				});
+
+				// (Removed central hand in the pool)
+				// Restore original hand placement
+				modelManager.loadModel('assets/models/hand.obj', 'hand_original', {
+					position: [100, 50, 0],
+					rotation: [-Math.PI, 0, 0],
+					scale: 10,
+					onLoad: function(model){
+						model.traverse(function(child){
+							if (child.isMesh){
+								if (THREE.MeshPhysicalMaterial) {
+									child.material = new THREE.MeshPhysicalMaterial({
+										color: 0x88ccff,
+										metalness: 0.2,
+										roughness: 0.1,
+										transmission: 0.5,
+										transparent: true,
+										opacity: 0.9,
+										clearcoat: 1.0,
+										clearcoatRoughness: 0.1,
+										reflectivity: 1.0,
+										side: THREE.DoubleSide
+									});
+								} else {
+									child.material = new THREE.MeshStandardMaterial({
+										color: 0x88ccff,
+										metalness: 0.2,
+										roughness: 0.1,
+										transparent: true,
+										opacity: 0.9,
+										side: THREE.DoubleSide
+									});
+								}
+								child.castShadow = true;
+								child.receiveShadow = true;
+							}
+						});
+					}
+				});
+
+				// Additional hands around the room, partially embedded in the floor
+				(function addMoreHands(){
+					var positions = [
+						[-900, 45, -900],
+						[900, 45, -900],
+						[900, 45, 900],
+						[-900, 45, 900],
+						[0, 45, 1000],
+						[1000, 45, 0],
+						[-1000, 45, 0],
+						[0, 45, -1000]
+					];
+					for (var i = 0; i < positions.length; i++){
+						(function(idx){
+							var p = positions[idx];
+							var ry = (Math.random() - 0.5) * 0.6; // slight yaw variation
+							var sc = 8 + Math.random() * 4;
+							modelManager.loadModel('assets/models/hand.obj', 'hand_'+idx, {
+								position: [p[0], p[1], p[2]],
+								rotation: [-Math.PI, ry, 0],
+								scale: sc,
+								onLoad: function(model){
+									model.traverse(function(child){
+										if (child.isMesh){
+											if (THREE.MeshPhysicalMaterial) {
+												child.material = new THREE.MeshPhysicalMaterial({
+													color: 0x88ccff,
+													metalness: 0.2,
+													roughness: 0.1,
+													transmission: 0.5,
+													transparent: true,
+													opacity: 0.9,
+													clearcoat: 1.0,
+													clearcoatRoughness: 0.1,
+													reflectivity: 1.0,
+													side: THREE.DoubleSide
+												});
+											} else {
+												child.material = new THREE.MeshStandardMaterial({
+													color: 0x88ccff,
+													metalness: 0.2,
+													roughness: 0.1,
+													transparent: true,
+													opacity: 0.9,
+													side: THREE.DoubleSide
+												});
+											}
+											child.castShadow = true;
+											child.receiveShadow = true;
+										}
+									});
+								}
+							});
+						})(i);
+					}
+				})();
+
+				// Crystal clusters (HandfulOfCrystals) placed around the room
+				(function addCrystalClusters(){
+						var crystalPositions = [
+							[180, -10, 180],
+							[-520, -10, 160],
+							[1020, -10, -160],
+							[-960, -10, -800]
+						];
+					var textureLoader = new THREE.TextureLoader();
+					var diffuseTex = textureLoader.load('assets/models/HandfulOfCrystals_OBJ/Crystal_Diffuse.png');
+					var reflectionTex = textureLoader.load('assets/models/HandfulOfCrystals_OBJ/Crystal_Reflection.png');
+					for (var i=0;i<crystalPositions.length;i++){
+						(function(idx){
+							var p = crystalPositions[idx];
+							var rotY = Math.random()*Math.PI*2;
+							var sc = 24 + Math.random()*8;
+							modelManager.loadModel('assets/models/HandfulOfCrystals_OBJ/HandfulOfCrystals.obj', 'crystals_'+idx, {
+								position: [p[0], p[1], p[2]],
+								rotation: [0, rotY, 0],
+								scale: sc,
+								onLoad: function(model){
+									console.log('Crystals loaded', idx, model);
+									model.traverse(function(child){
+										if (child.isMesh){
+											if (THREE.MeshPhysicalMaterial){
+												child.material = new THREE.MeshPhysicalMaterial({
+													map: diffuseTex,
+													metalness: 0.2,
+													roughness: 0.1,
+													transmission: 0.6,
+													transparent: true,
+													opacity: 0.95,
+													clearcoat: 1.0,
+													clearcoatRoughness: 0.15,
+													emissive: new THREE.Color(0x66ccff),
+													emissiveIntensity: 0.25,
+													side: THREE.DoubleSide
+												});
+											} else {
+												child.material = new THREE.MeshStandardMaterial({
+													map: diffuseTex,
+													metalness: 0.2,
+													roughness: 0.1,
+													transparent: true,
+													opacity: 0.95,
+													emissive: new THREE.Color(0x66ccff),
+													emissiveIntensity: 0.25,
+													side: THREE.DoubleSide
+												});
+											}
+											child.castShadow = true;
+											child.receiveShadow = true;
+										}
+									});
+									// Add a subtle point light to make crystals pop
+									var glow = new THREE.PointLight(0x66ccff, 0.7, 200);
+									glow.position.set(p[0], p[1] + 10, p[2]);
+									scene.add(glow);
+								}
+							});
+						})(i);
+					}
+				})();
+			}
+
+			function initWater() {
+
+				var materialColor = 0xFF00AA;
+
+				var geometry = new THREE.PlaneBufferGeometry( BOUNDS, BOUNDS, WIDTH - 1, WIDTH -1 );
+
+				// material: make a ShaderMaterial clone of MeshPhongMaterial, with customized vertex shader
+				var material = new THREE.ShaderMaterial( {
+					uniforms: THREE.UniformsUtils.merge( [
+						THREE.ShaderLib[ 'phong' ].uniforms,
+						{
+							heightmap: { value: null }
+						}
+					] ),
+					vertexShader: document.getElementById( 'waterVertexShader' ).textContent,
+					fragmentShader: THREE.ShaderChunk[ 'meshphong_frag' ]
+
+				} );
+
+				material.lights = true;
+
+				// Material attributes from MeshPhongMaterial
+				material.color = new THREE.Color( materialColor );
+				material.specular = new THREE.Color( 0x111111 );
+				material.shininess = 50;
+
+				// Sets the uniforms with the material values
+				material.uniforms.diffuse.value = material.color;
+				material.uniforms.specular.value = material.specular;
+				material.uniforms.shininess.value = Math.max( material.shininess, 1e-4 );
+				material.uniforms.opacity.value = material.opacity;
+
+				// Defines
+				material.defines.WIDTH = WIDTH.toFixed( 1 );
+				material.defines.BOUNDS = BOUNDS.toFixed( 1 );
+
+				waterUniforms = material.uniforms;
+
+				waterMesh = new THREE.Mesh( geometry, material );
+				waterMesh.rotation.x = - Math.PI / 2;
+				waterMesh.matrixAutoUpdate = false;
+				waterMesh.updateMatrix();
+
+				scene.add( waterMesh );
+
+				// Mesh just for mouse raycasting
+				var geometryRay = new THREE.PlaneBufferGeometry( BOUNDS, BOUNDS, 1, 1 );
+				meshRay = new THREE.Mesh( geometryRay, new THREE.MeshBasicMaterial( { color: 0xFFFFFF, visible: false } ) );
+				meshRay.rotation.x = - Math.PI / 2;
+				meshRay.matrixAutoUpdate = false;
+				meshRay.updateMatrix();
+				scene.add( meshRay );
+
+
+				// Creates the gpu computation class and sets it up
+
+				gpuCompute = new THREE.GPUComputationRenderer( WIDTH, WIDTH, renderer );
+
+				var heightmap0 = gpuCompute.createTexture();
+
+				fillTexture( heightmap0 );
+
+				heightmapVariable = gpuCompute.addVariable( "heightmap", document.getElementById( 'heightmapFragmentShader' ).textContent, heightmap0 );
+
+				gpuCompute.setVariableDependencies( heightmapVariable, [ heightmapVariable ] );
+
+				heightmapVariable.material.uniforms.mousePos = { value: new THREE.Vector2( 10000, 10000 ) };
+				heightmapVariable.material.uniforms.mouseSize = { value: 20.0 };
+				heightmapVariable.material.uniforms.viscosityConstant = { value: 0.03 };
+				heightmapVariable.material.defines.BOUNDS = BOUNDS.toFixed( 1 );
+
+				var error = gpuCompute.init();
+				if ( error !== null ) {
+				    console.error( error );
+				}
+
+				// Create compute shader to smooth the water surface and velocity
+				smoothShader = gpuCompute.createShaderMaterial( document.getElementById( 'smoothFragmentShader' ).textContent, { texture: { value: null } } );
+
+				// Initialize keyboard interaction system
+				initKeyboardInteraction();
+
+			}
+
+			function fillTexture( texture ) {
+
+				var waterMaxHeight = 10;
+
+				function noise( x, y, z ) {
+					var multR = waterMaxHeight;
+					var mult = 0.025;
+					var r = 0;
+					for ( var i = 0; i < 15; i++ ) {
+						r += multR * simplex.noise3d( x * mult, y * mult, z * mult );
+						multR *= 0.53 + 0.025 * i;
+						mult *= 1.25;
+					}
+					return r;
+				}
+
+				var pixels = texture.image.data;
+
+				var p = 0;
+				for ( var j = 0; j < WIDTH; j++ ) {
+					for ( var i = 0; i < WIDTH; i++ ) {
+
+						var x = i * 128 / WIDTH;
+						var y = j * 128 / WIDTH;
+
+					        pixels[ p + 0 ] = noise( x, y, 123.4 );
+						pixels[ p + 1 ] = 0;
+						pixels[ p + 2 ] = 0;
+						pixels[ p + 3 ] = 1;
+
+						p += 4;
+					}
+				}
+
+			}
+
+			function smoothWater() {
+
+				var currentRenderTarget = gpuCompute.getCurrentRenderTarget( heightmapVariable );
+				var alternateRenderTarget = gpuCompute.getAlternateRenderTarget( heightmapVariable );
+
+				for ( var i = 0; i < 10; i++ ) {
+
+					smoothShader.uniforms.texture.value = currentRenderTarget.texture;
+					gpuCompute.doRenderTarget( smoothShader, alternateRenderTarget );
+
+					smoothShader.uniforms.texture.value = alternateRenderTarget.texture;
+					gpuCompute.doRenderTarget( smoothShader, currentRenderTarget );
+
+				}
+				
+			}
+
+			// Add keyboard interaction system
+			function initKeyboardInteraction() {
+				// Create a mapping of keys to positions on the water
+				window.keyPositions = {};
+				
+				// Map keyboard keys to positions on the water surface
+				// Using a grid layout for the keys
+				const keyRows = [
+					['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+					['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+					['z', 'x', 'c', 'v', 'b', 'n', 'm']
+				];
+				
+				// Calculate positions for each key
+				const gridWidth = BOUNDS * 0.8;
+				const gridHeight = BOUNDS * 0.6;
+				const startX = -gridWidth / 2;
+				const startZ = -gridHeight / 2;
+				
+				keyRows.forEach((row, rowIndex) => {
+					const rowWidth = gridWidth * (row.length / keyRows[0].length);
+					const rowStartX = startX + (gridWidth - rowWidth) / 2;
+					
+					row.forEach((key, keyIndex) => {
+						const x = rowStartX + (keyIndex * rowWidth / row.length) + (rowWidth / row.length / 2);
+						const z = startZ + (rowIndex * gridHeight / keyRows.length) + (gridHeight / keyRows.length / 2);
+						
+						keyPositions[key] = { x, z };
+					});
+				});
+				
+				// Create array to store active balls
+				window.activeBalls = [];
+				
+				// Add keyboard event listeners
+				document.addEventListener('keydown', onKeyDown);
+			}
+
+			function onKeyDown(event) {
+				// More aggressive throttling
+				if (window.lastKeyTime && Date.now() - window.lastKeyTime < 50) {
+					return; // Skip if keys are pressed very rapidly
+				}
+				window.lastKeyTime = Date.now();
+				
+				const key = event.key.toLowerCase();
+				
+				// Check if we have a position for this key
+				if (keyPositions[key]) {
+					const position = keyPositions[key];
+					
+					// Create and launch a ball
+					launchBall(position.x, position.z);
+					
+					// Trigger water ripple at this position
+					triggerWaterRipple(position.x, position.z);
+				}
+			}
+
+			function launchBall(x, z) {
+				// Throttle ball creation if we're already at capacity
+				if (activeBalls.length > 100) {
+					// Instead of creating a new ball, just trigger a water ripple
+					triggerWaterRipple(x, z);
+					return;
+				}
+				
+				// Use a shared geometry for all balls to reduce memory usage
+				if (!window.sharedBallGeometry) {
+					window.sharedBallGeometry = new THREE.SphereGeometry(5, 6, 6); // Even fewer segments
+				}
+				
+				// Random vibrant color - pre-calculate for performance
+				const colorIndex = Math.floor(Math.random() * 10);
+				const colors = [
+					0xff5555, // Red
+					0xff9955, // Orange
+					0xffff55, // Yellow
+					0x55ff55, // Green
+					0x55ffff, // Cyan
+					0x5555ff, // Blue
+					0xff55ff, // Magenta
+					0xaa55ff, // Purple
+					0xff55aa, // Pink
+					0x55ffaa  // Mint
+				];
+				const color = colors[colorIndex];
+				
+				// Use a basic material with no special effects
+				const material = new THREE.MeshStandardMaterial({
+					color: color,
+					metalness: 0.1,
+					roughness: 0.2
+
+					// emissive: color,
+					// emissiveIntensity: 0.2
+				});
+				
+				// Create the ball
+				const ball = new THREE.Mesh(window.sharedBallGeometry, material);
+				const scale = 2 + Math.random() * 1; // Less variation in size
+				ball.scale.set(scale, scale, scale);
+				ball.position.set(x, 0, z);
+				
+				// Simplified physics properties
+				ball.velocity = {
+					x: (Math.random() - 0.5) * 2, // Reduced horizontal movement
+					y: 4 + Math.random() * 10,       // Reduced vertical movement
+					z: (Math.random() - 0.5) * 2  // Reduced horizontal movement
+				};
+				
+				// No rotation for better performance
+				
+				// Add to scene
+				scene.add(ball);
+				
+				// Add to active balls array with shorter lifetime
+				activeBalls.push({
+					mesh: ball,
+					velocity: ball.velocity,
+					lifetime: 0,
+					maxLifetime: 100 + Math.random() * 20 // Much shorter lifetime
+				});
+			}
+
+			function triggerWaterRipple(x, z) {
+				// Convert world position to heightmap UV coordinates
+				const u = (x + BOUNDS_HALF) / BOUNDS;
+				const v = (z + BOUNDS_HALF) / BOUNDS;
+				
+				// Set mouse position for water ripple effect
+				heightmapVariable.material.uniforms.mousePos.value.set(x, z);
+				
+				// Reset after a short delay
+				setTimeout(() => {
+					if (!mouseMoved) {
+						heightmapVariable.material.uniforms.mousePos.value.set(10000, 10000);
+					}
+				}, 100);
+			}
+
+			function updateBalls() {
+				const gravity = 0.2;
+				const drag = 0.98;
+				
+				// Update each ball - process in batches for better performance
+				const batchSize = Math.min(activeBalls.length, 10);
+				const startIndex = Math.max(0, activeBalls.length - batchSize);
+				
+				for (let i = activeBalls.length - 1; i >= 0; i--) {
+					const ball = activeBalls[i];
+					const mesh = ball.mesh;
+					
+					// Only process the most recent balls in detail, simple updates for older ones
+					const isRecent = i >= startIndex;
+					
+					// Update position based on velocity
+					mesh.position.x += ball.velocity.x;
+					mesh.position.y += ball.velocity.y;
+					mesh.position.z += ball.velocity.z;
+					
+					// Apply gravity
+					ball.velocity.y -= gravity;
+					
+					// Apply drag - only for recent balls
+					if (isRecent) {
+						ball.velocity.x *= drag;
+						ball.velocity.y *= drag;
+						ball.velocity.z *= drag;
+					}
+					
+					// Bounce off water surface - simplified for performance
+					if (mesh.position.y < 0 && ball.velocity.y < 0) {
+						ball.velocity.y = -ball.velocity.y * 0.5; // Less bouncy
+						
+						// Only trigger ripples for the most recent balls and only on first bounce
+						if (isRecent && ball.lifetime < 10 && ball.velocity.y > 1.5) {
+							triggerWaterRipple(mesh.position.x, mesh.position.z);
+						}
+					}
+					
+					// Increment lifetime
+					ball.lifetime++;
+					
+					// Remove if lifetime exceeded or fell too far
+					if (ball.lifetime > ball.maxLifetime || mesh.position.y < -50) {
+						scene.remove(mesh);
+						activeBalls.splice(i, 1);
+					}
+				}
+			}
+
+			function onWindowResize() {
+
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				if (composer) {
+					composer.setSize( window.innerWidth, window.innerHeight );
+					if (ditherPass && ditherPass.uniforms && ditherPass.uniforms.resolution) {
+						ditherPass.uniforms.resolution.value.set( window.innerWidth, window.innerHeight );
+					}
+				}
+
+			}
+
+			function setMouseCoords( x, y ) {
+
+				mouseCoords.set( ( x / renderer.domElement.clientWidth ) * 2 - 1, - ( y / renderer.domElement.clientHeight ) * 2 + 1 );
+				mouseMoved = true;
+				// Track for camera sway as well
+				mouseOffset.copy(mouseCoords);
+
+			}
+
+			function onDocumentMouseMove( event ) {
+
+				setMouseCoords( event.clientX, event.clientY );
+
+			}
+
+			function onDocumentTouchStart( event ) {
+
+				if ( event.touches.length === 1 ) {
+
+					event.preventDefault();
+
+					setMouseCoords( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY );
+
+
+				}
+
+			}
+
+			function onDocumentTouchMove( event ) {
+
+				if ( event.touches.length === 1 ) {
+
+					event.preventDefault();
+
+					setMouseCoords( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY );
+
+
+				}
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				updateCameraWithGamepad();
+				render();
+				// stats.update();
+
+			}
+
+			function render() {
+
+				// Delta time for smooth orbit
+				var now = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+				var deltaSeconds = Math.max(0.001, (now - lastTime) / 1000);
+				lastTime = now;
+
+				// Set uniforms: mouse interaction
+				var uniforms = heightmapVariable.material.uniforms;
+				if (mouseMoved) {
+					// Remove 'this' reference
+					raycaster.setFromCamera(mouseCoords, camera);
+					
+					// Remove 'this' reference
+					var intersects = raycaster.intersectObject(meshRay);
+					
+					if (intersects.length > 0) {
+						var point = intersects[0].point;
+						uniforms.mousePos.value.set(point.x, point.z);
+					}
+					else {
+						uniforms.mousePos.value.set(10000, 10000);
+					}
+					
+					mouseMoved = false;
+				}
+				else {
+					// Don't reset mouse position here, as we might be using it for keyboard interaction
+				}
+				
+				// Auto-spawn random balls over water
+				if (autoSpawnBalls) {
+					var nowTs = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+					if (nowTs >= nextSpawnAt) {
+						// Limit population
+						if (!window.activeBalls || window.activeBalls.length < 60) {
+							var rx = (Math.random() * 2 - 1) * (BOUNDS * 0.45);
+							var rz = (Math.random() * 2 - 1) * (BOUNDS * 0.45);
+							launchBall(rx, rz);
+							triggerWaterRipple(rx, rz);
+						}
+						// Jitter next interval for natural rhythm
+						nextSpawnAt = nowTs + spawnIntervalMs + Math.random() * 500;
+					}
+				}
+
+				// Update balls with physics
+				updateBalls();
+
+				// Smooth mouse offset for orbit influence
+				mouseOffsetSmoothed.lerp(mouseOffset, 0.05);
+				
+				// Do the gpu computation
+				gpuCompute.compute();
+				
+				// Get compute output in custom uniform
+				waterUniforms.heightmap.value = gpuCompute.getCurrentRenderTarget(heightmapVariable).texture;
+				
+				// Orbit around center, driven by mouse with optional slow auto drift
+				if (autoOrbitEnabled) autoOrbitAngle += autoOrbitSpeed * deltaSeconds;
+				var angleWithMouse = autoOrbitAngle + mouseOffsetSmoothed.x * mouseOrbitAngleAmplitude;
+				var heightWithMouse = orbitHeight + mouseOffsetSmoothed.y * mouseOrbitHeightAmplitude;
+				camera.position.x = orbitCenter.x + Math.sin(angleWithMouse) * orbitRadius;
+				camera.position.z = orbitCenter.z + Math.cos(angleWithMouse) * orbitRadius;
+				camera.position.y = heightWithMouse;
+				camera.lookAt(orbitCenter);
+
+				// Render (with postprocessing)
+				composer.render();
+			}
+
+		</script>
+	</body>
+</html>

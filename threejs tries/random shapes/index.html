@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Test Scene</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+        }
+        
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="container">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    
+    <script>
+        // Dithering shader
+        const DitheringShader = {
+            uniforms: {
+                'tDiffuse': { value: null },
+                'resolution': { value: new THREE.Vector2() },
+                'colorNum': { value: 12.0 },
+                'pixelSize': { value: 2.0 }
+            },
+
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+                }
+            `,
+
+            fragmentShader: `
+                uniform sampler2D tDiffuse;
+                uniform vec2 resolution;
+                uniform float colorNum;
+                uniform float pixelSize;
+                varying vec2 vUv;
+
+                const float bayerMatrix8x8[64] = float[64](
+                    0.0/ 64.0, 48.0/ 64.0, 12.0/ 64.0, 60.0/ 64.0,  3.0/ 64.0, 51.0/ 64.0, 15.0/ 64.0, 63.0/ 64.0,
+                    32.0/ 64.0, 16.0/ 64.0, 44.0/ 64.0, 28.0/ 64.0, 35.0/ 64.0, 19.0/ 64.0, 47.0/ 64.0, 31.0/ 64.0,
+                    8.0/ 64.0, 56.0/ 64.0,  4.0/ 64.0, 52.0/ 64.0, 11.0/ 64.0, 59.0/ 64.0,  7.0/ 64.0, 55.0/ 64.0,
+                    40.0/ 64.0, 24.0/ 64.0, 36.0/ 64.0, 20.0/ 64.0, 43.0/ 64.0, 27.0/ 64.0, 39.0/ 64.0, 23.0/ 64.0,
+                    2.0/ 64.0, 50.0/ 64.0, 14.0/ 64.0, 62.0/ 64.0,  1.0/ 64.0, 49.0/ 64.0, 13.0/ 64.0, 61.0/ 64.0,
+                    34.0/ 64.0, 18.0/ 64.0, 46.0/ 64.0, 30.0/ 64.0, 33.0/ 64.0, 17.0/ 64.0, 45.0/ 64.0, 29.0/ 64.0,
+                    10.0/ 64.0, 58.0/ 64.0,  6.0/ 64.0, 54.0/ 64.0,  9.0/ 64.0, 57.0/ 64.0,  5.0/ 64.0, 53.0/ 64.0,
+                    42.0/ 64.0, 26.0/ 64.0, 38.0/ 64.0, 22.0/ 64.0, 41.0/ 64.0, 25.0/ 64.0, 37.0/ 64.0, 21.0 / 64.0
+                );
+
+                vec3 dither(vec2 uv, vec3 color) {
+                    int x = int(uv.x * resolution.x) % 8;
+                    int y = int(uv.y * resolution.y) % 8;
+                    float threshold = bayerMatrix8x8[y * 8 + x] - 0.25;
+
+                    color.rgb += threshold;
+                    color.r = floor(color.r * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);
+                    color.g = floor(color.g * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);
+                    color.b = floor(color.b * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);
+
+                    return color;
+                }
+
+                void main() {
+                    vec2 normalizedPixelSize = pixelSize / resolution;  
+                    vec2 uvPixel = normalizedPixelSize * floor(vUv / normalizedPixelSize);
+
+                    vec4 color = texture2D(tDiffuse, uvPixel);
+                    color.rgb = dither(uvPixel, color.rgb);
+
+                    gl_FragColor = color;
+                }
+            `
+        };
+
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0xffffff); // White background
+        
+        document.getElementById('container').appendChild(renderer.domElement);
+        
+        // Camera position
+        camera.position.set(5, 5, 5);
+        camera.lookAt(0, 0, 0);
+        
+        // Controls
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        
+        // Post-processing setup
+        const composer = new THREE.EffectComposer(renderer);
+        const renderPass = new THREE.RenderPass(scene, camera);
+        composer.addPass(renderPass);
+        
+        // Add dithering pass
+        const ditheringPass = new THREE.ShaderPass(DitheringShader);
+        ditheringPass.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+        ditheringPass.uniforms.colorNum.value = 12.0;
+        ditheringPass.uniforms.pixelSize.value = 2.0;
+        composer.addPass(ditheringPass);
+        
+        // Add copy pass as output
+        const copyPass = new THREE.ShaderPass(THREE.CopyShader);
+        composer.addPass(copyPass);
+        
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+        directionalLight.position.set(10, 10, 5);
+        scene.add(directionalLight);
+        
+        const pointLight = new THREE.PointLight(0xffffff, 0.8, 100);
+        pointLight.position.set(-10, 10, -10);
+        scene.add(pointLight);
+        
+        
+        // Array to store shapes with their movement data
+        const shapes = [];
+        
+        // Primary colors with different material types
+        const materials = [
+            // Phong materials (shiny, reflective)
+            new THREE.MeshPhongMaterial({ color: 0xff0000, shininess: 100 }), // Red
+            new THREE.MeshPhongMaterial({ color: 0x00ff00, shininess: 100 }), // Green
+            new THREE.MeshPhongMaterial({ color: 0x0000ff, shininess: 100 }), // Blue
+            new THREE.MeshPhongMaterial({ color: 0xff6600, shininess: 100 }), // Orange (replacing yellow)
+            new THREE.MeshPhongMaterial({ color: 0xff00ff, shininess: 100 }), // Magenta
+            new THREE.MeshPhongMaterial({ color: 0x00ffff, shininess: 100 }), // Cyan
+            
+            // Lambert materials (matte, plastic-like)
+            new THREE.MeshLambertMaterial({ color: 0xff0000 }), // Red
+            new THREE.MeshLambertMaterial({ color: 0x00ff00 }), // Green
+            new THREE.MeshLambertMaterial({ color: 0x0000ff }), // Blue
+            new THREE.MeshLambertMaterial({ color: 0xff6600 }), // Orange (replacing yellow)
+            new THREE.MeshLambertMaterial({ color: 0xff00ff }), // Magenta
+            new THREE.MeshLambertMaterial({ color: 0x00ffff }), // Cyan
+            
+            // Standard materials (metal-like)
+            new THREE.MeshStandardMaterial({ 
+                color: 0xff0000, 
+                metalness: 0.8, 
+                roughness: 0.2 
+            }), // Red metal
+            new THREE.MeshStandardMaterial({ 
+                color: 0x00ff00, 
+                metalness: 0.8, 
+                roughness: 0.2 
+            }), // Green metal
+            new THREE.MeshStandardMaterial({ 
+                color: 0x0000ff, 
+                metalness: 0.8, 
+                roughness: 0.2 
+            }), // Blue metal
+            new THREE.MeshStandardMaterial({ 
+                color: 0xff6600, 
+                metalness: 0.8, 
+                roughness: 0.2 
+            }), // Orange metal (replacing yellow)
+            new THREE.MeshStandardMaterial({ 
+                color: 0xff00ff, 
+                metalness: 0.8, 
+                roughness: 0.2 
+            }), // Magenta metal
+            new THREE.MeshStandardMaterial({ 
+                color: 0x00ffff, 
+                metalness: 0.8, 
+                roughness: 0.2 
+            }), // Cyan metal
+            
+            // Wireframe materials (digital/tech aesthetic)
+            new THREE.MeshBasicMaterial({ 
+                color: 0xff0000, 
+                wireframe: true, 
+                transparent: true, 
+                opacity: 0.8 
+            }), // Red wireframe
+            new THREE.MeshBasicMaterial({ 
+                color: 0x00ff00, 
+                wireframe: true, 
+                transparent: true, 
+                opacity: 0.8 
+            }), // Green wireframe
+            new THREE.MeshBasicMaterial({ 
+                color: 0x0000ff, 
+                wireframe: true, 
+                transparent: true, 
+                opacity: 0.8 
+            }), // Blue wireframe
+            new THREE.MeshBasicMaterial({ 
+                color: 0xff6600, 
+                wireframe: true, 
+                transparent: true, 
+                opacity: 0.8 
+            }), // Orange wireframe (replacing yellow)
+            new THREE.MeshBasicMaterial({ 
+                color: 0xff00ff, 
+                wireframe: true, 
+                transparent: true, 
+                opacity: 0.8 
+            }), // Magenta wireframe
+            new THREE.MeshBasicMaterial({ 
+                color: 0x00ffff, 
+                wireframe: true, 
+                transparent: true, 
+                opacity: 0.8 
+            }), // Cyan wireframe
+            
+            // Glitch-style materials (bright, saturated)
+            new THREE.MeshBasicMaterial({ 
+                color: 0xff0080, 
+                transparent: true, 
+                opacity: 0.9 
+            }), // Hot pink
+            new THREE.MeshBasicMaterial({ 
+                color: 0x80ff00, 
+                transparent: true, 
+                opacity: 0.9 
+            }), // Lime green
+            new THREE.MeshBasicMaterial({ 
+                color: 0x0080ff, 
+                transparent: true, 
+                opacity: 0.9 
+            }), // Electric blue
+            new THREE.MeshBasicMaterial({ 
+                color: 0xff8000, 
+                transparent: true, 
+                opacity: 0.9 
+            }), // Orange
+            new THREE.MeshBasicMaterial({ 
+                color: 0x8000ff, 
+                transparent: true, 
+                opacity: 0.9 
+            }), // Purple
+            new THREE.MeshBasicMaterial({ 
+                color: 0x00ff80, 
+                transparent: true, 
+                opacity: 0.9 
+            }) // Mint green
+        ];
+        
+        // Movement parameters
+        const moveSpeed = 0.05;
+        const spawnInterval = 2000; // milliseconds
+        const sceneBounds = 15; // how far shapes can go before disappearing
+        
+        // Function to create random shapes
+        function createRandomShape() {
+            const shapeTypes = [
+                () => new THREE.BoxGeometry(1, 1, 1),
+                () => new THREE.SphereGeometry(0.7, 16, 16),
+                () => new THREE.ConeGeometry(0.7, 1.5, 8),
+                () => new THREE.CylinderGeometry(0.5, 0.5, 1.5, 12),
+                () => new THREE.TorusGeometry(0.6, 0.3, 8, 16),
+                () => new THREE.OctahedronGeometry(0.8),
+                () => new THREE.TetrahedronGeometry(1)
+            ];
+            
+            const randomShape = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+            const geometry = randomShape();
+            const material = materials[Math.floor(Math.random() * materials.length)];
+            const mesh = new THREE.Mesh(geometry, material);
+            
+            // Start from the left side of the screen
+            mesh.position.set(
+                -sceneBounds - 5, // Start off-screen to the left
+                Math.random() * 4 + 1, // Random height
+                (Math.random() - 0.5) * 8 // Random depth
+            );
+            
+            // Random rotation
+            mesh.rotation.set(
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                Math.random() * Math.PI
+            );
+            
+            
+            // Add movement properties
+            mesh.userData = {
+                speed: moveSpeed + Math.random() * 0.02, // Slight speed variation
+                rotationSpeed: {
+                    x: (Math.random() - 0.5) * 0.02,
+                    y: (Math.random() - 0.5) * 0.02,
+                    z: (Math.random() - 0.5) * 0.02
+                }
+            };
+            
+            return mesh;
+        }
+        
+        // Function to spawn new shapes
+        function spawnShape() {
+            const shape = createRandomShape();
+            scene.add(shape);
+            shapes.push(shape);
+        }
+        
+        // Add initial shapes
+        for (let i = 0; i < 3; i++) {
+            spawnShape();
+        }
+        
+        // Set up automatic spawning
+        setInterval(spawnShape, spawnInterval);
+        
+        // Add some floating digital text elements (using simple geometry)
+        const textGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+        const textMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0x00ff00, 
+            wireframe: true,
+            transparent: true,
+            opacity: 0.8
+        });
+        
+        // Create floating digital "pixels" that spell out "EX Research"
+        const textPixels = [];
+        const textPositions = [
+            // E
+            [0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [1, 0], [1, 2], [1, 4],
+            // X
+            [3, 0], [3, 4], [4, 1], [4, 3], [5, 2],
+            // R
+            [7, 0], [7, 1], [7, 2], [7, 3], [7, 4], [8, 0], [8, 2], [9, 1], [9, 3], [9, 4],
+            // E
+            [11, 0], [11, 1], [11, 2], [11, 3], [11, 4], [12, 0], [12, 2], [12, 4],
+            // S
+            [14, 0], [14, 2], [14, 4], [15, 0], [15, 2], [15, 4], [16, 0], [16, 2], [16, 4],
+            // E
+            [18, 0], [18, 1], [18, 2], [18, 3], [18, 4], [19, 0], [19, 2], [19, 4],
+            // A
+            [21, 0], [21, 1], [21, 2], [21, 3], [21, 4], [22, 0], [22, 2], [23, 0], [23, 2],
+            // R
+            [25, 0], [25, 1], [25, 2], [25, 3], [25, 4], [26, 0], [26, 2], [27, 1], [27, 3], [27, 4],
+            // C
+            [29, 0], [29, 1], [29, 2], [29, 3], [29, 4], [30, 0], [30, 4],
+            // H
+            [32, 0], [32, 1], [32, 2], [32, 3], [32, 4], [33, 2], [34, 0], [34, 1], [34, 2], [34, 3], [34, 4]
+        ];
+        
+        textPositions.forEach((pos, index) => {
+            const pixel = new THREE.Mesh(textGeometry, textMaterial);
+            pixel.position.set((pos[0] - 17) * 0.2, pos[1] * 0.2 + 8, -5);
+            pixel.scale.set(0.5, 0.5, 0.5);
+            textPixels.push(pixel);
+            scene.add(pixel);
+        });
+        
+        
+        // Add some floating particles for digital dust effect
+        const particleGeometry = new THREE.BufferGeometry();
+        const particleCount = 100;
+        const positions = new Float32Array(particleCount * 3);
+        
+        for (let i = 0; i < particleCount * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 40;
+        }
+        
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        
+        const particleMaterial = new THREE.PointsMaterial({
+            color: 0x008080,
+            size: 0.1,
+            transparent: true,
+            opacity: 0.6
+        });
+        
+        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particles);
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Move and rotate shapes
+            for (let i = shapes.length - 1; i >= 0; i--) {
+                const shape = shapes[i];
+                
+                // Move shape to the right
+                shape.position.x += shape.userData.speed;
+                
+                // Rotate shape
+                shape.rotation.x += shape.userData.rotationSpeed.x;
+                shape.rotation.y += shape.userData.rotationSpeed.y;
+                shape.rotation.z += shape.userData.rotationSpeed.z;
+                
+                // Remove shape if it's gone too far to the right
+                if (shape.position.x > sceneBounds + 5) {
+                    scene.remove(shape);
+                    shapes.splice(i, 1);
+                }
+            }
+            
+            // Animate text pixels
+            textPixels.forEach((pixel, index) => {
+                pixel.rotation.y += 0.01;
+                pixel.position.y = 8 + (index % 5) * 0.2 + Math.sin(Date.now() * 0.001 + index * 0.1) * 0.2;
+                pixel.material.opacity = 0.8 + Math.sin(Date.now() * 0.002 + index * 0.2) * 0.2;
+            });
+            
+            // Animate particles
+            particles.rotation.y += 0.002;
+            particles.rotation.x += 0.001;
+            
+            controls.update();
+            composer.render();
+        }
+        
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+            ditheringPass.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+        });
+        
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>
