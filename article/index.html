@@ -31,7 +31,7 @@
             .article-window {
                 max-width: 600px;
                 margin: 20px auto;
-                background: #ffffff;
+                background: rgba(245, 244, 244, 0.823);
                 border: 1px solid #101010;
                 border-radius: 4px;
                 position: relative;
@@ -223,7 +223,8 @@
                 height: auto;
             }
             .image-caption {
-                font-size: 14px;
+                font-size: 12px;
+                color: #2d2d2d;
                 margin-top: 8px;
                 text-align: left;
             }
@@ -233,6 +234,7 @@
                 text-align: left;
                 border: 1px solid #000;
                 border-radius: 8px;
+                background: rgba(245, 244, 244, 0.823);
                 padding: 32px;
             }
 
@@ -276,12 +278,114 @@
             }
 
             .content {
-                background: rgba(255, 255, 255, 0.95);
+                background: rgba(230, 230, 230, 0.95);
                 backdrop-filter: blur(10px);
                 border-radius: 8px;
                 padding: 40px;
                 margin: 20px auto;
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Header styles from articles page */
+            .header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                border-bottom: 1px solid #000;
+                z-index: 300;
+                pointer-events: auto;
+                padding: 15px 0;
+            }
+
+            .header-content {
+                max-width: 1200px;
+                margin: 0 auto;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 24px;
+                font-weight: 700;
+                color: #000;
+                text-decoration: none;
+                letter-spacing: -0.5px;
+            }
+
+            .nav {
+                display: flex;
+                gap: 30px;
+            }
+
+            .nav a {
+                color: #000;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: color 0.3s ease;
+            }
+
+            .nav a:hover {
+                color: #666;
+            }
+
+            /* Adjust article window to account for header */
+            .article-window {
+                margin-top: 80px; /* Add top margin to account for fixed header */
+            }
+
+            /* Header responsive design */
+            @media (max-width: 768px) {
+                .header-content {
+                    padding: 0 15px;
+                }
+                
+                .nav {
+                    gap: 20px;
+                }
+                
+                .nav a {
+                    font-size: 13px;
+                }
+                
+                .logo {
+                    font-size: 20px;
+                }
+                
+                .article-window {
+                    margin-top: 90px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .header-content {
+                    flex-direction: column;
+                    gap: 15px;
+                    padding: 10px 15px;
+                }
+                
+                .nav {
+                    gap: 15px;
+                }
+                
+                .nav a {
+                    font-size: 12px;
+                }
+                
+                .logo {
+                    font-size: 18px;
+                }
+                
+                .article-window {
+                    margin-top: 120px;
+                }
             }
 
 		</style>
@@ -446,6 +550,17 @@
 		</script>
 	</head>
 	<body>
+        <header class="header">
+            <div class="header-content">
+                <a href="../articles/" class="logo">EX RESEARCH</a>
+                <nav class="nav">
+                    <a href="../index.html">Home</a>
+                    <a href="../about/index.html">About</a>
+                    <a href="../contact/index.html">Contact</a>
+                </nav>
+            </div>
+        </header>
+        
         <canvas id="water-canvas"></canvas>
         <div class="article-window">
             <div class="window-titlebar">
@@ -543,6 +658,27 @@ This past March, for example, Roblox Corp released the “Rights Manager,” a p
                     card.classList.toggle('open');
                 });
             });
+
+            // Navigation functionality
+            function setupNavigation() {
+                const navLinks = document.querySelectorAll('.nav a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        const href = this.getAttribute('href');
+                        if (href === '#about') {
+                            e.preventDefault();
+                            alert('About page coming soon!');
+                        } else if (href === '#contact') {
+                            e.preventDefault();
+                            alert('Contact page coming soon!');
+                        }
+                        // Let the articles link work normally since it has a real href
+                    });
+                });
+            }
+
+            // Initialize navigation when page loads
+            document.addEventListener('DOMContentLoaded', setupNavigation);
         </script>
 
         <script>
@@ -628,7 +764,7 @@ This past March, for example, Roblox Corp released the “Rights Manager,” a p
                             colorNum: { value: 4.0 },
                             pixelSize: { value: 2.0 },
                             resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-                            diffuse: { value: new THREE.Color(0x8888ff) },
+                            diffuse: { value: new THREE.Color(0xf0fbff) },
                             opacity: { value: 1.0 },
                             emissive: { value: new THREE.Color(0x000000) },
                             specular: { value: new THREE.Color(0x111111) },

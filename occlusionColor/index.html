@@ -40,9 +40,9 @@
 				max-width: 520px;
 				width: 92%;
 				pointer-events: auto;
-				animation: cardPopIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-				transform: scale(0);
-				animation-delay: 0.2s;
+				/* animation: cardPopIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards; */
+				/* transform: scale(0); */
+				/* animation-delay: 0.2s; */
 				background: #ffffff;
 				border: 1px solid #101010;
 				border-radius: 10px;
@@ -109,7 +109,8 @@
 				position: relative;
 				margin: 4px 0 6px 0;
 			}
-			#three-title canvas { display: block; width: 100%; height: 100%; }
+			#three-title canvas { display: block; width: 100%; height: 100%;
+				filter: drop-shadow(0px 0px 10px black); }
 
 			.window-title {
 				font-size: 12px;
@@ -211,7 +212,7 @@
 				padding: 36px;
 				padding-top: 0px;
 				text-align: center;
-				background: url('/assets/images/clouds.png') no-repeat center center;
+				background: url('/assets/images/cloud2.png') no-repeat center center;
 				background-size: cover;
 			}
 
@@ -501,7 +502,7 @@
 			let titleRenderer, titleScene, titleCamera, titleMesh, titleMount, exMesh, researchMesh;
 			// Background pixelation animation controls
 			const pixelationAnim = {
-				enabled: true,
+				enabled: false, // disabled to keep orbs smooth
 				minScale: 0.12, // much lower internal resolution
 				maxScale: 0.12, // keep constant (no resolution pulsing)
 				speedHz: 0.0,
@@ -662,9 +663,7 @@
 				if (enterButton) {
 					enterButton.addEventListener('click', function() {
 						// Hide homepage UI
-						homepageUI.classList.add('hidden');
-						showHomepageUI = false;
-						console.log('Welcome to EX Research!');
+						window.location.href = '/articles/index.html';
 					});
 				}
 			}

@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>EX Research - Contact</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+		<link rel="stylesheet" href="https://unpkg.com/7.css">
+		<style>
+
+			@font-face {
+				font-family: 'ff7';
+				src: url('../assets/fonts/publicsans/PublicSans-Regular.ttf') format('truetype');
+			}
+
+			html, body {
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+			}
+
+			canvas {
+				pointer-events: none;
+				overflow: hidden;
+			}
+			
+			#homepage-ui {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				z-index: 200;
+				pointer-events: auto;
+				font-family: 'Arial Narrow', monospace;
+				padding: 80px 20px 20px 20px;
+				overflow: auto;
+				box-sizing: border-box;
+			}
+
+			.header {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				background: rgba(255, 255, 255, 0.95);
+				backdrop-filter: blur(10px);
+				border-bottom: 1px solid #000;
+				z-index: 300;
+				pointer-events: auto;
+				padding: 15px 0;
+			}
+
+			.header-content {
+				max-width: 1200px;
+				margin: 0 auto;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 0 20px;
+			}
+
+			.logo {
+				font-size: 24px;
+				font-weight: 700;
+				color: #000;
+				text-decoration: none;
+				letter-spacing: -0.5px;
+			}
+
+			.nav {
+				display: flex;
+				gap: 30px;
+			}
+
+			.nav a {
+				color: #000;
+				text-decoration: none;
+				font-size: 14px;
+				font-weight: 500;
+				text-transform: uppercase;
+				letter-spacing: 1px;
+				transition: color 0.3s ease;
+			}
+
+			.nav a:hover {
+				color: #666;
+			}
+
+			.nav a.active {
+				color: #4a90e2;
+				font-weight: 700;
+			}
+
+			.contact-window {
+				max-width: 800px;
+				width: 92%;
+				max-height: calc(100vh - 120px);
+				pointer-events: auto;
+				background: #ffffff;
+				border: 1px solid #101010;
+				border-radius: 4px;
+				position: relative;
+				overflow: hidden;
+				box-shadow:
+					0 0 0 2px #000,
+					0 0 0 4px #7aa7d9,
+					0 0 0 6px #000,
+					6px 6px 0 #00000020,
+					12px 12px 0 #00000015;
+				margin: 0 auto;
+				display: flex;
+				flex-direction: column;
+			}
+
+			.contact-window::after {
+				content: '';
+				position: absolute;
+				inset: 0;
+				pointer-events: none;
+				background:
+					repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px),
+					repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px);
+				opacity: .7;
+			}
+
+			.window-scanlines {
+				position: absolute;
+				inset: 41px 0 22px 0;
+				pointer-events: none;
+				background: repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0 1px, transparent 1px 3px);
+				animation: scanMove 4s linear infinite;
+				opacity: .35;
+			}
+
+			@keyframes scanMove { 
+				0% { background-position-y: 0; } 
+				100% { background-position-y: 8px; } 
+			}
+
+			.window-titlebar {
+				height: 40px;
+				background: linear-gradient(to bottom, #e9eef3, #cfd6de);
+				border-bottom: 2px solid #000;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 0 0 0 10px;
+				box-shadow: inset 0 -2px 0 #7aa7d9, inset 0 2px 0 #ffffff;
+			}
+
+			.window-title {
+				font-size: 12px;
+				font-weight: 600;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: #1d2935;
+				text-shadow: 0 1px 0 #fff;
+			}
+
+			.window-controls {
+				display: flex;
+				gap: 6px;
+				padding: 0 10px;
+			}
+
+			.window-control {
+				width: 16px;
+				height: 16px;
+				border: 1px solid #2a2a2a;
+				border-radius: 2px;
+				background: #ffffff;
+				display: grid;
+				place-items: center;
+				cursor: default;
+				box-shadow: inset 0 -1px 0 #d5dbe3, inset 0 1px 0 #ffffff;
+			}
+
+			.window-control span {
+				font-size: 10px;
+				line-height: 1;
+				color: #333;
+			}
+
+			.window-control:hover { 
+				background: #eef3f8; 
+			}
+
+			.window-control:active { 
+				border-color: #111; 
+			}
+
+			.window-control[title="Close"]:hover { 
+				background: #f1d4d6; 
+			}
+
+			.window-control[title="Close"]:active { 
+				background: #e9b3b8; 
+			}
+
+			.status-bar {
+				height: 22px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 10px;
+				padding: 0 8px;
+				border-top: 2px solid #000;
+				background: repeating-linear-gradient(90deg, #e7eef6 0 6px, #dfe7f0 6px 12px);
+				font-size: 10px;
+				color: #1d2935;
+			}
+
+			.contact-content-wrapper {
+				padding: 40px;
+				position: relative;
+				z-index: 1;
+				flex: 1;
+				overflow-y: auto;
+				overflow-x: hidden;
+			}
+
+			.contact-title {
+				font-size: 48px;
+				font-weight: 700;
+				color: #000;
+				margin: 0 0 24px 0;
+				font-family: 'Arial Narrow', monospace;
+				line-height: 1.1;
+				letter-spacing: -1px;
+			}
+
+			.contact-subtitle {
+				font-size: 24px;
+				color: #333;
+				margin: 0 0 32px 0;
+				line-height: 1.4;
+				font-weight: 600;
+			}
+
+			.contact-content {
+				font-size: 18px;
+				color: #333;
+				line-height: 1.6;
+				margin: 0 0 40px 0;
+				font-weight: 400;
+			}
+
+			.contact-content p {
+				margin: 0 0 24px 0;
+			}
+
+			.contact-form {
+				background: #f8f8f8;
+				border: 1px solid #ddd;
+				border-radius: 8px;
+				padding: 30px;
+				margin: 40px 0;
+			}
+
+			.form-group {
+				margin-bottom: 24px;
+			}
+
+			.form-label {
+				display: block;
+				font-size: 14px;
+				font-weight: 700;
+				color: #000;
+				margin: 0 0 8px 0;
+				text-transform: uppercase;
+				letter-spacing: 1px;
+			}
+
+			.form-input,
+			.form-textarea {
+				width: 100%;
+				padding: 12px 16px;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				font-size: 16px;
+				font-family: inherit;
+				box-sizing: border-box;
+				transition: border-color 0.3s ease;
+			}
+
+			.form-input:focus,
+			.form-textarea:focus {
+				outline: none;
+				border-color: #4a90e2;
+				box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+			}
+
+			.form-textarea {
+				min-height: 120px;
+				resize: vertical;
+			}
+
+			.form-button {
+				background: #c0c0c0;
+				color: #000000;
+				padding: 12px 24px;
+				font-size: 14px;
+				font-weight: 700;
+				letter-spacing: 0.02em;
+				text-transform: none;
+				border-radius: 0;
+				cursor: pointer;
+				border: 2px solid #ffffff;
+				border-right-color: #404040;
+				border-bottom-color: #404040;
+				box-shadow:
+					inset 1px 1px 0 #dfdfdf,
+					inset -1px -1px 0 #808080,
+					0 0 0 1px #000000;
+				transition: background-color .12s ease;
+			}
+
+			.form-button:hover {
+				background: #dcdcdc;
+			}
+
+			.form-button:active {
+				background: #b5b5b5;
+				border-color: #404040;
+				border-right-color: #ffffff;
+				border-bottom-color: #ffffff;
+				box-shadow:
+					inset -1px -1px 0 #dfdfdf,
+					inset 1px 1px 0 #808080,
+					0 0 0 1px #000000;
+			}
+
+
+			.hidden {
+				display: none !important;
+			}
+			
+			.cloud-image {
+				position: fixed;
+				z-index: 150;
+				pointer-events: none;
+				transform-origin: center center;
+				opacity: 1;
+				filter: brightness(1.1) contrast(1.1);
+			}
+			
+			.hud-scanner {
+				position: fixed;
+				width: 20px;
+				height: 20px;
+				border: 2px solid #4a90e2;
+				background: rgba(74, 144, 226, 0.15);
+				z-index: 160;
+				pointer-events: none;
+				transition: all 0.4s ease;
+				box-shadow: 
+					0 0 8px rgba(74, 144, 226, 0.4),
+					inset 0 0 8px rgba(74, 144, 226, 0.2);
+			}
+			
+			.hud-scanner.scanning {
+				border-color: #2ecc71;
+				background: rgba(46, 204, 113, 0.15);
+				box-shadow: 
+					0 0 15px rgba(46, 204, 113, 0.6),
+					inset 0 0 10px rgba(46, 204, 113, 0.3);
+			}
+			
+			.hud-scanner::before {
+				content: '';
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 6px;
+				height: 6px;
+				background: currentColor;
+				border-radius: 50%;
+				transform: translate(-50%, -50%);
+				box-shadow: 0 0 4px currentColor;
+			}
+			
+			.hud-scanner::after {
+				content: attr(data-status);
+				position: absolute;
+				bottom: -35px;
+				right: -50px;
+				font-family: 'Arial', monospace;
+				font-size: 10px;
+				color: black;
+				white-space: nowrap;
+				font-weight: bold;
+				text-shadow: 1px 1px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white;
+			}
+			
+			.hud-scanner-frame {
+				position: absolute;
+				top: -3px;
+				left: -3px;
+				right: -3px;
+				bottom: -3px;
+				border: 1px solid currentColor;
+				opacity: 0.6;
+				pointer-events: none;
+			}
+			
+			.hud-scanner-corners {
+				position: absolute;
+				top: -6px;
+				left: -6px;
+				right: -6px;
+				bottom: -6px;
+				pointer-events: none;
+			}
+			
+			.hud-scanner-corners::before,
+			.hud-scanner-corners::after {
+				content: '';
+				position: absolute;
+				width: 8px;
+				height: 8px;
+				border: 1px solid black;
+				opacity: 0.8;
+			}
+			
+			.hud-scanner-corners::before {
+				top: 0;
+				left: 0;
+				border-right: none;
+				border-bottom: none;
+			}
+			
+			.hud-scanner-corners::after {
+				bottom: 0;
+				right: 0;
+				border-left: none;
+				border-top: none;
+			}
+
+			/* Responsive design */
+			@media (max-width: 768px) {
+				#homepage-ui {
+					padding: 90px 15px 15px 15px;
+				}
+				
+				.contact-window {
+					width: 95%;
+					max-height: calc(100vh - 130px);
+				}
+				
+				.contact-content-wrapper {
+					padding: 30px 20px;
+				}
+				
+				.contact-title {
+					font-size: 36px;
+				}
+				
+				.contact-subtitle {
+					font-size: 20px;
+				}
+				
+				.contact-content {
+					font-size: 16px;
+				}
+				
+				.contact-form {
+					padding: 20px;
+					margin: 30px 0;
+				}
+			}
+
+			@media (max-width: 480px) {
+				.header-content {
+					flex-direction: column;
+					gap: 15px;
+					padding: 10px 15px;
+				}
+				
+				.nav {
+					gap: 15px;
+				}
+				
+				.nav a {
+					font-size: 12px;
+				}
+				
+				.logo {
+					font-size: 18px;
+				}
+				
+				#homepage-ui {
+					padding: 120px 10px 10px 10px;
+				}
+				
+				.contact-window {
+					width: 98%;
+					max-height: calc(100vh - 150px);
+				}
+				
+				.contact-content-wrapper {
+					padding: 20px 15px;
+				}
+				
+				.contact-title {
+					font-size: 28px;
+				}
+				
+				.contact-subtitle {
+					font-size: 18px;
+				}
+				
+				.contact-content {
+					font-size: 15px;
+				}
+				
+				.contact-form {
+					padding: 15px;
+					margin: 20px 0;
+				}
+				
+				.window-title {
+					font-size: 11px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<header class="header">
+			<div class="header-content">
+				<a href="../index.html" class="logo">EX RESEARCH</a>
+				<nav class="nav">
+					<a href="../articles/index.html">Articles</a>
+					<a href="../about/index.html">About</a>
+					<a href="#" class="active">Contact</a>
+				</nav>
+			</div>
+		</header>
+
+		<div id="homepage-ui">
+			<div class="contact-window">
+				<div class="window-titlebar">
+					<div class="window-title">EX Research - Contact</div>
+					<div class="window-controls">
+						<div class="window-control" title="Minimize"><span>–</span></div>
+						<div class="window-control" title="Resize"><span>□</span></div>
+						<div class="window-control" title="Close"><span>×</span></div>
+					</div>
+				</div>
+				
+				<div class="window-scanlines"></div>
+				
+				<div class="contact-content-wrapper">
+					<h1 class="contact-title">Get in touch</h1>
+					<p class="contact-subtitle">Ready to explore the future of internet culture together?</p>
+					
+					<div class="contact-content">
+						<p>Whether you're looking for strategic insights, creative collaboration, or just want to share something weird you found online, we'd love to hear from you.</p>
+					</div>
+
+					<form class="contact-form" id="contact-form">
+						<div class="form-group">
+							<label for="name" class="form-label">Name</label>
+							<input type="text" id="name" name="name" class="form-input" required>
+						</div>
+						
+						<div class="form-group">
+							<label for="email" class="form-label">Email</label>
+							<input type="email" id="email" name="email" class="form-input" required>
+						</div>
+						
+						<div class="form-group">
+							<label for="company" class="form-label">Company (Optional)</label>
+							<input type="text" id="company" name="company" class="form-input">
+						</div>
+						
+						<div class="form-group">
+							<label for="subject" class="form-label">Subject</label>
+							<input type="text" id="subject" name="subject" class="form-input" required>
+						</div>
+						
+						<div class="form-group">
+							<label for="message" class="form-label">Message</label>
+							<textarea id="message" name="message" class="form-textarea" required placeholder="Tell us about your project, question, or that weird meme you can't stop thinking about..."></textarea>
+						</div>
+						
+						<button type="submit" class="form-button">Send Message</button>
+					</form>
+				</div>
+				
+				<!-- <div class="status-bar">
+					<span>EX Research Contact v1.0</span>
+					<span>Ready</span>
+				</div> -->
+			</div>
+		</div>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+					"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+				}
+			}
+		</script>
+
+		<script type="module">
+
+			import * as THREE from 'three';
+
+			import Stats from 'three/addons/libs/stats.module.js';
+
+			import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+			import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+			import { SAOPass } from 'three/addons/postprocessing/SAOPass.js';
+			import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+			import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+			let container, stats;
+			let camera, scene, renderer;
+			let composer, renderPass, saoPass, ditheringPass;
+			let group;
+			
+			// 2D Chatbox overlay variables
+			let overlayCanvas, overlayCtx;
+			let chatboxes2D = [];
+			let customFontLoaded = false;
+			let lastSpawnTime = 0;
+			let spawnInterval = 1200;
+			let pixelScale = 2;
+			
+			// Cloud image system
+			let cloudImages = [];
+			let lastCloudSpawnTime = 0;
+			let cloudSpawnInterval = 3000;
+			
+			// Wandering HUD scanner system
+			let wanderingScanners = [];
+			let maxScanners = 3;
+			let detectionDistance = 80;
+
+			// Dithering shader
+			const DitheringShader = {
+				uniforms: {
+					'tDiffuse': { value: null },
+					'resolution': { value: new THREE.Vector2() },
+					'colorNum': { value: 4.0 },
+					'pixelSize': { value: 2.0 }
+				},
+
+				vertexShader: `
+					varying vec2 vUv;
+					void main() {
+						vUv = uv;
+						gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+					}
+				`,
+
+				fragmentShader: `
+					uniform sampler2D tDiffuse;
+					uniform vec2 resolution;
+					uniform float colorNum;
+					uniform float pixelSize;
+					varying vec2 vUv;
+
+					const float bayerMatrix8x8[64] = float[64](
+						0.0/ 64.0, 48.0/ 64.0, 12.0/ 64.0, 60.0/ 64.0,  3.0/ 64.0, 51.0/ 64.0, 15.0/ 64.0, 63.0/ 64.0,
+						32.0/ 64.0, 16.0/ 64.0, 44.0/ 64.0, 28.0/ 64.0, 35.0/ 64.0, 19.0/ 64.0, 47.0/ 64.0, 31.0/ 64.0,
+						8.0/ 64.0, 56.0/ 64.0,  4.0/ 64.0, 52.0/ 64.0, 11.0/ 64.0, 59.0/ 64.0,  7.0/ 64.0, 55.0/ 64.0,
+						40.0/ 64.0, 24.0/ 64.0, 36.0/ 64.0, 20.0/ 64.0, 43.0/ 64.0, 27.0/ 64.0, 39.0/ 64.0, 23.0/ 64.0,
+						2.0/ 64.0, 50.0/ 64.0, 14.0/ 64.0, 62.0/ 64.0,  1.0/ 64.0, 49.0/ 64.0, 13.0/ 64.0, 61.0/ 64.0,
+						34.0/ 64.0, 18.0/ 64.0, 46.0/ 64.0, 30.0/ 64.0, 33.0/ 64.0, 17.0/ 64.0, 45.0/ 64.0, 29.0/ 64.0,
+						10.0/ 64.0, 58.0/ 64.0,  6.0/ 64.0, 54.0/ 64.0,  9.0/ 64.0, 57.0/ 64.0,  5.0/ 64.0, 53.0/ 64.0,
+						42.0/ 64.0, 26.0/ 64.0, 38.0/ 64.0, 22.0/ 64.0, 41.0/ 64.0, 25.0/ 64.0, 37.0/ 64.0, 21.0 / 64.0
+					);
+
+					vec3 dither(vec2 uv, vec3 color) {
+						int x = int(uv.x * resolution.x) % 8;
+						int y = int(uv.y * resolution.y) % 8;
+						float threshold = bayerMatrix8x8[y * 8 + x] - 0.25;
+
+						color.rgb += threshold;
+						color.r = floor(color.r * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);
+						color.g = floor(color.g * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);
+						color.b = floor(color.b * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);
+
+						return color;
+					}
+
+					void main() {
+						vec2 normalizedPixelSize = pixelSize / resolution;  
+						vec2 uvPixel = normalizedPixelSize * floor(vUv / normalizedPixelSize);
+
+						vec4 color = texture2D(tDiffuse, uvPixel);
+						color.rgb = dither(uvPixel, color.rgb);
+
+						gl_FragColor = color;
+					}
+				`
+			};
+
+			function createOverlayCanvas() {
+				overlayCanvas = document.createElement('canvas');
+				overlayCanvas.style.position = 'fixed';
+				overlayCanvas.style.top = '0';
+				overlayCanvas.style.left = '0';
+				overlayCanvas.style.pointerEvents = 'none';
+				overlayCanvas.style.zIndex = '100';
+				overlayCanvas.style.imageRendering = 'pixelated';
+				overlayCanvas.style.imageRendering = 'crisp-edges';
+				overlayCanvas.style.overflow = 'hidden';
+				document.body.appendChild(overlayCanvas);
+				
+				overlayCtx = overlayCanvas.getContext('2d');
+				overlayCtx.imageSmoothingEnabled = false;
+				overlayCtx.webkitImageSmoothingEnabled = false;
+				overlayCtx.mozImageSmoothingEnabled = false;
+				overlayCtx.msImageSmoothingEnabled = false;
+				
+				resizeOverlayCanvas();
+				
+				loadCustomFont();
+				create2DChatboxes();
+			}
+
+			function loadCustomFont() {
+				customFontLoaded = true; // Use system fonts for simplicity
+			}
+
+			function resizeOverlayCanvas() {
+				const viewportWidth = document.documentElement.clientWidth;
+				const viewportHeight = document.documentElement.clientHeight;
+				
+				overlayCanvas.width = Math.floor(viewportWidth / pixelScale);
+				overlayCanvas.height = Math.floor(viewportHeight / pixelScale);
+				
+				overlayCanvas.style.width = viewportWidth + 'px';
+				overlayCanvas.style.height = viewportHeight + 'px';
+			}
+
+			function create2DChatboxes() {
+				chatboxes2D = [];
+				
+				const initialCount = 6 + Math.floor(Math.random() * 4);
+				
+				for (let i = 0; i < initialCount; i++) {
+					const chatbox = createNewChatbox();
+					const gridCols = Math.ceil(Math.sqrt(initialCount));
+					const gridRows = Math.ceil(initialCount / gridCols);
+					const col = i % gridCols;
+					const row = Math.floor(i / gridCols);
+					
+					const cellWidth = (overlayCanvas.width / pixelScale) / gridCols;
+					const cellHeight = (overlayCanvas.height / pixelScale) / gridRows;
+					
+					chatbox.x = (col * cellWidth) + (Math.random() * cellWidth * 0.8);
+					chatbox.y = (row * cellHeight) + (Math.random() * cellHeight * 0.8);
+					
+					chatbox.x = Math.max(0, Math.min(chatbox.x, overlayCanvas.width / pixelScale - chatbox.width));
+					chatbox.y = Math.max(0, Math.min(chatbox.y, overlayCanvas.height / pixelScale - chatbox.height));
+					
+					chatboxes2D.push(chatbox);
+				}
+			}
+
+			function createNewChatbox(startX = null, speedTier = 'normal') {
+				const baseWidth = 240;
+				const baseHeight = 72;
+				
+				const scaledWidth = baseWidth / pixelScale;
+				const scaledHeight = baseHeight / pixelScale;
+				const scaledMargin = 80 / pixelScale;
+				
+				const x = startX !== null ? startX : overlayCanvas.width + scaledMargin/4;
+				const caretMargin = 20 / pixelScale;
+				const y = Math.random() * (overlayCanvas.height - scaledHeight - caretMargin);
+				
+				let baseVelocity, verticalDrift;
+				switch (speedTier) {
+					case 'superfast':
+						baseVelocity = (-5 - Math.random() * 6) / pixelScale;
+						verticalDrift = ((Math.random() - 0.5) * 1.5) / pixelScale;
+						break;
+					case 'fast':
+						baseVelocity = (-3 - Math.random() * 3) / pixelScale;
+						verticalDrift = ((Math.random() - 0.5) * 1.0) / pixelScale;
+						break;
+					case 'medium':
+						baseVelocity = (-1.5 - Math.random() * 2) / pixelScale;
+						verticalDrift = ((Math.random() - 0.5) * 0.6) / pixelScale;
+						break;
+					case 'slow':
+						baseVelocity = (-0.8 - Math.random() * 1.2) / pixelScale;
+						verticalDrift = ((Math.random() - 0.5) * 0.4) / pixelScale;
+						break;
+					default:
+						baseVelocity = (-0.5 - Math.random() * 0.8) / pixelScale;
+						verticalDrift = ((Math.random() - 0.5) * 0.2) / pixelScale;
+						break;
+				}
+				
+				return {
+					x: x,
+					y: y,
+					vx: baseVelocity,
+					vy: verticalDrift,
+					width: scaledWidth,
+					height: scaledHeight,
+					text: 'EX Research',
+					textStyles: generateRandomTextStyles(),
+					styleUpdateTime: 0,
+					speedTier: speedTier
+				};
+			}
+
+			function generateRandomTextStyles() {
+				const fragments = [
+					{
+						text: 'EX',
+						bold: Math.random() > 0.5,
+						sizeMultiplier: 0.8 + Math.random() * 0.6
+					},
+					{
+						text: ' ',
+						bold: false,
+						sizeMultiplier: 1
+					},
+					{
+						text: 'Research',
+						bold: Math.random() > 0.5,
+						sizeMultiplier: 0.8 + Math.random() * 0.6
+					}
+				];
+				return fragments;
+			}
+
+			function drawChatboxes() {
+				if (!overlayCtx) return;
+				
+				overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+				
+				const currentTime = performance.now();
+				
+				const speed = window.chatboxControls ? window.chatboxControls.speed : 1.0;
+				const connectionDistance = window.chatboxControls ? window.chatboxControls.connectionDistance * 12 : 40;
+				
+				if (currentTime - lastSpawnTime > spawnInterval) {
+					chatboxes2D.push(createNewChatbox(null, 'normal'));
+					lastSpawnTime = currentTime;
+				}
+				
+				chatboxes2D = chatboxes2D.filter(chatbox => {
+					chatbox.x += chatbox.vx * speed;
+					chatbox.y += chatbox.vy * speed;
+					
+					if (currentTime - chatbox.styleUpdateTime > 2000 + Math.random() * 2000) {
+						chatbox.textStyles = generateRandomTextStyles();
+						chatbox.styleUpdateTime = currentTime;
+					}
+					
+					const caretMargin = 20 / pixelScale;
+					if (chatbox.y < 0) {
+						chatbox.y = 0;
+						chatbox.vy = Math.abs(chatbox.vy) * 0.5;
+					}
+					if (chatbox.y > overlayCanvas.height - chatbox.height - caretMargin) {
+						chatbox.y = overlayCanvas.height - chatbox.height - caretMargin;
+						chatbox.vy = -Math.abs(chatbox.vy) * 0.5;
+					}
+					
+					return chatbox.x > -chatbox.width - 20;
+				});
+				
+				overlayCtx.strokeStyle = 'black';
+				overlayCtx.lineWidth = Math.max(1, Math.round(2 / pixelScale));
+				
+				for (let i = 0; i < chatboxes2D.length; i++) {
+					for (let j = i + 1; j < chatboxes2D.length; j++) {
+						const dx = (chatboxes2D[i].x + chatboxes2D[i].width/2) - (chatboxes2D[j].x + chatboxes2D[j].width/2);
+						const dy = (chatboxes2D[i].y + chatboxes2D[i].height/2) - (chatboxes2D[j].y + chatboxes2D[j].height/2);
+						const distance = Math.sqrt(dx * dx + dy * dy);
+						
+						if (distance < connectionDistance) {
+							overlayCtx.beginPath();
+							overlayCtx.moveTo(chatboxes2D[i].x + chatboxes2D[i].width/2, chatboxes2D[i].y + chatboxes2D[i].height/2);
+							overlayCtx.lineTo(chatboxes2D[j].x + chatboxes2D[j].width/2, chatboxes2D[j].y + chatboxes2D[j].height/2);
+							overlayCtx.stroke();
+						}
+					}
+				}
+				
+				chatboxes2D.forEach(chatbox => {
+					drawSpeechBubble(chatbox);
+				});
+			}
+
+			function drawSpeechBubble(chatbox) {
+				const baseCaretSize = 20;
+				const baseCaretOffset = 32;
+				
+				const caretSize = baseCaretSize / pixelScale;
+				const caretX = chatbox.x + (baseCaretOffset / pixelScale);
+				const caretY = chatbox.y + chatbox.height;
+
+				overlayCtx.fillStyle = 'white';
+				overlayCtx.strokeStyle = 'black';
+				overlayCtx.lineWidth = Math.max(1, Math.round(4 / pixelScale));
+
+				overlayCtx.beginPath();
+				overlayCtx.rect(chatbox.x, chatbox.y, chatbox.width, chatbox.height);
+				overlayCtx.moveTo(caretX - caretSize, caretY);
+				overlayCtx.lineTo(caretX + caretSize, caretY);
+				overlayCtx.lineTo(caretX, caretY + caretSize);
+				overlayCtx.closePath();
+				overlayCtx.fill();
+
+				overlayCtx.beginPath();
+				overlayCtx.moveTo(chatbox.x, chatbox.y);
+				overlayCtx.lineTo(chatbox.x + chatbox.width, chatbox.y);
+				overlayCtx.lineTo(chatbox.x + chatbox.width, chatbox.y + chatbox.height);
+				overlayCtx.lineTo(caretX + caretSize, caretY);
+				overlayCtx.moveTo(caretX - caretSize, caretY);
+				overlayCtx.lineTo(chatbox.x, caretY);
+				overlayCtx.lineTo(chatbox.x, chatbox.y);
+				overlayCtx.stroke();
+
+				overlayCtx.beginPath();
+				overlayCtx.moveTo(caretX - caretSize, caretY);
+				overlayCtx.lineTo(caretX, caretY + caretSize);
+				overlayCtx.lineTo(caretX + caretSize, caretY);
+				overlayCtx.stroke();
+				
+				overlayCtx.fillStyle = 'black';
+				overlayCtx.textBaseline = 'middle';
+				
+				const textBaseFontSize = chatbox.height * 0.4;
+				const fontFamily = 'monospace';
+				
+				let totalWidth = 0;
+				chatbox.textStyles.forEach(fragment => {
+					const fontSize = textBaseFontSize * fragment.sizeMultiplier;
+					const weight = fragment.bold ? 'bold' : 'normal';
+					overlayCtx.font = `${weight} ${fontSize}px ${fontFamily}`;
+					totalWidth += overlayCtx.measureText(fragment.text).width;
+				});
+				
+				const maxWidth = chatbox.width * 0.9;
+				const textScale = totalWidth > maxWidth ? maxWidth / totalWidth : 1;
+				
+				let currentX = chatbox.x + (chatbox.width - (totalWidth * textScale)) / 2;
+				const textY = chatbox.y + chatbox.height / 2;
+				
+				chatbox.textStyles.forEach(fragment => {
+					const fontSize = (textBaseFontSize * fragment.sizeMultiplier) * textScale;
+					const weight = fragment.bold ? 'bold' : 'normal';
+					overlayCtx.font = `${weight} ${fontSize}px ${fontFamily}`;
+					
+					overlayCtx.fillText(fragment.text, currentX, textY);
+					currentX += overlayCtx.measureText(fragment.text).width;
+				});
+			}
+
+			function setupContactForm() {
+				const form = document.getElementById('contact-form');
+				if (form) {
+					form.addEventListener('submit', function(e) {
+						e.preventDefault();
+						
+						// Get form data
+						const formData = new FormData(form);
+						const data = {
+							name: formData.get('name'),
+							email: formData.get('email'),
+							company: formData.get('company'),
+							subject: formData.get('subject'),
+							message: formData.get('message')
+						};
+						
+						// Simple validation
+						if (!data.name || !data.email || !data.subject || !data.message) {
+							alert('Please fill in all required fields.');
+							return;
+						}
+						
+						// Simulate form submission
+						alert(`Thanks for reaching out, ${data.name}! We'll get back to you at ${data.email} soon.`);
+						form.reset();
+					});
+				}
+			}
+
+			init();
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				const width = document.documentElement.clientWidth;
+				const height = document.documentElement.clientHeight;
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setClearColor( 0xffffff, 1 );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( width, height );
+				renderer.setAnimationLoop( animate );
+				document.body.appendChild( renderer.domElement );
+				renderer.domElement.style.pointerEvents = 'none';
+
+				camera = new THREE.PerspectiveCamera( 65, width / height, 3, 10 );
+				camera.position.z = 7;
+
+				scene = new THREE.Scene();
+
+				group = new THREE.Object3D();
+				scene.add( group );
+
+				const light = new THREE.PointLight( 0xefffef, 500 );
+				light.position.z = 10;
+				light.position.y = - 10;
+				light.position.x = - 10;
+				scene.add( light );
+
+				const light2 = new THREE.PointLight( 0xffefef, 500 );
+				light2.position.z = 10;
+				light2.position.x = - 10;
+				light2.position.y = 10;
+				scene.add( light2 );
+
+				const light3 = new THREE.PointLight( 0xefefff, 500 );
+				light3.position.z = 10;
+				light3.position.x = 10;
+				light3.position.y = - 10;
+				scene.add( light3 );
+
+				const light4 = new THREE.AmbientLight( 0xffffff, 0.2 );
+				scene.add( light4 );
+
+				const geometry = new THREE.SphereGeometry( 3, 48, 24 );
+
+				for ( let i = 0; i < 120; i ++ ) {
+
+					const material = new THREE.MeshStandardMaterial();
+					material.roughness = 0.5 * Math.random() + 0.25;
+					material.metalness = 0;
+					material.color.setHSL( Math.random(), 1.0, 0.3 );
+
+					const mesh = new THREE.Mesh( geometry, material );
+					mesh.position.x = Math.random() * 4 - 2;
+					mesh.position.y = Math.random() * 4 - 2;
+					mesh.position.z = Math.random() * 4 - 2;
+					mesh.rotation.x = Math.random();
+					mesh.rotation.y = Math.random();
+					mesh.rotation.z = Math.random();
+
+					mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 0.2 + 0.05;
+					group.add( mesh );
+
+				}
+
+				createOverlayCanvas();
+				setupContactForm();
+
+				composer = new EffectComposer( renderer );
+				renderPass = new RenderPass( scene, camera );
+				composer.addPass( renderPass );
+				saoPass = new SAOPass( scene, camera );
+				
+				saoPass.params.output = SAOPass.OUTPUT.Default;
+				saoPass.params.saoBias = 0.5;
+				saoPass.params.saoIntensity = 0.42;
+				saoPass.params.saoScale = 6;
+				saoPass.params.saoKernelRadius = 100;
+				saoPass.params.saoMinResolution = 0;
+				saoPass.params.saoBlur = false;
+				saoPass.params.saoBlurRadius = 8;
+				saoPass.params.saoBlurStdDev = 4;
+				saoPass.params.saoBlurDepthCutoff = 0.01;
+				
+				composer.addPass( saoPass );
+				
+				ditheringPass = new ShaderPass( DitheringShader );
+				ditheringPass.uniforms.resolution.value.set( window.innerWidth, window.innerHeight );
+				ditheringPass.enabled = false;
+				composer.addPass( ditheringPass );
+				
+				const outputPass = new OutputPass();
+				composer.addPass( outputPass );
+
+				window.chatboxControls = {
+					visible: true,
+					speed: 2.0,
+					connectionDistance: 12.0,
+					spawnRate: 2.0,
+					pixelation: 2,
+					style: 'classic'
+				};
+
+				window.addEventListener( 'resize', onWindowResize );
+
+			}
+
+			function onWindowResize() {
+
+				const width = document.documentElement.clientWidth || 1;
+				const height = document.documentElement.clientHeight || 1;
+
+				camera.aspect = width / height;
+				camera.updateProjectionMatrix();
+				renderer.setSize( width, height );
+
+				composer.setSize( width, height );
+				
+				ditheringPass.uniforms.resolution.value.set( width, height );
+				
+				if ( overlayCanvas ) {
+					resizeOverlayCanvas();
+				}
+			}
+
+			function animate() {
+				render();
+			}
+
+			function render() {
+
+				const timer = performance.now();
+				group.rotation.x = timer * 0.0002;
+				group.rotation.y = timer * 0.0001;
+
+				if ( window.chatboxControls && window.chatboxControls.visible ) {
+					drawChatboxes();
+				}
+
+				composer.render();
+
+			}
+
+		</script>
+	</body>
+</html>

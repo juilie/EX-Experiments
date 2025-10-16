@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>EX Research - Home</title>
+		<title>EX Research - About</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
@@ -10,20 +10,14 @@
 
 			@font-face {
 				font-family: 'ff7';
-				src: url('assets/Final_Fantasy_VII.ttf') format('truetype');
+				src: url('../assets/fonts/publicsans/PublicSans-Regular.ttf') format('truetype');
 			}
 
 			html, body {
 				margin: 0;
 				padding: 0;
-				/* overflow: hidden; */
 				width: 100%;
 				height: 100%;
-			}
-
-			.agency-card {
-				box-sizing: border-box;
-				border-radius: 2px;
 			}
 
 			canvas {
@@ -45,7 +39,6 @@
 				pointer-events: auto;
 				font-family: 'Arial Narrow', monospace;
 				padding: 40px 20px;
-				padding-bottom: 0;
 				overflow: auto;
 				box-sizing: border-box;
 			}
@@ -99,28 +92,63 @@
 				color: #666;
 			}
 
-			.hero-section {
-				text-align: center;
+			.nav a.active {
+				color: #4a90e2;
+				font-weight: 700;
+			}
+
+			.about-section {
+				text-align: left;
 				margin: 100px 0 60px 0;
 				pointer-events: auto;
 				max-width: 800px;
-				/* readability over animated background */
 				background: rgba(255, 255, 255, 0.92);
-				/* background: url('../assets/images/cloud2.png') no-repeat center center; */
-				background-size: cover;
 				backdrop-filter: blur(6px);
 				border: 1px solid #000;
 				border-radius: 10px;
 				box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-				padding: 24px;
+				padding: 40px;
 			}
 
-			.hero-copy {
+			.about-title {
+				font-size: 48px;
+				font-weight: 700;
+				color: #000;
+				margin: 0 0 24px 0;
+				font-family: 'Arial Narrow', monospace;
+				line-height: 1.1;
+				letter-spacing: -1px;
+			}
+
+			.about-subtitle {
+				font-size: 24px;
+				color: #333;
+				margin: 0 0 32px 0;
+				line-height: 1.4;
+				font-weight: 600;
+			}
+
+			.about-content {
 				font-size: 18px;
 				color: #333;
 				line-height: 1.6;
 				margin: 0 0 40px 0;
 				font-weight: 400;
+			}
+
+			.about-content p {
+				margin: 0 0 24px 0;
+			}
+
+			.team-section {
+				margin: 40px 0;
+			}
+
+			.team-title {
+				font-size: 24px;
+				font-weight: 700;
+				color: #000;
+				margin: 0 0 24px 0;
 			}
 
 			.newsletter-section {
@@ -196,224 +224,6 @@
 					0 0 0 1px #000000;
 			}
 
-			.articles-section {
-				width: 100%;
-				/* max-width: 1200px; */
-				box-shadow: 0 -2px 10px 0 rgba(0, 0, 0, 0.479);
-				pointer-events: auto;
-				background-color: #ffffff;
-				padding: 40px 20px;
-				/* background: url('../assets/images/clouds.png') no-repeat center center; */
-				/* background-size: cover; */
-			}
-
-			.section-title {
-				font-size: 64px;
-				font-weight: 700;
-				color: #000;
-				margin-top: 40px;
-				margin-bottom: 40px;
-				/* padding-top: 40px; */
-				padding-bottom: 40px;
-				text-align: center;
-				letter-spacing: -0.5px;
-			}
-
-			#main-title {
-				font-size: 60px;
-				font-weight: 300;
-				color: #000000;
-				margin: 0 0 16px 0;
-				font-family: 'Arial Narrow', monospace;
-				line-height: 1.1;
-				display: flex;
-				align-items: baseline;
-				justify-content: center;
-				flex-wrap: wrap;
-				letter-spacing: -1px;
-			}
-
-			.letter {
-				display: inline-block;
-				transition: transform 0.3s ease;
-			}
-
-			.letter.small {
-				font-size: 0.6em;
-				font-weight: normal;
-			}
-
-			.letter.medium {
-				font-size: 0.8em;
-				font-weight:900;
-			}
-			.letter.medium-light {
-				font-size: 0.8em;
-				font-weight:100;
-			}
-
-			.letter.big {
-				font-size: 1em;
-				font-weight: 900;
-			}
-
-			.letter.huge {
-				font-size: 1.3em;
-				font-weight: 900;
-			}
-
-			#subtitle {
-				font-size: 20px;
-				color: black;
-				margin: 0 0 32px 0;
-				line-height: 1.5;
-				font-weight: 400;
-				font-style: italic;
-				text-shadow: 0 1px 0 rgba(255,255,255,0.6);
-			}
-
-			.articles-grid {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-				gap: 32px;
-				max-width: 1200px;
-				margin: 0 auto;
-				width: 100%;
-				pointer-events: auto;
-				padding: 0 20px;
-			}
-
-			.article-card {
-				background-color: #ffffff;
-				background: linear-gradient(to bottom, #000000 0%, #ffffff 5%, #ffffff 95%, #000000 100%);
-				border: 1px solid black;
-				border-radius: 8px;
-				border-top-right-radius: 0;
-				border-bottom-left-radius: 0;
-				position: relative;
-				overflow: hidden;
-				transition: transform 0.3s ease, box-shadow 0.3s ease;
-				cursor: pointer;
-				text-decoration: none;
-				color: inherit;
-			}
-
-			.article-card::before {
-				content: '';
-				text-align: right;
-				background-color: black;
-				padding: 0 12px;
-				font-size: 8px;
-				display: flex;
-				align-items: center;
-				justify-content: right;
-				position: absolute;
-				border-radius: 10px 10px 0 0;
-				top: -20px;
-				right: -1px;
-				border: none;
-				width:120px;
-				height: 21px;
-				box-sizing: border-box;
-				z-index: -1;
-				clip-path: polygon(18% 0, 100% 0, 100% 100%, 0% 100%);
-			}
-
-			.article-card::after {
-				content: '';
-				text-align: right;
-				background-color: black;
-				padding: 0 12px;
-				font-size: 8px;
-				display: flex;
-				align-items: center;
-				justify-content: right;
-				position: absolute;
-				border-radius: 0px 0px 10px 10px;
-				bottom: -20px;
-				left: -1px;
-				border: none;
-				width:120px;
-				height: 21px;
-				box-sizing: border-box;
-				z-index: -1;
-				clip-path: polygon( 0 0, 100% 0, 82% 100%, 0% 100%);
-			}
-
-			.article-card:hover {
-				transform: translateY(-5px);
-				box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-			}
-
-			.article-preview {
-				width: 100%;
-				height: 200px;
-				background-size: cover;
-				background-position: center;
-				background-repeat: no-repeat;
-				position: relative;
-			}
-
-			.article-preview::after {
-				content: '';
-				position: absolute;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 100%);
-			}
-
-			.article-content {
-				padding: 28px;
-			}
-
-			.article-category {
-				font-size: 11px;
-				font-weight: 600;
-				color: #555;
-				text-transform: uppercase;
-				letter-spacing: 1.5px;
-			}
-
-			.article-title {
-				font-size: 30px;
-				font-weight: 700;
-				color: #000;
-				line-height: 1.4;
-				letter-spacing: -0.3px;
-				margin-bottom: 4px;
-			}
-
-			.article-excerpt {
-				font-size: 15px;
-				color: #444;
-				line-height: 1.6;
-				margin: 0 0 20px 0;
-				font-weight: 400;
-			}
-
-			.article-meta {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				font-size: 13px;
-				color: #777;
-				margin-top: 4px;
-			}
-
-			.article-date {
-				font-weight: 600;
-				color: #666;
-			}
-
-			.article-read-time {
-				font-style: italic;
-				color: #888;
-				font-weight: 400;
-			}
-
-
 			.hidden {
 				display: none !important;
 			}
@@ -467,7 +277,7 @@
 				position: absolute;
 				bottom: -35px;
 				right: -50px;
-				font-family: 'Epmarugo', monospace;
+				font-family: 'Arial', monospace;
 				font-size: 10px;
 				color: black;
 				white-space: nowrap;
@@ -518,31 +328,127 @@
 				border-left: none;
 				border-top: none;
 			}
+
+			/* Responsive design */
+			@media (max-width: 768px) {
+				.about-section {
+					margin: 120px 0 40px 0;
+					padding: 30px 20px;
+				}
+				
+				.about-title {
+					font-size: 36px;
+				}
+				
+				.about-subtitle {
+					font-size: 20px;
+				}
+				
+				.about-content {
+					font-size: 16px;
+				}
+				
+				.team-section {
+					margin: 30px 0;
+				}
+				
+				.newsletter-section {
+					padding: 20px;
+					margin: 30px 0;
+				}
+				
+				.newsletter-form {
+					flex-direction: column;
+					align-items: stretch;
+				}
+				
+				.newsletter-input {
+					min-width: auto;
+					width: 100%;
+				}
+			}
+
+			@media (max-width: 480px) {
+				.header-content {
+					flex-direction: column;
+					gap: 15px;
+					padding: 10px 15px;
+				}
+				
+				.nav {
+					gap: 15px;
+				}
+				
+				.nav a {
+					font-size: 12px;
+				}
+				
+				.logo {
+					font-size: 18px;
+				}
+				
+				.about-section {
+					margin: 140px 0 30px 0;
+					padding: 20px 15px;
+				}
+				
+				.about-title {
+					font-size: 28px;
+				}
+				
+				.about-subtitle {
+					font-size: 18px;
+				}
+				
+				.about-content {
+					font-size: 15px;
+				}
+				
+				.team-section {
+					margin: 20px 0;
+				}
+				
+				.newsletter-section {
+					padding: 15px;
+					margin: 20px 0;
+				}
+			}
 		</style>
 	</head>
 	<body>
 		<header class="header">
 			<div class="header-content">
-				<a href="#" class="logo">EX RESEARCH</a>
+				<a href="../index.html" class="logo">EX RESEARCH</a>
 				<nav class="nav">
-					<a href="../articles/index.html">Home</a>
-					<a href="../about/index.html">About</a>
+					<a href="../articles/index.html">Articles</a>
+					<a href="#" class="active">About</a>
 					<a href="../contact/index.html">Contact</a>
 				</nav>
 			</div>
 		</header>
 
 		<div id="homepage-ui">
-			<div class="hero-section">
-				<h1 id="main-title">
-					<span class="letter medium-light">EX</span>
-					<span class="letter small">&nbsp;</span>
-					<span class="letter medium">R</span><span class="letter medium">e</span><span class="letter medium">s</span><span class="letter medium">e</span><span class="letter medium">a</span><span class="letter medium">r</span><span class="letter medium">c</span><span class="letter medium">h</span>
-				</h1>
-				<p id="subtitle">EX Research helps you stay ahead of the internet.</p>
+			<div class="about-section">
+				<h1 class="about-title">About us</h1>
+				<p class="about-subtitle">EX Research helps you stay ahead of the internet.</p>
 				
-				<div class="hero-copy">
+				<div class="about-content">
 					<p>We're a plugged-in collective of researchers and strategists who know what's real online. We're obsessed with new forms of creativity. The places where games, music, AI, and shitposting mingle and mutate. We treat dumb stuff like art.</p>
+					
+					<p>Subscribe to our newsletter for a weekly download of future-culture picks and deep-internet insights.</p>
+				</div>
+
+				<div class="team-section">
+					<h2 class="team-title">Who is behind EX?</h2>
+					<div class="about-content">
+						<p>The team behind EX has written for outlets including Rolling Stone, Esquire, GQ, Game Informer, Vulture, Rock Paper Shotgun, The Daily Beast, The A.V. Club, and Pitchfork. They've worked for brands including Intel, YouTube, Soundcloud, Shopify, Groupon, and Hyatt.</p>
+						
+						<p><b>Chris Breault</b> is based in St. Louis, MO.</p>
+						
+						<p><b>Clayton Purdom</b> is based in Shaker Heights, OH.</p>
+						
+						<p><b>Pao Yumol</b> is based in Los Angeles, CA.</p>
+					</div>
 				</div>
 
 				<div class="newsletter-section">
@@ -552,13 +458,6 @@
 						<input type="email" class="newsletter-input" placeholder="Enter your email" required>
 						<button type="submit" class="newsletter-button">Subscribe</button>
 					</form>
-				</div>
-			</div>
-
-			<div class="articles-section">
-				<h2 class="section-title">Recent Posts</h2>
-				<div class="articles-grid" id="articles-grid">
-					<!-- Articles will be populated by JavaScript -->
 				</div>
 			</div>
 		</div>
@@ -594,82 +493,18 @@
 			let chatboxes2D = [];
 			let customFontLoaded = false;
 			let lastSpawnTime = 0;
-			let spawnInterval = 1200; // Spawn new chatbox every 1.2 seconds
-			let pixelScale = 2; // How much to scale down for pixelation
+			let spawnInterval = 1200;
+			let pixelScale = 2;
 			
 			// Cloud image system
 			let cloudImages = [];
 			let lastCloudSpawnTime = 0;
-			let cloudSpawnInterval = 3000; // Spawn every 3 seconds
+			let cloudSpawnInterval = 3000;
 			
 			// Wandering HUD scanner system
 			let wanderingScanners = [];
 			let maxScanners = 3;
 			let detectionDistance = 80;
-
-			// Sample articles data
-			const articles = [
-				{
-					id: 1,
-					title: "Black magic",
-					category: "Newsletter",
-					excerpt: "Weekly download of future-culture picks and deep-internet insights.",
-					date: "Oct 7, 2025",
-					readTime: "7 min",
-					previewImage: "assets/ex1.jpg",
-					link: "/article"
-				},
-				{
-					id: 2,
-					title: "Actual anomalies",
-					category: "Newsletter",
-					excerpt: "Weekly download of future-culture picks and deep-internet insights.",
-					date: "Aug 31, 2025",
-					readTime: "6 min",
-					previewImage: "assets/ex2.jpg",
-					link: "/article"
-				},
-				{
-					id: 3,
-					title: "Safety last",
-					category: "Newsletter",
-					excerpt: "Weekly download of future-culture picks and deep-internet insights.",
-					date: "Aug 17, 2025",
-					readTime: "8 min",
-					previewImage: "assets/ex3.jpg",
-					link: "/article"
-				},
-				{
-					id: 4,
-					title: "Supper man wavers",
-					category: "Newsletter",
-					excerpt: "Weekly download of future-culture picks and deep-internet insights.",
-					date: "Aug 3, 2025",
-					readTime: "7 min",
-					previewImage: "assets/ex4.jpg",
-					link: "/article"
-				},
-				{
-					id: 5,
-					title: "Playing goo-goo babies with your life on the line",
-					category: "Newsletter",
-					excerpt: "Weekly download of future-culture picks and deep-internet insights.",
-					date: "Jul 21, 2025",
-					readTime: "7 min",
-					previewImage: "assets/ex5.png",
-					link: "/article"
-				},
-				{
-					id: 6,
-					title: "Coconut dogs",
-					category: "Newsletter",
-					excerpt: "Weekly download of future-culture picks and deep-internet insights.",
-					date: "Jun 30, 2025",
-					readTime: "3 min",
-					previewImage: "assets/ex6.png",
-					link: "/article"
-				}
-			];
 
 			// Dithering shader
 			const DitheringShader = {
@@ -756,14 +591,7 @@
 			}
 
 			function loadCustomFont() {
-				const font = new FontFace('Epmarugo', 'url(assets/epmarugo.ttf)');
-				font.load().then(function(loadedFont) {
-					document.fonts.add(loadedFont);
-					customFontLoaded = true;
-				}).catch(function(error) {
-					console.warn('Custom font failed to load:', error);
-					customFontLoaded = false;
-				});
+				customFontLoaded = true; // Use system fonts for simplicity
 			}
 
 			function resizeOverlayCanvas() {
@@ -873,267 +701,12 @@
 				return fragments;
 			}
 
-			function createCloudImage() {
-				const exNumber = Math.floor(Math.random() * 9) + 1;
-				const img = document.createElement('img');
-				img.src = `assets/ex${exNumber}.png`;
-				img.className = 'cloud-image';
-				
-				const x = Math.random() * (window.innerWidth - 200) + 100;
-				const y = Math.random() * (window.innerHeight - 200) + 100;
-				
-				const finalWidth = 150 + Math.random() * 300;
-				const finalHeight = 100 + Math.random() * 200;
-				
-				img.style.left = x + 'px';
-				img.style.top = y + 'px';
-				img.style.width = '0px';
-				img.style.height = '0px';
-				img.style.transform = 'translate(-50%, -50%)';
-				
-				document.body.appendChild(img);
-				
-				const cloudData = {
-					element: img,
-					x: x,
-					y: y,
-					currentWidth: 0,
-					currentHeight: 0,
-					finalWidth: finalWidth,
-					finalHeight: finalHeight,
-					phase: 'scaling',
-					startTime: performance.now(),
-					scaleDuration: 200 + Math.random() * 300,
-					scanner: null
-				};
-				
-				return cloudData;
-			}
-
-			function createWanderingScanner() {
-				const scanner = document.createElement('div');
-				scanner.className = 'hud-scanner';
-				
-				const frame = document.createElement('div');
-				frame.className = 'hud-scanner-frame';
-				scanner.appendChild(frame);
-				
-				const corners = document.createElement('div');
-				corners.className = 'hud-scanner-corners';
-				scanner.appendChild(corners);
-				
-				const line = document.createElement('div');
-				line.className = 'hud-scanner-line';
-				scanner.appendChild(line);
-				
-				const startX = Math.random() * window.innerWidth;
-				const startY = Math.random() * window.innerHeight;
-				
-				scanner.style.left = startX + 'px';
-				scanner.style.top = startY + 'px';
-				scanner.style.transform = 'translate(-50%, -50%)';
-				scanner.style.width = '20px';
-				scanner.style.height = '20px';
-				scanner.setAttribute('data-status', 'Scanning');
-				
-				document.body.appendChild(scanner);
-				
-				const angle = Math.random() * Math.PI * 2;
-				const speed = 1 + Math.random() * 1.5;
-				
-				const scannerData = {
-					element: scanner,
-					currentX: startX,
-					currentY: startY,
-					velocityX: Math.cos(angle) * speed,
-					velocityY: Math.sin(angle) * speed,
-					phase: 'wandering',
-					lastDirectionChange: performance.now(),
-					targetCloud: null,
-					initialWidth: 20,
-					initialHeight: 20
-				};
-				
-				return scannerData;
-			}
-
-			function initializeWanderingScanners() {
-				for (let i = 0; i < maxScanners; i++) {
-					wanderingScanners.push(createWanderingScanner());
-				}
-			}
-
-			function updateCloudImages(currentTime) {
-				if (window.cloudControls && window.cloudControls.enabled && 
-					currentTime - lastCloudSpawnTime > cloudSpawnInterval) {
-					cloudImages.push(createCloudImage());
-					lastCloudSpawnTime = currentTime;
-				}
-				
-				cloudImages = cloudImages.filter(cloud => {
-					const elapsed = currentTime - cloud.startTime;
-					
-					if (cloud.phase === 'scaling') {
-						const progress = Math.min(elapsed / cloud.scaleDuration, 1);
-						cloud.currentWidth = cloud.finalWidth * progress;
-						cloud.currentHeight = cloud.finalHeight * progress;
-						
-						cloud.element.style.width = cloud.currentWidth + 'px';
-						cloud.element.style.height = cloud.currentHeight + 'px';
-						
-						if (progress >= 1) {
-							cloud.phase = 'ready';
-							assignScannerToCloud(cloud);
-						}
-					} else if (cloud.phase === 'ready') {
-						// Ready to be detected
-					} else if (cloud.phase === 'being_scanned') {
-						// Being scanned
-					}
-					
-					return cloud.phase !== 'complete';
-				});
-			}
-
-			function updateWanderingScanners(currentTime) {
-				while (wanderingScanners.length < maxScanners) {
-					wanderingScanners.push(createWanderingScanner());
-				}
-				
-				wanderingScanners.forEach(scanner => {
-					if (!scanner.element || !scanner.element.parentNode) return;
-					
-					if (scanner.phase === 'wandering') {
-						scanner.currentX += scanner.velocityX;
-						scanner.currentY += scanner.velocityY;
-						
-						if (scanner.currentX < 0 || scanner.currentX > window.innerWidth) {
-							scanner.velocityX *= -1;
-							scanner.currentX = Math.max(0, Math.min(window.innerWidth, scanner.currentX));
-						}
-						if (scanner.currentY < 0 || scanner.currentY > window.innerHeight) {
-							scanner.velocityY *= -1;
-							scanner.currentY = Math.max(0, Math.min(window.innerHeight, scanner.currentY));
-						}
-						
-						if (currentTime - scanner.lastDirectionChange > 2000 + Math.random() * 3000) {
-							const angle = Math.random() * Math.PI * 2;
-							const speed = 1 + Math.random() * 1.5;
-							scanner.velocityX = Math.cos(angle) * speed;
-							scanner.velocityY = Math.sin(angle) * speed;
-							scanner.lastDirectionChange = currentTime;
-						}
-					} else if (scanner.phase === 'targeting') {
-						const cloud = scanner.targetCloud;
-						if (!cloud || cloud.phase === 'complete') {
-							scanner.phase = 'wandering';
-							scanner.targetCloud = null;
-							return;
-						}
-						
-						const dx = cloud.x - scanner.currentX;
-						const dy = cloud.y - scanner.currentY;
-						const distance = Math.sqrt(dx * dx + dy * dy);
-						
-						if (distance > 5) {
-							const moveSpeed = 10;
-							scanner.currentX += (dx / distance) * moveSpeed;
-							scanner.currentY += (dy / distance) * moveSpeed;
-						} else {
-							scanner.phase = 'scanning';
-							scanner.scanStartTime = currentTime;
-							scanner.growthStartTime = currentTime;
-							scanner.targetWidth = cloud.finalWidth;
-							scanner.targetHeight = cloud.finalHeight;
-							scanner.element.classList.add('scanning');
-							scanner.element.setAttribute('data-status', 'Identified');
-						}
-						
-					} else if (scanner.phase === 'scanning') {
-						const elapsed = currentTime - scanner.scanStartTime;
-						const growthElapsed = currentTime - scanner.growthStartTime;
-						
-						if (growthElapsed < 300) {
-							const growthProgress = growthElapsed / 300;
-							const easeProgress = 1 - Math.pow(1 - growthProgress, 3);
-							
-							const currentWidth = scanner.initialWidth + (scanner.targetWidth - scanner.initialWidth) * easeProgress;
-							const currentHeight = scanner.initialHeight + (scanner.targetHeight - scanner.initialHeight) * easeProgress;
-							
-							scanner.element.style.width = currentWidth + 'px';
-							scanner.element.style.height = currentHeight + 'px';
-						}
-						
-						if (elapsed > 800) {
-							scanner.targetCloud.element.remove();
-							scanner.targetCloud.phase = 'complete';
-							
-							scanner.phase = 'returning';
-							scanner.returnStartTime = currentTime;
-							scanner.element.classList.remove('scanning');
-						}
-						
-					} else if (scanner.phase === 'returning') {
-						const elapsed = currentTime - scanner.returnStartTime;
-						if (elapsed < 200) {
-							const shrinkProgress = elapsed / 200;
-							const currentWidth = scanner.targetWidth - (scanner.targetWidth - scanner.initialWidth) * shrinkProgress;
-							const currentHeight = scanner.targetHeight - (scanner.targetHeight - scanner.initialHeight) * shrinkProgress;
-							
-							scanner.element.style.width = currentWidth + 'px';
-							scanner.element.style.height = currentHeight + 'px';
-						} else {
-							scanner.element.style.width = scanner.initialWidth + 'px';
-							scanner.element.style.height = scanner.initialHeight + 'px';
-							scanner.element.setAttribute('data-status', 'Scanning');
-							scanner.phase = 'wandering';
-							scanner.targetCloud = null;
-							
-							const angle = Math.random() * Math.PI * 2;
-							const speed = 1 + Math.random() * 1.5;
-							scanner.velocityX = Math.cos(angle) * speed;
-							scanner.velocityY = Math.sin(angle) * speed;
-						}
-					}
-					
-					scanner.element.style.left = scanner.currentX + 'px';
-					scanner.element.style.top = scanner.currentY + 'px';
-				});
-			}
-
-			function assignScannerToCloud(cloud) {
-				let nearestScanner = null;
-				let nearestDistance = Infinity;
-				
-				wanderingScanners.forEach(scanner => {
-					if (scanner.phase === 'wandering') {
-						const dx = cloud.x - scanner.currentX;
-						const dy = cloud.y - scanner.currentY;
-						const distance = Math.sqrt(dx * dx + dy * dy);
-						
-						if (distance < nearestDistance) {
-							nearestDistance = distance;
-							nearestScanner = scanner;
-						}
-					}
-				});
-				
-				if (nearestScanner) {
-					nearestScanner.phase = 'targeting';
-					nearestScanner.targetCloud = cloud;
-					cloud.phase = 'being_scanned';
-				}
-			}
-
 			function drawChatboxes() {
 				if (!overlayCtx) return;
 				
 				overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 				
 				const currentTime = performance.now();
-				
-				updateCloudImages(currentTime);
-				updateWanderingScanners(currentTime);
 				
 				const speed = window.chatboxControls ? window.chatboxControls.speed : 1.0;
 				const connectionDistance = window.chatboxControls ? window.chatboxControls.connectionDistance * 12 : 40;
@@ -1196,25 +769,9 @@
 				const caretX = chatbox.x + (baseCaretOffset / pixelScale);
 				const caretY = chatbox.y + chatbox.height;
 
-				const isFF7Style = window.chatboxControls && window.chatboxControls.style === 'ff7';
-
-				if (isFF7Style) {
-					const gradient = overlayCtx.createLinearGradient(
-						chatbox.x, chatbox.y, 
-						chatbox.x, chatbox.y + chatbox.height
-					);
-					gradient.addColorStop(0, '#1e3a5f');
-					gradient.addColorStop(0.5, '#0f1f3d');
-					gradient.addColorStop(1, '#061426');
-					
-					overlayCtx.fillStyle = gradient;
-					overlayCtx.strokeStyle = '#4a6fa5';
-					overlayCtx.lineWidth = Math.max(1, Math.round(2 / pixelScale));
-				} else {
-					overlayCtx.fillStyle = 'white';
-					overlayCtx.strokeStyle = 'black';
-					overlayCtx.lineWidth = Math.max(1, Math.round(4 / pixelScale));
-				}
+				overlayCtx.fillStyle = 'white';
+				overlayCtx.strokeStyle = 'black';
+				overlayCtx.lineWidth = Math.max(1, Math.round(4 / pixelScale));
 
 				overlayCtx.beginPath();
 				overlayCtx.rect(chatbox.x, chatbox.y, chatbox.width, chatbox.height);
@@ -1240,11 +797,11 @@
 				overlayCtx.lineTo(caretX + caretSize, caretY);
 				overlayCtx.stroke();
 				
-				overlayCtx.fillStyle = isFF7Style ? 'white' : 'black';
+				overlayCtx.fillStyle = 'black';
 				overlayCtx.textBaseline = 'middle';
 				
 				const textBaseFontSize = chatbox.height * 0.4;
-				const fontFamily = customFontLoaded ? 'Epmarugo' : 'monospace';
+				const fontFamily = 'monospace';
 				
 				let totalWidth = 0;
 				chatbox.textStyles.forEach(fragment => {
@@ -1267,71 +824,6 @@
 					
 					overlayCtx.fillText(fragment.text, currentX, textY);
 					currentX += overlayCtx.measureText(fragment.text).width;
-				});
-			}
-
-			function renderArticles() {
-				const articlesGrid = document.getElementById('articles-grid');
-				
-				articles.forEach(article => {
-					// Outer link wrapper so the whole window is clickable
-					const link = document.createElement('a');
-					link.href = article.link;
-					link.className = 'article-card windowized';
-					link.style.textDecoration = 'none';
-					link.style.color = 'inherit';
-
-					// Pixel window chrome container
-					const windowEl = document.createElement('div');
-					windowEl.className = 'agency-card pixel-window';
-
-					// Titlebar
-					const titlebar = document.createElement('div');
-					titlebar.className = 'window-titlebar';
-					const title = document.createElement('div');
-					title.className = 'window-title';
-					title.textContent = article.title;
-					const controls = document.createElement('div');
-					controls.className = 'window-controls';
-					controls.innerHTML = `
-						<div class="window-control" title="Minimize"><span>–</span></div>
-						<div class="window-control" title="Resize"><span>□</span></div>
-						<div class="window-control" title="Close"><span>×</span></div>
-					`;
-					titlebar.appendChild(title);
-					titlebar.appendChild(controls);
-
-
-					// Body (preview + content)
-					const body = document.createElement('div');
-					body.className = 'card-body';
-					body.innerHTML = `
-						<div class="article-preview" style="background-image: url('${article.previewImage}')"></div>
-						<div class="article-content">
-							<div class="article-category">${article.category}</div>
-							<h3 class="article-title">${article.title}</h3>
-							<p class="article-excerpt">${article.excerpt}</p>
-							<div class="article-meta">
-								<span class="article-date">${article.date}</span>
-								<span class="article-read-time">${article.readTime}</span>
-							</div>
-						</div>
-					`;
-
-					// Status bar and scanlines
-					const scanlines = document.createElement('div');
-					scanlines.className = 'window-scanlines';
-					const status = document.createElement('div');
-					status.className = 'status-bar';
-					status.innerHTML = `<span>Pixel UI v1.0</span><span>${article.date}</span>`;
-
-					// Assemble
-					windowEl.appendChild(titlebar);
-					windowEl.appendChild(body);
-					windowEl.appendChild(scanlines);
-					// windowEl.appendChild(status);
-					link.appendChild(windowEl);
-					articlesGrid.appendChild(link);
 				});
 			}
 
@@ -1369,7 +861,6 @@
 				renderer.setSize( width, height );
 				renderer.setAnimationLoop( animate );
 				document.body.appendChild( renderer.domElement );
-				// Ensure the WebGL canvas never captures scroll or clicks
 				renderer.domElement.style.pointerEvents = 'none';
 
 				camera = new THREE.PerspectiveCamera( 65, width / height, 3, 10 );
@@ -1424,16 +915,8 @@
 				}
 
 				createOverlayCanvas();
-				initializeWanderingScanners();
-				renderArticles();
 				setupNewsletterForm();
 				setupNavigation();
-				
-				setTimeout(() => {
-					if (cloudImages.length === 0) {
-						cloudImages.push(createCloudImage());
-					}
-				}, 100);
 
 				composer = new EffectComposer( renderer );
 				renderPass = new RenderPass( scene, camera );
@@ -1470,49 +953,7 @@
 					style: 'classic'
 				};
 
-				window.cloudControls = {
-					enabled: true,
-					spawnRate: 0.5,
-					scannerCount: 4
-				};
-				
-				window.cloudDebug = {
-					status: 'Waiting...'
-				};
-
 				window.addEventListener( 'resize', onWindowResize );
-
-			// Add responsive typography styles
-			const style = document.createElement('style');
-			style.textContent = `
-				@media (max-width: 768px) {
-					.article-title {
-						font-size: 20px !important;
-						line-height: 1.3 !important;
-					}
-					.article-content {
-						padding: 24px !important;
-					}
-					.articles-grid {
-						grid-template-columns: 1fr !important;
-						gap: 24px !important;
-						padding: 0 16px !important;
-					}
-				}
-				
-				@media (max-width: 480px) {
-					.article-title {
-						font-size: 18px !important;
-					}
-					.article-excerpt {
-						font-size: 14px !important;
-					}
-					.article-content {
-						padding: 20px !important;
-					}
-				}
-			`;
-			document.head.appendChild(style);
 
 			}
 
