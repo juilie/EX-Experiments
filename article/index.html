@@ -869,7 +869,7 @@ This past March, for example, Roblox Corp released the “Rights Manager,” a p
                 function onDocumentMouseMove(event) {
                     mouseCoords.set(
                         (event.clientX / window.innerWidth) * 2 - 1,
-                        -(event.clientY / window.innerHeight) * 2 + 1  // Flip Y coordinate
+                        (event.clientY / window.innerHeight) * 2 - 1  // Keep original Y coordinate
                     );
                     mouseMoved = true;
                 }
@@ -879,7 +879,7 @@ This past March, for example, Roblox Corp released the “Rights Manager,” a p
                         event.preventDefault();
                         mouseCoords.set(
                             (event.touches[0].pageX / window.innerWidth) * 2 - 1,
-                            -(event.touches[0].pageY / window.innerHeight) * 2 + 1  // Flip Y coordinate
+                            (event.touches[0].pageY / window.innerHeight) * 2 - 1  // Keep original Y coordinate
                         );
                         mouseMoved = true;
                     }
