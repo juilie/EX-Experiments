@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>EX Research — Article Sample</title>
+    <link type="text/css" rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://unpkg.com/7.css">
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <a href="../index.html" class="logo">EX RESEARCH</a>
+        <nav class="nav">
+          <a href="../articles/index.html#about">About</a>
+          <a href="../articles/index.html#contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="page">
+      <article class="article">
+        <header class="article-hero">
+          <h1 class="article-title">What’s the deal with Roblox? An EX Special Report</h1>
+          <p class="article-subtitle">We turned our red Roblox caps backwards and started greeting our fellow kids.</p>
+          <div class="article-meta">
+            <a class="meta-source" href="#">EX Research</a>
+            <span class="meta-sep">—</span>
+            <time datetime="2024-07-10">Jul 10, 2024</time>
+            <span class="meta-sep">—</span>
+            <span>23 min</span>
+            <span class="meta-tag">Special Report</span>
+          </div>
+        </header>
+
+        <section class="article-section">
+          <h2>Introduction: Should I care about <em>Roblox</em>? 🤔</h2>
+          <p>You’ve heard of <em>Roblox</em>. If you’re a parent, you might be hearing about <em>Roblox</em> right this instant. If not, maybe you've seen the game’s eye‑popping numbers:</p>
+          <ul class="bullets">
+            <li>Either the #1 or #2 game in the US, depending who you ask <a href="#">[link]</a></li>
+            <li>$4B valuation to a $45B IPO (with a later drop) <a href="#">[link]</a></li>
+            <li>77.7M daily active users <a href="#">[link]</a></li>
+            <li>Each playing 2.4 hours per day on average <a href="#">[link]</a></li>
+            <li>Including half of all US youth age 12 to 17 <a href="#">[link]</a></li>
+          </ul>
+        </section>
+
+        <section class="article-section">
+          <h2>Part One: Why is <em>Roblox</em> so huge?</h2>
+          <figure class="image">
+            <img src="../articles/assets/ex4.jpg" alt="Roblox city art">
+            <figcaption>Players jump across millions of different “experiences.” Clothes and aesthetic remain coherent.</figcaption>
+          </figure>
+
+          <p>It’s the closest thing we have to a metaverse.</p>
+          <p>Nobody wants to hear the word “metaverse” any more. Bundled with cryptocurrency, consumer VR, and generative AI into the nebulously defined concept of Web3, the metaverse so far has been bad tech demos and consumer‑last initiatives.</p>
+
+          <blockquote class="pullquote">
+            <span class="bar"></span>
+            <p>“A massively scaled and interoperable network of real‑time rendered 3D virtual worlds and environments which can be experienced synchronously and persistently by an effectively unlimited number of users with an individual sense of presence, and with continuity of data, such as identity, history, entitlements, objects, communications, and payments.” <a href="#">[link]</a></p>
+          </blockquote>
+        </section>
+
+        <section class="article-section callout">
+          <h3>Key Takeaway</h3>
+          <p><strong>Roblox is a coherent platform</strong> stitching together disparate worlds, identity, and economy — a practical version of what others only pitch.</p>
+        </section>
+
+        <section class="article-section">
+          <details class="bonus" open>
+            <summary>
+              <span class="caret">▾</span>
+              <span class="bonus-title">BONUS: Is Roblox the promised land for brands?</span>
+            </summary>
+            <div class="bonus-content">
+              <p>The outside world takes notice when big brand activations happen in <em>Roblox</em>. Nike, Nerf, Ralph Lauren, Wal‑Mart and more have created glossy worlds. But traction varies widely.</p>
+              <p><strong>IKEA</strong> offered to pay 10 players real money to work in their virtual store; they got 178,000 applications <a href="#">[link]</a>. Yet the unofficial horror game <em>3008</em> — a thinly veiled IKEA — has over 2.1B visits.</p>
+            </div>
+          </details>
+        </section>
+
+        <nav class="article-footer">
+          <a class="back-button" href="../articles/index.html">← Back to Articles</a>
+        </nav>
+      </article>
+    </main>
+
+    <script>
+      // Bonus collapsible caret toggle
+      document.addEventListener('click', function(e){
+        const el = e.target.closest('details.bonus > summary');
+        if(!el) return;
+        const details = el.parentElement;
+        const caret = el.querySelector('.caret');
+        requestAnimationFrame(() => {
+          if (details.open) { caret.textContent = '▾'; } else { caret.textContent = '▸'; }
+        });
+      });
+    </script>
+  </body>
+  </html>
+
+

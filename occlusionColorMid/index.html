@@ -51,41 +51,6 @@
 				box-shadow: 0 12px 30px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15);
 			}
 
-			/* Pixel-styled window variant */
-			.agency-card.pixel-window {
-				border-radius: 4px;
-				image-rendering: pixelated;
-				box-shadow:
-					0 0 0 2px #000,
-					0 0 0 4px #7aa7d9,
-					0 0 0 6px #000,
-					6px 6px 0 #00000020,
-					12px 12px 0 #00000015; /* maximal stepped frame */
-			}
-
-			.agency-card.pixel-window::after {
-				content: '';
-				position: absolute;
-				inset: 0;
-				pointer-events: none;
-				background:
-					repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px),
-					repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px);
-				opacity: .7; /* light pixel grid texture */
-			}
-
-			/* animated scanlines overlay */
-			.window-scanlines {
-				position: absolute;
-				inset: 41px 0 22px 0; /* inside title and status bars */
-				pointer-events: none;
-				background: repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0 1px, transparent 1px 3px);
-				animation: scanMove 4s linear infinite;
-				opacity: .35;
-			}
-
-			@keyframes scanMove { 0% { background-position-y: 0; } 100% { background-position-y: 8px; } }
-
 			/* disable previous decorative tabs */
 			.agency-card::before,
 			.agency-card::after { display: none; }
@@ -93,107 +58,46 @@
 			/* Generic app window title bar */
 			.window-titlebar {
 				height: 40px;
-				background: linear-gradient(to bottom, #e9eef3, #cfd6de);
-				border-bottom: 2px solid #000;
+				background: linear-gradient(to bottom, #f7f7f8, #ececee);
+				border-bottom: 1px solid #dcdcde;
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
-				padding: 0 0 0 10px;
-				box-shadow: inset 0 -2px 0 #7aa7d9, inset 0 2px 0 #ffffff;
+				padding: 0 10px;
 			}
-
-			/* 3D title canvas container */
-			#three-title {
-				width: 100%;
-				height: 170px;
-				position: relative;
-				margin: 4px 0 6px 0;
-			}
-			#three-title canvas { display: block; width: 100%; height: 100%; }
 
 			.window-title {
 				font-size: 12px;
 				font-weight: 600;
 				letter-spacing: 0.08em;
 				text-transform: uppercase;
-				color: #1d2935;
-				text-shadow: 0 1px 0 #fff;
+				color: #222;
 			}
 
 			.window-controls {
 				display: flex;
 				gap: 6px;
-				padding: 0 10px;
 			}
 
 			.window-control {
 				width: 16px;
 				height: 16px;
-				border: 1px solid #2a2a2a;
-				border-radius: 2px;
+				border: 1px solid #bcbec0;
+				border-radius: 3px;
 				background: #ffffff;
 				display: grid;
 				place-items: center;
 				cursor: default;
-				box-shadow: inset 0 -1px 0 #d5dbe3, inset 0 1px 0 #ffffff;
 			}
 
 			.window-control span {
 				font-size: 10px;
 				line-height: 1;
-				color: #333;
+				color: #555;
 			}
 
-			.window-control:hover { background: #eef3f8; }
+			.window-control:hover { background: #f9fafb; }
 			.window-control:active { border-color: #111; }
-
-			/* colored pixel controls */
-			/* Neutral minimize/resize by default; Close turns red on hover */
-			.window-control[title="Close"]:hover { background: #f1d4d6; }
-			.window-control[title="Close"]:active { background: #e9b3b8; }
-
-			/* Toolbar chips and address bar */
-			.window-toolbar {
-				display: flex;
-				align-items: center;
-				gap: 8px;
-				padding: 8px 10px;
-				border-bottom: 2px solid #000;
-				background: linear-gradient(#ffffff,#f4f6f8);
-				color: #323232;
-			}
-
-			.toolbar-chip {
-				padding: 2px 6px;
-				font-size: 10px;
-				border: 1px solid #000;
-				border-radius: 3px;
-				background: #e9eef3;
-				box-shadow: 1px 1px 0 #000;
-			}
-
-			.address-bar {
-				flex: 1;
-				height: 20px;
-				border: 1px solid #000;
-				border-radius: 3px;
-				background: #ffffff;
-				box-shadow: inset 1px 1px 0 #dcdcdc;
-			}
-
-			/* Status bar */
-			.status-bar {
-				height: 22px;
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				gap: 10px;
-				padding: 0 8px;
-				border-top: 2px solid #000;
-				background: repeating-linear-gradient(90deg, #e7eef6 0 6px, #dfe7f0 6px 12px);
-				font-size: 10px;
-				color: #1d2935;
-			}
 
 			.card-header { display: none; }
 
@@ -208,11 +112,8 @@
 			}
 
 			.card-body {
-				padding: 36px;
-				padding-top: 0px;
+				padding: 32px;
 				text-align: center;
-				background: url('/assets/images/clouds.png') no-repeat center center;
-				background-size: cover;
 			}
 
 			#enter-button {
@@ -319,16 +220,8 @@
 				color: black;
 				margin: 0 0 32px 0;
 				line-height: 1.5;
-				font-weight: 600;
-				margin-top: -64px;
-				text-shadow: 
-					2px 2px 4px rgba(255,255,255,0.8),
-					0 0 8px rgba(255,255,255,0.6),
-					0 0 16px rgba(255,255,255,0.4);
-				background: rgba(199, 199, 199, 0.61);
-				padding: 8px 16px;
-				border: inset 2px lightgray;
-				backdrop-filter: blur(4px);
+				font-weight: 400;
+				font-style: italic;
 			}
 			
 			.hidden {
@@ -440,7 +333,7 @@
 	</head>
 	<body>
 		<div id="homepage-ui">
-			<div class="agency-card pixel-window">
+			<div class="agency-card">
 				<div class="window-titlebar">
 					<div class="window-title">EX Research</div>
 					<div class="window-controls">
@@ -449,21 +342,14 @@
 						<div class="window-control" title="Close"><span>×</span></div>
 					</div>
 				</div>
-				<div class="window-toolbar">
-					<div class="toolbar-chip">EX</div>
-					<div class="toolbar-chip">research</div>
-					<div class="toolbar-chip">labs</div>
-					<div class="address-bar"></div>
-				</div>
 				<div class="card-body">
-					<div id="three-title" aria-label="EX Research"></div>
+					<h1 id="main-title">
+						<span class="letter medium-light">EX</span>
+						<span class="letter small">&nbsp;</span>
+						<span class="letter medium">R</span><span class="letter medium">e</span><span class="letter medium">s</span><span class="letter medium">e</span><span class="letter medium">a</span><span class="letter medium">r</span><span class="letter medium">c</span><span class="letter medium">h</span>
+					</h1>
 					<p id="subtitle">The world's most online agency.</p>
 					<button id="enter-button">ENTER</button>
-				</div>
-				<div class="window-scanlines"></div>
-				<div class="status-bar">
-					<span>Website v1.0</span>
-					<span>Connected...</span>
 				</div>
 			</div>
 		</div>
@@ -482,8 +368,6 @@
 			import * as THREE from 'three';
 
 			import Stats from 'three/addons/libs/stats.module.js';
-			import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-			import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 			import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 			import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -497,17 +381,6 @@
 			let group;
 			// Color scheme controls
 			let colorSchemes, colorSchemeNames, colorControls;
-			// 3D title
-			let titleRenderer, titleScene, titleCamera, titleMesh, titleMount, exMesh, researchMesh;
-			// Background pixelation animation controls
-			const pixelationAnim = {
-				enabled: true,
-				minScale: 0.12, // much lower internal resolution
-				maxScale: 0.12, // keep constant (no resolution pulsing)
-				speedHz: 0.0,
-				lastW: 0,
-				lastH: 0
-			};
 			
 			// 2D Chatbox overlay variables
 			let overlayCanvas, overlayCtx;
@@ -1352,9 +1225,6 @@
 				renderer.setSize( width, height );
 				renderer.setAnimationLoop( animate );
 				document.body.appendChild( renderer.domElement );
-				// Always stretch canvas to full window; we'll animate internal resolution separately
-				renderer.domElement.style.width = width + 'px';
-				renderer.domElement.style.height = height + 'px';
 
 				camera = new THREE.PerspectiveCamera( 65, width / height, 3, 10 );
 				camera.position.z = 7;
@@ -1458,9 +1328,6 @@
 				
 				const outputPass = new OutputPass();
 				composer.addPass( outputPass );
-
-				// Build 3D title scene inside the card
-				initializeThreeTitle();
 
 				// Initialize default control values
 				window.chatboxControls = {
@@ -1649,25 +1516,6 @@
 				group.rotation.x = timer * 0.0002;
 				group.rotation.y = timer * 0.0001;
 
-				// Animate background internal resolution to create pixelation without shader
-				if ( pixelationAnim.enabled ) {
-					const displayW = document.documentElement.clientWidth || window.innerWidth || 1;
-					const displayH = document.documentElement.clientHeight || window.innerHeight || 1;
-					const t = (Math.sin(timer * 0.001 * (Math.PI * 2) * pixelationAnim.speedHz) + 1) * 0.5; // 0..1
-					const scale = pixelationAnim.minScale + (pixelationAnim.maxScale - pixelationAnim.minScale) * t;
-					const internalW = Math.max(1, Math.floor(displayW * scale));
-					const internalH = Math.max(1, Math.floor(displayH * scale));
-					if (internalW !== pixelationAnim.lastW || internalH !== pixelationAnim.lastH) {
-						// Resize internal render buffers, keep CSS stretched to full window
-						renderer.setSize(internalW, internalH, false);
-						composer.setSize(internalW, internalH);
-						renderer.domElement.style.width = displayW + 'px';
-						renderer.domElement.style.height = displayH + 'px';
-						pixelationAnim.lastW = internalW;
-						pixelationAnim.lastH = internalH;
-					}
-				}
-
 				// Draw 2D chatboxes overlay
 				if ( window.chatboxControls && window.chatboxControls.visible ) {
 					drawChatboxes();
@@ -1675,141 +1523,6 @@
 
 				composer.render();
 
-				// Render title scene if available
-				if (titleRenderer && titleScene && titleCamera && titleMesh) {
-					const time = performance.now() * 0.001;
-					
-					// Animate EX and Research separately
-					if (exMesh) {
-						exMesh.rotation.y = Math.sin(time) * 0.2;
-						exMesh.position.y = Math.sin(time * 0.7) * 0.1;
-					}
-					if (researchMesh) {
-						researchMesh.rotation.y = Math.sin(time + 1.5) * 0.15;
-						researchMesh.position.y = Math.sin(time * 0.5 + 2) * 0.08;
-					}
-					
-					titleRenderer.render(titleScene, titleCamera);
-				}
-
-			}
-
-			function initializeThreeTitle() {
-				titleMount = document.getElementById('three-title');
-				if (!titleMount) return;
-				// Use client size to avoid transform(scale(0)) shrinking bounding box
-				let w = Math.max(1, titleMount.clientWidth || (titleMount.parentElement ? titleMount.parentElement.clientWidth : 0) || window.innerWidth);
-				let h = Math.max(1, titleMount.clientHeight || 220);
-				titleRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-				titleRenderer.setPixelRatio(window.devicePixelRatio);
-				titleRenderer.setSize(w, h, false);
-				titleRenderer.setClearColor(0x000000, 0);
-				titleMount.innerHTML = '';
-				titleMount.appendChild(titleRenderer.domElement);
-
-				titleScene = new THREE.Scene();
-				titleCamera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-					titleCamera.position.set(0, 0, 16);
-
-				// Lighting - much brighter to simulate 1.5x brightness
-				const key = new THREE.DirectionalLight(0xffffff, 2.0); // doubled intensity
-				key.position.set(2, 3, 5);
-				titleScene.add(key);
-				const fill = new THREE.DirectionalLight(0xa0b9ff, 1.2); // doubled intensity
-				fill.position.set(-3, 2, 2);
-				titleScene.add(fill);
-				const rim = new THREE.DirectionalLight(0xfff0d0, 1.0); // doubled intensity
-				rim.position.set(0, -2, -4);
-				titleScene.add(rim);
-				// Add ambient light for overall brightness boost
-				const ambient = new THREE.AmbientLight(0xffffff, 0.4);
-				titleScene.add(ambient);
-
-				// 3D text using bevelled ExtrudeGeometry
-				const textLoader = new FontLoader();
-				textLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', function(font) {
-					const textGeo = new TextGeometry('EX Research', {
-						font: font,
-						size: 3.0,
-						height: 0.7,
-						curveSegments: 8,
-						bevelEnabled: true,
-						bevelThickness: 0.25,
-						bevelSize: 0.15,
-						bevelSegments: 3
-					});
-					textGeo.computeBoundingBox();
-					textGeo.center();
-
-					// Helper to create a mesh with one material applied to whole geometry
-					function createTextMesh(str, material) {
-						const geo = new TextGeometry(str, {
-							font: font,
-							size: 3.0,
-							height: 0.7,
-							curveSegments: 8,
-							bevelEnabled: true,
-							bevelThickness: 0.25,
-							bevelSize: 0.15,
-							bevelSegments: 3
-						});
-						geo.computeBoundingBox();
-						const mesh = new THREE.Mesh(geo, material);
-						return { mesh, geo };
-					}
-
-					// Materials: EX and Research - colors that complement the soft pastel palette
-					const exMaterial = new THREE.MeshPhysicalMaterial({
-						color: 0xffd700, // warm golden yellow - complements the pastels
-						metalness: 0.1,
-						roughness: 0.3,
-						reflectivity: 0.8,
-						clearcoat: 0.8,
-						clearcoatRoughness: 0.1,
-						emissive: 0x886600 // golden glow
-					});
-					const researchMaterial = new THREE.MeshPhongMaterial({
-						color: 0xff69b4, // soft hot pink - matches the pastel aesthetic
-						shininess: 80,
-						specular: 0xffffff,
-						emissive: 0x883355 // pink glow
-					});
-
-					const { mesh: exMeshLocal, geo: exGeo } = createTextMesh('EX', exMaterial);
-					const { mesh: researchMeshLocal, geo: researchGeo } = createTextMesh('Research', researchMaterial);
-
-					// Compute widths to center combined group
-					const exBB = exGeo.boundingBox; const exW = exBB.max.x - exBB.min.x;
-					const resBB = researchGeo.boundingBox; const resW = resBB.max.x - resBB.min.x;
-					const spacing = 1; // slight negative kerning to pull words together
-					const totalW = exW + resW + spacing;
-					exMeshLocal.position.x = -totalW / 2;
-					researchMeshLocal.position.x = exMeshLocal.position.x + exW + spacing;
-
-					// Store individual meshes for separate animation
-					exMesh = exMeshLocal;
-					researchMesh = researchMeshLocal;
-					
-					// Create group so we can rotate one handle
-					const grp = new THREE.Group();
-					grp.add(exMeshLocal);
-					grp.add(researchMeshLocal);
-					titleScene.add(grp);
-					titleMesh = grp;
-				});
-
-				// Handle resize
-				function resizeTitle() {
-					if (!titleMount || !titleRenderer) return;
-					const cw = Math.max(1, titleMount.clientWidth || (titleMount.parentElement ? titleMount.parentElement.clientWidth : 0) || window.innerWidth);
-					const ch = Math.max(1, titleMount.clientHeight || 170);
-					titleRenderer.setSize(cw, ch, false);
-					titleCamera.aspect = cw / ch;
-					titleCamera.updateProjectionMatrix();
-				}
-				window.addEventListener('resize', resizeTitle);
-				// After entrance animation, re-measure once to capture final size
-				setTimeout(resizeTitle, 450);
 			}
 
 		</script>

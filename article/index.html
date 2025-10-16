@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>EX Research</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+            
+			@font-face {
+                font-family: 'Public Sans';
+                src: url('../assets/fonts/publicsans/PublicSans-Regular.ttf') format('truetype');
+            }
+            
+			html, body {
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+			}
+
+            .content {
+                max-width: 700px;
+                padding: 0 20px;
+                margin: 0 auto;
+                font-size: 18px;
+                line-height: 1.6;
+                color: #000;
+                font-family: Public Sans, sans-serif;
+            }
+
+            .article-window {
+                max-width: 600px;
+                margin: 20px auto;
+                background: #ffffff;
+                border: 1px solid #101010;
+                border-radius: 4px;
+                position: relative;
+                overflow: hidden;
+                box-shadow:
+                    0 0 0 2px #000,
+                    0 0 0 4px #7aa7d9,
+                    0 0 0 6px #000,
+                    6px 6px 0 #00000020,
+                    12px 12px 0 #00000015;
+                image-rendering: pixelated;
+            }
+
+            .article-window::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                background:
+                    repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px),
+                    repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px);
+                opacity: .7;
+            }
+
+            .window-titlebar {
+                height: 40px;
+                background: linear-gradient(to bottom, #e9eef3, #cfd6de);
+                border-bottom: 2px solid #000;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 0 0 10px;
+                box-shadow: inset 0 -2px 0 #7aa7d9, inset 0 2px 0 #ffffff;
+            }
+
+            .window-title {
+                font-size: 12px;
+                font-weight: 600;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: #1d2935;
+                text-shadow: 0 1px 0 #fff;
+            }
+
+            .window-controls {
+                display: flex;
+                gap: 6px;
+                padding: 0 10px;
+            }
+
+            .window-control {
+                width: 16px;
+                height: 16px;
+                border: 1px solid #2a2a2a;
+                border-radius: 2px;
+                background: #ffffff;
+                display: grid;
+                place-items: center;
+                cursor: default;
+                box-shadow: inset 0 -1px 0 #d5dbe3, inset 0 1px 0 #ffffff;
+            }
+
+            .window-control span {
+                font-size: 10px;
+                line-height: 1;
+                color: #333;
+            }
+
+            .window-control:hover { background: #eef3f8; }
+            .window-control:active { border-color: #111; }
+            .window-control[title="Close"]:hover { background: #f1d4d6; }
+            .window-control[title="Close"]:active { background: #e9b3b8; }
+
+            .window-toolbar {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 10px;
+                border-bottom: 2px solid #000;
+                background: linear-gradient(#ffffff,#f4f6f8);
+                color: #323232;
+            }
+
+            .toolbar-chip {
+                padding: 2px 6px;
+                font-size: 10px;
+                border: 1px solid #000;
+                border-radius: 3px;
+                background: #e9eef3;
+                box-shadow: 1px 1px 0 #000;
+            }
+
+            .address-bar {
+                flex: 1;
+                height: 20px;
+                border: 1px solid #000;
+                border-radius: 3px;
+                background: #ffffff;
+                box-shadow: inset 1px 1px 0 #dcdcdc;
+            }
+
+            .article-title {
+                font-size: 32px;
+                line-height: 1.2;
+                font-weight: 700;
+                font-family: Public Sans, sans-serif;
+                text-align: center;
+                margin: 20px;
+                color: #000;
+            }
+            
+            .article-subtitle {
+                font-size: 18px;
+                line-height: 1.4;
+                font-weight: 400;
+                font-family: Public Sans, sans-serif;
+                text-align: center;
+                margin: 0 20px 20px 20px;
+                color: #333;
+            }
+            
+            .article-meta {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                padding: 10px;
+                background: repeating-linear-gradient(90deg, #e7eef6 0 6px, #dfe7f0 6px 12px);
+                border-top: 2px solid #000;
+            }
+
+            .article-meta p {
+                margin: 0;
+                font-size: 12px;
+                line-height: 1.4;
+                font-weight: 400;
+                font-family: Public Sans, sans-serif;
+                color: #1d2935;
+            }
+
+            .window-scanlines {
+                position: absolute;
+                inset: 81px 0 0 0;
+                pointer-events: none;
+                background: repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0 1px, transparent 1px 3px);
+                animation: scanMove 4s linear infinite;
+                opacity: .35;
+            }
+
+            @keyframes scanMove { 
+                0% { background-position-y: 0; } 
+                100% { background-position-y: 8px; } 
+            }
+            
+            .content p {
+                margin-bottom: 18px;
+                font-size: 20px;
+                font-family: Public Sans, sans-serif;
+                line-height: 1.6;
+            }
+            
+            .content ul {
+                margin-bottom: 18px;
+            }
+
+            .content li {
+                margin-bottom: 10px;
+                margin-left: 20px;
+                list-style-type: disc;
+            }
+
+            .pullquote {
+                position: relative;
+                background: rgba(255,255,255,0.06);
+                border: 1px solid rgba(255,255,255,0.2);
+                border-radius: 8px;
+                padding: 18px 20px 18px 28px;
+            }
+
+            .pullquote .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #ff6db3; border-radius: 4px 0 0 4px; }
+            .pullquote p { font-size: 20px; line-height: 1.6; margin: 0; }
+
+            .image {
+                margin: 24px 0;
+                text-align: center;
+            }
+            .image img {
+                max-width: 700px;
+                height: auto;
+            }
+            .image-caption {
+                font-size: 14px;
+                margin-top: 8px;
+                text-align: left;
+            }
+
+            .toggle-card {
+                margin: 24px 0;
+                text-align: left;
+                border: 1px solid #000;
+                border-radius: 8px;
+                padding: 32px;
+            }
+
+            .toggle-card-content {
+                /* font-size: 14px; */
+                /* line-height: 1.4; */
+                /* font-weight: 400; */
+                /* font-family: inter, sans-serif; */
+                text-align: left;
+                margin-top: 8px;
+                display: none;
+            }
+
+            .toggle-card.open .toggle-card-content {
+                display: block;
+            }
+
+            .toggle-card summary {
+                cursor: pointer;
+                list-style: none;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+            }
+
+            .toggle-card-title {
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+            /* Water background styles */
+            #water-canvas {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: -1;
+                pointer-events: none;
+            }
+
+            .content {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                border-radius: 8px;
+                padding: 40px;
+                margin: 20px auto;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+
+		</style>
+		<link rel="stylesheet" href="https://unpkg.com/7.css">
+		
+		<!-- Three.js core -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+		<!-- Three.js addons -->
+		<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/math/SimplexNoise.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/misc/GPUComputationRenderer.js"></script>
+		
+		<!-- Water Shader Scripts -->
+		<script id="heightmapFragmentShader" type="x-shader/x-fragment">
+			#include <common>
+			uniform vec2 mousePos;
+			uniform float mouseSize;
+			uniform float viscosityConstant;
+			#define deltaTime ( 1.0 / 60.0 )
+			#define GRAVITY_CONSTANT ( resolution.x * deltaTime * 1.0 )
+			void main()	{
+				vec2 cellSize = 1.0 / resolution.xy;
+				vec2 uv = gl_FragCoord.xy * cellSize;
+				vec4 heightmapValue = texture2D( heightmap, uv );
+				vec4 north = texture2D( heightmap, uv + vec2( 0.0, cellSize.y ) );
+				vec4 south = texture2D( heightmap, uv + vec2( 0.0, - cellSize.y ) );
+				vec4 east = texture2D( heightmap, uv + vec2( cellSize.x, 0.0 ) );
+				vec4 west = texture2D( heightmap, uv + vec2( - cellSize.x, 0.0 ) );
+				float sump = north.x + south.x + east.x + west.x - 4.0 * heightmapValue.x;
+				float accel = sump * GRAVITY_CONSTANT;
+				heightmapValue.y += accel;
+				heightmapValue.x += heightmapValue.y * deltaTime;
+				heightmapValue.x += sump * viscosityConstant;
+				float mousePhase = clamp( length( ( uv - vec2( 0.5 ) ) * BOUNDS - vec2( mousePos.x, - mousePos.y ) ) * PI / mouseSize, 0.0, PI );
+				heightmapValue.x += cos( mousePhase ) + 1.0;
+				gl_FragColor = heightmapValue;
+			}
+		</script>
+
+		<script id="smoothFragmentShader" type="x-shader/x-fragment">
+			uniform sampler2D texture;
+			void main()	{
+				vec2 cellSize = 1.0 / resolution.xy;
+				vec2 uv = gl_FragCoord.xy * cellSize;
+				vec4 textureValue = texture2D( texture, uv );
+				textureValue += texture2D( texture, uv + vec2( 0.0, cellSize.y ) );
+				textureValue += texture2D( texture, uv + vec2( 0.0, - cellSize.y ) );
+				textureValue += texture2D( texture, uv + vec2( cellSize.x, 0.0 ) );
+				textureValue += texture2D( texture, uv + vec2( - cellSize.x, 0.0 ) );
+				textureValue /= 5.0;
+				gl_FragColor = textureValue;
+			}
+		</script>
+
+		<script id="waterVertexShader" type="x-shader/x-vertex">
+			uniform sampler2D heightmap;
+			#define PHONG
+			varying vec3 vViewPosition;
+			#ifndef FLAT_SHADED
+				varying vec3 vNormal;
+			#endif
+			#include <common>
+			#include <uv_pars_vertex>
+			#include <uv2_pars_vertex>
+			#include <displacementmap_pars_vertex>
+			#include <envmap_pars_vertex>
+			#include <color_pars_vertex>
+			#include <morphtarget_pars_vertex>
+			#include <skinning_pars_vertex>
+			#include <shadowmap_pars_vertex>
+			#include <logdepthbuf_pars_vertex>
+			#include <clipping_planes_pars_vertex>
+			void main() {
+				vec2 cellSize = vec2( 1.0 / WIDTH, 1.0 / WIDTH );
+				#include <uv_vertex>
+				#include <uv2_vertex>
+				#include <color_vertex>
+				vec3 objectNormal = vec3(
+					( texture2D( heightmap, uv + vec2( - cellSize.x, 0 ) ).x - texture2D( heightmap, uv + vec2( cellSize.x, 0 ) ).x ) * WIDTH / BOUNDS,
+					( texture2D( heightmap, uv + vec2( 0, - cellSize.y ) ).x - texture2D( heightmap, uv + vec2( 0, cellSize.y ) ).x ) * WIDTH / BOUNDS,
+					1.0 );
+				#include <morphnormal_vertex>
+				#include <skinbase_vertex>
+				#include <skinnormal_vertex>
+				#include <defaultnormal_vertex>
+			#ifndef FLAT_SHADED
+				vNormal = normalize( transformedNormal );
+			#endif
+				float heightValue = texture2D( heightmap, uv ).x;
+				vec3 transformed = vec3( position.x, position.y, heightValue );
+				#include <displacementmap_vertex>
+				#include <morphtarget_vertex>
+				#include <skinning_vertex>
+				#include <project_vertex>
+				#include <logdepthbuf_vertex>
+				#include <clipping_planes_vertex>
+				vViewPosition = - mvPosition.xyz;
+				#include <worldpos_vertex>
+				#include <envmap_vertex>
+				#include <shadowmap_vertex>
+			}
+		</script>
+
+		<script id="waterFragmentShader" type="x-shader/x-fragment">
+			uniform float colorNum;
+			uniform float pixelSize;
+			uniform vec2 resolution;
+			uniform vec3 diffuse;
+			uniform float opacity;
+			uniform vec3 emissive;
+			uniform vec3 specular;
+			uniform float shininess;
+			
+			varying vec3 vViewPosition;
+			varying vec3 vNormal;
+			
+			const float bayerMatrix8x8[64] = float[64](
+				0.0/ 64.0, 48.0/ 64.0, 12.0/ 64.0, 60.0/ 64.0,  3.0/ 64.0, 51.0/ 64.0, 15.0/ 64.0, 63.0/ 64.0,
+			32.0/ 64.0, 16.0/ 64.0, 44.0/ 64.0, 28.0/ 64.0, 35.0/ 64.0, 19.0/ 64.0, 47.0/ 64.0, 31.0/ 64.0,
+				8.0/ 64.0, 56.0/ 64.0,  4.0/ 64.0, 52.0/ 64.0, 11.0/ 64.0, 59.0/ 64.0,  7.0/ 64.0, 55.0/ 64.0,
+			40.0/ 64.0, 24.0/ 64.0, 36.0/ 64.0, 20.0/ 64.0, 43.0/ 64.0, 27.0/ 64.0, 39.0/ 64.0, 23.0/ 64.0,
+				2.0/ 64.0, 50.0/ 64.0, 14.0/ 64.0, 62.0/ 64.0,  1.0/ 64.0, 49.0/ 64.0, 13.0/ 64.0, 61.0/ 64.0,
+			34.0/ 64.0, 18.0/ 64.0, 46.0/ 64.0, 30.0/ 64.0, 33.0/ 64.0, 17.0/ 64.0, 45.0/ 64.0, 29.0/ 64.0,
+			10.0/ 64.0, 58.0/ 64.0,  6.0/ 64.0, 54.0/ 64.0,  9.0/ 64.0, 57.0/ 64.0,  5.0/ 64.0, 53.0/ 64.0,
+			42.0/ 64.0, 26.0/ 64.0, 38.0/ 64.0, 22.0/ 64.0, 41.0/ 64.0, 25.0/ 64.0, 37.0/ 64.0, 21.0 / 64.0
+			);
+
+			vec3 dither(vec2 uv, vec3 color) {
+				int x = int(uv.x * resolution.x) % 8;
+				int y = int(uv.y * resolution.y) % 8;
+				float threshold = bayerMatrix8x8[y * 8 + x] - 0.25;
+
+				color.rgb += threshold;
+				color.r = floor(color.r * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);
+				color.g = floor(color.g * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);
+				color.b = floor(color.b * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);
+
+				return color;
+			}
+
+			void main() {
+				// Basic Phong lighting calculation
+				vec3 normal = normalize(vNormal);
+				vec3 viewDir = normalize(vViewPosition);
+				
+				// Simple lighting
+				vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+				float diff = max(dot(normal, lightDir), 0.0);
+				float spec = pow(max(dot(normal, normalize(lightDir + viewDir)), 0.0), shininess);
+				
+				vec3 diffuseColor = diffuse * diff;
+				vec3 specularColor = specular * spec;
+				vec3 finalColor = diffuseColor + specularColor + emissive;
+				
+				// Apply dithering effect
+				vec2 uv = gl_FragCoord.xy / resolution.xy;
+				vec2 normalizedPixelSize = pixelSize / resolution.xy;  
+				vec2 uvPixel = normalizedPixelSize * floor(uv / normalizedPixelSize);
+				finalColor = dither(uvPixel, finalColor);
+				
+				gl_FragColor = vec4(finalColor, opacity);
+			}
+		</script>
+	</head>
+	<body>
+        <canvas id="water-canvas"></canvas>
+        <div class="article-window">
+            <div class="window-titlebar">
+                <div class="window-title">EX Research - Article</div>
+                <div class="window-controls">
+                    <div class="window-control" title="Minimize"><span>–</span></div>
+                    <div class="window-control" title="Resize"><span>□</span></div>
+                    <div class="window-control" title="Close"><span>×</span></div>
+                </div>
+            </div>
+            <h1 class="article-title">What's the deal with Roblox? An EX Special Report</h1>
+            <h2 class="article-subtitle">We turned our red Roblox caps backwards and started greeting our fellow kids.</h2>
+            <div class="article-meta">
+                <p>EX Research</p>
+                <p>Jul 10, 2024</p>
+                <p>23 min</p>
+                <p>Special Report</p>
+            </div>
+            <div class="window-scanlines"></div>
+        </div>
+        <div class="content">
+            <h2 class="section-title">Introduction: Should I care about <em>Roblox</em>? 🤔</h2>
+            <p>You’ve heard of <em>Roblox</em>. If you’re a parent, you might be hearing about <em>Roblox</em> right this instant. If not, maybe you've seen the game’s eye‑popping numbers:</p>
+            <ul class="bullets">
+                <li>Either the #1 or #2 game in the US, depending who you ask <a href="#">[link]</a></li>
+                <li>$4B valuation to a $45B IPO (with a later drop) <a href="#">[link]</a></li>
+                <li>77.7M daily active users <a href="#">[link]</a></li>
+                <li>Each playing 2.4 hours per day on average <a href="#">[link]</a></li>
+                <li>Including half of all US youth age 12 to 17 <a href="#">[link]</a></li>
+            </ul>
+            <p>We publish a weekly newsletter about culture and technology, so we see Roblox constantly. LEGO-headed Roblox memes and blocky anime battles are all over video platforms and Discord servers. But the platform’s thriving ecosystem of experiences and influencers remains baffling to nearly all adults, including us.
+
+                In 2020, the New York Times called Roblox “this generation’s version of going to the mall” [link]. But it’s a mall where half the stores are run by kids (is that legal?), salespeople pounce on you at the entrance to every shop, and some shady vendor around the corner claims to be selling Kim Kardashian’s sex tape. Many of the businesses are jokes, and others claim to do everything at once, like a 3-in-1 men’s hair product: they’re obstacle courses, role-playing games, and pet simulators all in one. 
+                
+                We wanted to understand what was happening in the mall. So we turned our red Roblox caps backwards and started greeting our fellow kids. After many hours and thousands of Robux spent, we returned with a list of reasons to care about Roblox, even if you don’t like the place. We’ve divided them into three sections for your convenience: the business, the games, and the culture. </p>
+
+                <div class="image">
+                    <img src="assets/image.png" alt="Roblox mall">
+                    <p class="image-caption">Roblox mall</p>
+                </div>
+
+                <p>It’s the closest thing we have to a metaverse.<br>
+
+                    Nobody wants to hear the word “metaverse” any more. Bundled with cryptocurrency, consumer VR, and generative AI into the nebulously defined concept of Web3, the metaverse so far has been bad tech demos and consumer-last product initiatives.<br>    
+                    
+                    But companies are still chasing the dream. Though Disney folded their “metaverse” team in 2023, there’s still enormous investment and interest in metaverse platforms like Epic’s Fortnite, Microsoft’s Minecraft, and Meta’s Horizon Worlds. (In the last case, maybe just investment.) All of these platforms want to back into the coherent, profitable, wildly popular ecosystem Roblox already has.<br>
+                    
+                    The tech theorist Matthew Ball, who sort of staked everything on becoming “the metaverse guy,” defined the metaverse as</p>
+
+                    <blockquote class="pullquote">
+                        <span class="bar"></span>
+                        <p>“A massively scaled and interoperable network of real-time rendered 3D virtual worlds and environments which can be experienced synchronously and persistently by an effectively unlimited number of users with an individual sense of presence, and with continuity of data, such as identity, history, entitlements, objects, communications, and payments.” <a href="#">[link]</a></p>
+                    </blockquote>
+
+                    <div class="toggle-card">
+                        <summary>
+                            <span class="toggle-card-title">BONUS: What are real Roblox players saying?</span>
+                            <span class="caret">▾</span>
+                        </summary>
+                        <div class="toggle-card-content">
+                            <p>While playing Roblox, we often asked other players what they thought of the game or Roblox in general. Eventually, we found a more direct way to interview players: entering lobbies in the e-begging game PLS DONATE and giving kids Robux to answer questions. <br>
+
+                                Tl;dr: Roblox players love roleplaying, play both RP and action games with friends, and see variety as the platform’s greatest strength.<br>
+                                
+                                When asked about their favorite games, most players’ picks were from the top of the charts: social roleplaying game Adopt Me!, anime MMORPG Blox Fruits, dress-up game Dress to Impress (“dti”), social deduction game Murder Mystery 2 (“mm2”), multiplayer action game BedWars, or asymmetric horror game Survive the Killer (“stk”). <br><br>            
+                                
+                                Several players mentioned Murderers vs Sheriffs Duels (“I 1v1 my friends in murd vs sheriffs”), an interesting game that doesn’t have a clear non-Roblox analogue. It’s a third-person team-based shooter that’s built to highlight trickshots and flashy melee plays [link].<br><br>
+                                
+                                Nearly everyone was into roleplaying games. One player mentioned liking a GTAish cops-and-robbers RP game, Emergency Response: Liberty County. (“You can have a gun…and be criminal.”) Another player mentioned liking Blox Fruits for the “grinding,” but when asked if he liked any “other RPGs,” he named the social RP game Brookhaven — illuminating the difference between our old-timer sense of the word (to mean, like, Final Fantasy) and its meaning in Roblox (social roleplaying).<br><br>
+                                
+                                Most players didn’t make any bold guesses when asked what games they thought would be popular in future — most named stuff that was already big, like “Escape the X” obbys. One called out Head Hunter, an ambitious parkour/melee deathmatch game that died out but has been promising a “revival update.”<br><br>
+                                
+                                When asked what they liked about Roblox itself, almost everyone pointed to the platform’s variety of gameplay experiences. Some were confused when asked to compare it to other games. “ii only roblox man,” said one interviewee, who was dressed as a Cinnamon Toast Crunch square in a top hat.</p>
+                        </div>
+                    </div>
+
+                    <h2 class="section-title">Part Three: Why do I see Roblox everywhere?</h2>
+                    <p>
+                        Roblox fashion captures the online cultural zeitgeist.
+
+Roblox culture revolves around avatars — a persistent identity made of digital goods bought by the player. That’s where all the Robux go: players bought 1.6 billion cosmetic items in the first nine months of 2023 [link]. If you want to argue that Roblox is a metaverse, avatars are the key.<br><br>
+
+Avatar trends reflect online culture. Icons from mascot horror games (Poppy Playtime), seasonal anime shows (Jujutsu Kaisen), and other popular YouTube phenomena (Skibidi Toilet) circulate through avatar marketplaces. It’s an ecosystem that rapidly adapts to new trends, matching the pace of shortform video platforms.<br><br>
+
+As a result, designing avatars demands both technical skill and cultural savvy. For most of Roblox’s lifespan, Roblox Studio has only helped with translating 3D models into avatar pieces, and designers have had to rely on off-platform tools like Blender or Maya for modeling and animation. However, Roblox Corp has spent the past few years building systems that encourage all users to become vendors of cosmetic UGC, loosening prior restrictions on who can sell their work on official marketplaces. <br><br>
+
+This past March, for example, Roblox Corp released the “Rights Manager,” a program that assists copyright holders in issuing takedown requests [link]. Until recently, Roblox users needed to apply to the game’s “UGC Program” to sell anything; in April, however, Roblox Corp announced that any user can sell UGC so long as they’re ID-verified and a premium subscription holder [link]. <br><br>
+                    </p>
+        </div>
+
+        <script>
+            const toggleCards = document.querySelectorAll('.toggle-card');
+            toggleCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('open');
+                });
+            });
+        </script>
+
+        <script>
+            // Water Background Implementation
+            (function() {
+                // Check WebGL support
+                function checkWebGLSupport() {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        return !!(window.WebGLRenderingContext && 
+                            (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+                    } catch (e) {
+                        return false;
+                    }
+                }
+                
+                if (!checkWebGLSupport()) {
+                    console.log('WebGL not supported, skipping water background');
+                    return;
+                }
+
+                // Water simulation parameters
+                var WIDTH = 128;
+                var BOUNDS = 800; // Smaller water surface for better zoom
+                var BOUNDS_HALF = BOUNDS * 0.5;
+
+                var container, camera, scene, renderer;
+                var waterMesh, gpuCompute, heightmapVariable, waterUniforms;
+                var simplex = new THREE.SimplexNoise();
+                var mouseCoords = new THREE.Vector2();
+                var mouseMoved = false;
+                var frameCount = 0;
+
+                init();
+                animate();
+
+                function init() {
+                    container = document.getElementById('water-canvas');
+                    
+                    // Camera positioned to look directly at water surface
+                    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 3000);
+                    camera.position.set(0, 0, 400); // Positioned behind the water plane
+                    camera.lookAt(0, 0, -100); // Look at the water surface
+
+                    scene = new THREE.Scene();
+                    scene.background = new THREE.Color(0xffffff); // Dark blue background
+
+                    // Lighting for water
+                    var ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+                    scene.add(ambientLight);
+
+                    var directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+                    directionalLight.position.set(1, 1, 1);
+                    scene.add(directionalLight);
+
+                    renderer = new THREE.WebGLRenderer({ 
+                        canvas: container,
+                        alpha: true,
+                        antialias: true 
+                    });
+                    renderer.setClearColor(0x001122, 0.3);
+                    renderer.setPixelRatio(window.devicePixelRatio);
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+
+                    initWater();
+
+                    // Add mouse interaction
+                    document.addEventListener('mousemove', onDocumentMouseMove, false);
+                    document.addEventListener('touchmove', onDocumentTouchMove, false);
+
+                    window.addEventListener('resize', onWindowResize, false);
+                }
+
+                function initWater() {
+                    var materialColor = 0xffffff;
+
+                    var geometry = new THREE.PlaneBufferGeometry(BOUNDS, BOUNDS, WIDTH - 1, WIDTH - 1);
+
+                    // Water material using the extracted shaders
+                    var material = new THREE.ShaderMaterial({
+                        uniforms: {
+                            heightmap: { value: null },
+                            colorNum: { value: 4.0 },
+                            pixelSize: { value: 2.0 },
+                            resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                            diffuse: { value: new THREE.Color(0x8888ff) },
+                            opacity: { value: 1.0 },
+                            emissive: { value: new THREE.Color(0x000000) },
+                            specular: { value: new THREE.Color(0x111111) },
+                            shininess: { value: 80.0 }
+                        },
+                        vertexShader: document.getElementById('waterVertexShader').textContent,
+                        fragmentShader: document.getElementById('waterFragmentShader').textContent
+                    });
+
+                    material.transparent = true;
+
+                    // Defines
+                    material.defines.WIDTH = WIDTH.toFixed(1);
+                    material.defines.BOUNDS = BOUNDS.toFixed(1);
+
+                    waterUniforms = material.uniforms;
+
+                    waterMesh = new THREE.Mesh(geometry, material);
+                    waterMesh.rotation.x = 0; // No rotation - plane parallel to X/Y axes
+                    waterMesh.position.z = -100; // Position water in front of camera on Z-axis
+                    waterMesh.matrixAutoUpdate = false;
+                    waterMesh.updateMatrix();
+
+                    scene.add(waterMesh);
+
+                    // GPU computation setup
+                    gpuCompute = new THREE.GPUComputationRenderer(WIDTH, WIDTH, renderer);
+
+                    var heightmap0 = gpuCompute.createTexture();
+                    fillTexture(heightmap0);
+
+                    heightmapVariable = gpuCompute.addVariable(
+                        "heightmap", 
+                        document.getElementById('heightmapFragmentShader').textContent, 
+                        heightmap0
+                    );
+
+                    gpuCompute.setVariableDependencies(heightmapVariable, [heightmapVariable]);
+
+                    heightmapVariable.material.uniforms.mousePos = { value: new THREE.Vector2(10000, 10000) };
+                    heightmapVariable.material.uniforms.mouseSize = { value: 50.0 }; // Larger mouse effect
+                    heightmapVariable.material.uniforms.viscosityConstant = { value: 0.05 }; // More viscosity to slow down waves
+                    heightmapVariable.material.defines.BOUNDS = BOUNDS.toFixed(1);
+
+                    var error = gpuCompute.init();
+                    if (error !== null) {
+                        console.error('GPU computation error:', error);
+                    }
+                }
+
+                function fillTexture(texture) {
+                    var waterMaxHeight = 10;
+
+                    function noise(x, y, z) {
+                        var multR = waterMaxHeight;
+                        var mult = 0.025;
+                        var r = 0;
+                        for (var i = 0; i < 15; i++) {
+                            r += multR * simplex.noise3d(x * mult, y * mult, z * mult);
+                            multR *= 0.53 + 0.025 * i;
+                            mult *= 1.25;
+                        }
+                        return r;
+                    }
+
+                    var pixels = texture.image.data;
+                    var p = 0;
+                    for (var j = 0; j < WIDTH; j++) {
+                        for (var i = 0; i < WIDTH; i++) {
+                            var x = i * 128 / WIDTH;
+                            var y = j * 128 / WIDTH;
+
+                            pixels[p + 0] = noise(x, y, 123.4);
+                            pixels[p + 1] = 0;
+                            pixels[p + 2] = 0;
+                            pixels[p + 3] = 1;
+
+                            p += 4;
+                        }
+                    }
+                }
+
+                function onWindowResize() {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    // Update resolution uniform for dithering
+                    if (waterUniforms && waterUniforms.resolution) {
+                        waterUniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+                    }
+                }
+
+                function animate() {
+                    requestAnimationFrame(animate);
+                    frameCount++;
+                    // Slow down the animation by only updating every 3rd frame
+                    if (frameCount % 3 === 0) {
+                        render();
+                    }
+                }
+
+                function onDocumentMouseMove(event) {
+                    mouseCoords.set(
+                        (event.clientX / window.innerWidth) * 2 - 1,
+                        (event.clientY / window.innerHeight) * 2 - 1
+                    );
+                    mouseMoved = true;
+                }
+
+                function onDocumentTouchMove(event) {
+                    if (event.touches.length === 1) {
+                        event.preventDefault();
+                        mouseCoords.set(
+                            (event.touches[0].pageX / window.innerWidth) * 2 - 1,
+                            (event.touches[0].pageY / window.innerHeight) * 2 - 1
+                        );
+                        mouseMoved = true;
+                    }
+                }
+
+                function render() {
+                    // Update mouse position for water interaction
+                    if (mouseMoved) {
+                        // Convert mouse coordinates to world position on water surface
+                        // The water plane is parallel to X/Y axes at z = -100
+                        // Map screen coordinates to world coordinates on the water plane
+                        var worldX = mouseCoords.x * BOUNDS_HALF;
+                        var worldY = mouseCoords.y * BOUNDS_HALF; // Y coordinate for the water plane
+                        heightmapVariable.material.uniforms.mousePos.value.set(worldX, worldY);
+                        mouseMoved = false;
+                    } else {
+                        // Reset mouse position when not moving
+                        heightmapVariable.material.uniforms.mousePos.value.set(10000, 10000);
+                    }
+
+                    // Do the GPU computation
+                    gpuCompute.compute();
+                    
+                    // Get compute output
+                    waterUniforms.heightmap.value = gpuCompute.getCurrentRenderTarget(heightmapVariable).texture;
+                    
+                    // Render the scene
+                    renderer.render(scene, camera);
+                }
+            })();
+        </script>
+    </body>
+</html>
