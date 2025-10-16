@@ -869,7 +869,7 @@ This past March, for example, Roblox Corp released the “Rights Manager,” a p
                 function onDocumentMouseMove(event) {
                     mouseCoords.set(
                         (event.clientX / window.innerWidth) * 2 - 1,
-                        (event.clientY / window.innerHeight) * 2 - 1
+                        -(event.clientY / window.innerHeight) * 2 + 1  // Flip Y coordinate
                     );
                     mouseMoved = true;
                 }
@@ -879,7 +879,7 @@ This past March, for example, Roblox Corp released the “Rights Manager,” a p
                         event.preventDefault();
                         mouseCoords.set(
                             (event.touches[0].pageX / window.innerWidth) * 2 - 1,
-                            (event.touches[0].pageY / window.innerHeight) * 2 - 1
+                            -(event.touches[0].pageY / window.innerHeight) * 2 + 1  // Flip Y coordinate
                         );
                         mouseMoved = true;
                     }
@@ -888,12 +888,21 @@ This past March, for example, Roblox Corp released the “Rights Manager,” a p
                 function render() {
                     // Update mouse position for water interaction
                     if (mouseMoved) {
-                        // Convert mouse coordinates to world position on water surface
-                        // The water plane is parallel to X/Y axes at z = -100
-                        // Map screen coordinates to world coordinates on the water plane
-                        var worldX = mouseCoords.x * BOUNDS_HALF;
-                        var worldY = mouseCoords.y * BOUNDS_HALF; // Y coordinate for the water plane
-                        heightmapVariable.material.uniforms.mousePos.value.set(worldX, worldY);
+                        // Convert screen coordinates to world coordinates on the water plane
+                        // Use raycasting to properly project mouse position onto the water plane
+                        var raycaster = new THREE.Raycaster();
+                        raycaster.setFromCamera(mouseCoords, camera);
+                        
+                        // Create a plane at the water's Z position
+                        var waterPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 100); // Normal pointing towards camera, distance 100
+                        var intersectionPoint = new THREE.Vector3();
+                        
+                        if (raycaster.ray.intersectPlane(waterPlane, intersectionPoint)) {
+                            // Convert world coordinates to water texture coordinates
+                            var worldX = intersectionPoint.x;
+                            var worldY = intersectionPoint.y;
+                            heightmapVariable.material.uniforms.mousePos.value.set(worldX, worldY);
+                        }
                         mouseMoved = false;
                     } else {
                         // Reset mouse position when not moving
