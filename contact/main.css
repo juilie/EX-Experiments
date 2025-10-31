@@ -173,9 +173,8 @@ a, button, input, select {
 
 /* Contact form specific styles */
 .contact-form {
-	background: #f8f8f8;
-	border: 1px solid #ddd;
-	border-radius: 8px;
+	background: lightgray;
+	border: 2px inset lightgray;
 	padding: 30px;
 	margin: 40px 0;
 }

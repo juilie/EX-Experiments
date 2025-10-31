@@ -33,12 +33,12 @@
 				height: 100%;
 				display: flex;
 				flex-direction: column;
-				justify-content: flex-start;
+				justify-content: center;
 				align-items: center;
 				z-index: 200;
 				pointer-events: auto;
 				font-family: 'Arial Narrow', monospace;
-				padding: 40px 20px;
+				padding: 80px 20px 20px 20px;
 				overflow: auto;
 				box-sizing: border-box;
 			}
@@ -65,13 +65,18 @@
 				padding: 0 20px;
 			}
 
-			.logo {
-				font-size: 24px;
-				font-weight: 700;
-				color: #000;
-				text-decoration: none;
-				letter-spacing: -0.5px;
-			}
+		.logo {
+			text-decoration: none;
+			display: flex;
+			align-items: center;
+		}
+		
+		.logo img {
+			height: 50px;
+			width: auto;
+			display: block;
+			filter: drop-shadow(1px 1px 5px black);
+		}
 
 			.nav {
 				display: flex;
@@ -97,244 +102,434 @@
 				font-weight: 700;
 			}
 
-			.about-section {
-				text-align: left;
-				margin: 100px 0 60px 0;
+			.about-window {
+				max-width: 900px;
+				width: 92%;
+				max-height: calc(100vh - 120px);
 				pointer-events: auto;
-				max-width: 800px;
-				background: rgba(255, 255, 255, 0.92);
-				backdrop-filter: blur(6px);
-				border: 1px solid #000;
-				border-radius: 10px;
-				box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-				padding: 40px;
-			}
-
-			.about-title {
-				font-size: 48px;
-				font-weight: 700;
-				color: #000;
-				margin: 0 0 24px 0;
-				font-family: 'Arial Narrow', monospace;
-				line-height: 1.1;
-				letter-spacing: -1px;
-			}
-
-			.about-subtitle {
-				font-size: 24px;
-				color: #333;
-				margin: 0 0 32px 0;
-				line-height: 1.4;
-				font-weight: 600;
-			}
-
-			.about-content {
-				font-size: 18px;
-				color: #333;
-				line-height: 1.6;
-				margin: 0 0 40px 0;
-				font-weight: 400;
-			}
-
-			.about-content p {
-				margin: 0 0 24px 0;
-			}
-
-			.team-section {
-				margin: 40px 0;
-			}
-
-			.team-title {
-				font-size: 24px;
-				font-weight: 700;
-				color: #000;
-				margin: 0 0 24px 0;
-			}
-
-			.newsletter-section {
-				background: #f8f8f8;
-				border: 1px solid #ddd;
-				border-radius: 8px;
-				padding: 30px;
-				margin: 0 auto;
-				text-align: center;
-				pointer-events: auto;
-				max-width: 600px;
-				color: #000;
-			}
-
-			.newsletter-title {
-				font-size: 16px;
-				font-weight: 700;
-				color: #000;
-				margin: 0 0 15px 0;
-				text-transform: uppercase;
-				letter-spacing: 1px;
-			}
-
-			.newsletter-form {
-				display: flex;
-				gap: 10px;
-				justify-content: center;
-				align-items: center;
-				flex-wrap: wrap;
-			}
-
-			.newsletter-input {
-				padding: 12px 16px;
-				border: 1px solid #ccc;
+				background: #ffffff;
+				border: 1px solid #101010;
 				border-radius: 4px;
-				font-size: 14px;
-				min-width: 250px;
-				font-family: inherit;
-			}
-
-			.newsletter-button {
-				background: #c0c0c0;
-				color: #000000;
-				padding: 12px 24px;
-				font-size: 14px;
-				font-weight: 700;
-				letter-spacing: 0.02em;
-				text-transform: none;
-				border-radius: 0;
-				cursor: pointer;
-				border: 2px solid #ffffff;
-				border-right-color: #404040;
-				border-bottom-color: #404040;
+				position: relative;
+				overflow: hidden;
 				box-shadow:
-					inset 1px 1px 0 #dfdfdf,
-					inset -1px -1px 0 #808080,
-					0 0 0 1px #000000;
-				transition: background-color .12s ease;
+					0 0 0 2px #000,
+					0 0 0 4px #7aa7d9,
+					0 0 0 6px #000,
+					6px 6px 0 #00000020,
+					12px 12px 0 #00000015;
+				margin: 0 auto;
+				display: flex;
+				flex-direction: column;
 			}
 
-			.newsletter-button:hover {
-				background: #dcdcdc;
-			}
-
-			.newsletter-button:active {
-				background: #b5b5b5;
-				border-color: #404040;
-				border-right-color: #ffffff;
-				border-bottom-color: #ffffff;
-				box-shadow:
-					inset -1px -1px 0 #dfdfdf,
-					inset 1px 1px 0 #808080,
-					0 0 0 1px #000000;
-			}
-
-			.hidden {
-				display: none !important;
-			}
-			
-			.cloud-image {
-				position: fixed;
-				z-index: 150;
-				pointer-events: none;
-				transform-origin: center center;
-				opacity: 1;
-				filter: brightness(1.1) contrast(1.1);
-			}
-			
-			.hud-scanner {
-				position: fixed;
-				width: 20px;
-				height: 20px;
-				border: 2px solid #4a90e2;
-				background: rgba(74, 144, 226, 0.15);
-				z-index: 160;
-				pointer-events: none;
-				transition: all 0.4s ease;
-				box-shadow: 
-					0 0 8px rgba(74, 144, 226, 0.4),
-					inset 0 0 8px rgba(74, 144, 226, 0.2);
-			}
-			
-			.hud-scanner.scanning {
-				border-color: #2ecc71;
-				background: rgba(46, 204, 113, 0.15);
-				box-shadow: 
-					0 0 15px rgba(46, 204, 113, 0.6),
-					inset 0 0 10px rgba(46, 204, 113, 0.3);
-			}
-			
-			.hud-scanner::before {
+			.about-window::after {
 				content: '';
 				position: absolute;
-				top: 50%;
-				left: 50%;
-				width: 6px;
-				height: 6px;
-				background: currentColor;
-				border-radius: 50%;
-				transform: translate(-50%, -50%);
-				box-shadow: 0 0 4px currentColor;
+				inset: 0;
+				pointer-events: none;
+				background:
+					repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px),
+					repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px);
+				opacity: .7;
 			}
-			
-			.hud-scanner::after {
-				content: attr(data-status);
+
+			.window-scanlines {
 				position: absolute;
-				bottom: -35px;
-				right: -50px;
-				font-family: 'Arial', monospace;
+				inset: 41px 0 22px 0;
+				pointer-events: none;
+				background: repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0 1px, transparent 1px 3px);
+				animation: scanMove 4s linear infinite;
+				opacity: .35;
+			}
+
+			@keyframes scanMove { 
+				0% { background-position-y: 0; } 
+				100% { background-position-y: 8px; } 
+			}
+
+			.window-titlebar {
+				height: 40px;
+				background: linear-gradient(to bottom, #e9eef3, #cfd6de);
+				border-bottom: 2px solid #000;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 0 0 0 10px;
+				box-shadow: inset 0 -2px 0 #7aa7d9, inset 0 2px 0 #ffffff;
+			}
+
+			.window-title {
+				font-size: 12px;
+				font-weight: 600;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: #1d2935;
+				text-shadow: 0 1px 0 #fff;
+			}
+
+			.window-controls {
+				display: flex;
+				gap: 6px;
+				padding: 0 10px;
+			}
+
+			.window-control {
+				width: 16px;
+				height: 16px;
+				border: 1px solid #2a2a2a;
+				border-radius: 2px;
+				background: #ffffff;
+				display: grid;
+				place-items: center;
+				cursor: default;
+				box-shadow: inset 0 -1px 0 #d5dbe3, inset 0 1px 0 #ffffff;
+			}
+
+			.window-control span {
 				font-size: 10px;
-				color: black;
-				white-space: nowrap;
-				font-weight: bold;
-				text-shadow: 1px 1px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white;
-			}
-			
-			.hud-scanner-frame {
-				position: absolute;
-				top: -3px;
-				left: -3px;
-				right: -3px;
-				bottom: -3px;
-				border: 1px solid currentColor;
-				opacity: 0.6;
-				pointer-events: none;
-			}
-			
-			.hud-scanner-corners {
-				position: absolute;
-				top: -6px;
-				left: -6px;
-				right: -6px;
-				bottom: -6px;
-				pointer-events: none;
-			}
-			
-			.hud-scanner-corners::before,
-			.hud-scanner-corners::after {
-				content: '';
-				position: absolute;
-				width: 8px;
-				height: 8px;
-				border: 1px solid black;
-				opacity: 0.8;
-			}
-			
-			.hud-scanner-corners::before {
-				top: 0;
-				left: 0;
-				border-right: none;
-				border-bottom: none;
-			}
-			
-			.hud-scanner-corners::after {
-				bottom: 0;
-				right: 0;
-				border-left: none;
-				border-top: none;
+				line-height: 1;
+				color: #333;
 			}
 
-			/* Responsive design */
-			@media (max-width: 768px) {
-				.about-section {
-					margin: 120px 0 40px 0;
-					padding: 30px 20px;
-				}
+			.window-control:hover { 
+				background: #eef3f8; 
+			}
+
+			.window-control:active { 
+				border-color: #111; 
+			}
+
+			.window-control[title="Close"]:hover { 
+				background: #f1d4d6; 
+			}
+
+			.window-control[title="Close"]:active { 
+				background: #e9b3b8; 
+			}
+
+			.status-bar {
+				height: 22px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 10px;
+				padding: 0 8px;
+				border-top: 2px solid #000;
+				background: repeating-linear-gradient(90deg, #e7eef6 0 6px, #dfe7f0 6px 12px);
+				font-size: 10px;
+				color: #1d2935;
+			}
+
+		.about-content-wrapper {
+			padding: 50px;
+			position: relative;
+			z-index: 1;
+			flex: 1;
+			overflow-y: auto;
+			overflow-x: hidden;
+			background: url('../assets/images/cloud2.png') no-repeat center center;
+			background-size: cover;
+		}
+
+		.about-title {
+			font-size: 48px;
+			font-weight: 700;
+			color: #000;
+			margin: 0 0 24px 0;
+			font-family: 'Arial Narrow', monospace;
+			line-height: 1.1;
+			letter-spacing: -1px;
+			background: #c0c0c0;
+			padding: 16px 20px;
+			border: 2px outset #c0c0c0;
+			text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+		}
+
+		.about-subtitle {
+			font-size: 20px;
+			color: #000;
+			margin: 0 0 16px 0;
+			line-height: 1.5;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.about-content {
+			font-size: 17px;
+			color: #000;
+			line-height: 1.8;
+			font-weight: 400;
+		}
+
+		.content-block {
+			background: #d4d0c8;
+			padding: 24px;
+			margin: 0 0 20px 0;
+			border: 2px inset #d4d0c8;
+		}
+
+		.content-block p {
+			margin: 0 0 20px 0;
+		}
+
+		.content-block p:last-child {
+			margin-bottom: 0;
+		}
+
+		.content-block ul {
+			margin: 16px 0;
+			padding-left: 24px;
+		}
+
+		.content-block li {
+			margin: 12px 0;
+			line-height: 1.7;
+		}
+
+		.content-block li:first-child {
+			margin-top: 0;
+		}
+
+		.content-block li:last-child {
+			margin-bottom: 0;
+		}
+
+		.newsletter-link {
+			color: #0000ee;
+			text-decoration: underline;
+			font-weight: 600;
+		}
+
+		.newsletter-link:hover {
+			color: #551a8b;
+		}
+
+		.newsletter-link:visited {
+			color: #551a8b;
+		}
+
+		.team-section {
+			margin: 24px 0 0 0;
+			padding: 20px;
+			background: #d4d0c8;
+			border: 2px inset #d4d0c8;
+		}
+
+		.team-section p {
+			margin: 10px 0;
+			line-height: 1.7;
+			color: #000;
+		}
+
+		.team-section p:first-of-type {
+			margin-top: 0;
+		}
+
+		.team-section p:last-of-type {
+			margin-bottom: 0;
+		}
+
+	.team-section p strong {
+		font-weight: 700;
+		color: #000;
+	}
+
+	/* Newsletter Section */
+	.newsletter-section {
+		margin: 40px 0;
+	}
+
+	.newsletter-window {
+		background: #ffffff;
+		border: 1px solid #101010;
+		border-radius: 4px;
+		position: relative;
+		overflow: hidden;
+		box-shadow:
+			0 0 0 2px #000,
+			0 0 0 4px #7aa7d9,
+			0 0 0 6px #000,
+			6px 6px 0 #00000020,
+			12px 12px 0 #00000015;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.newsletter-window::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background:
+			repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px),
+			repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px);
+		opacity: .7;
+	}
+
+	.newsletter-titlebar {
+		height: 32px;
+		background: linear-gradient(to bottom, #e9eef3, #cfd6de);
+		border-bottom: 2px solid #000;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 0 0 10px;
+		box-shadow: inset 0 -2px 0 #7aa7d9, inset 0 2px 0 #ffffff;
+		position: relative;
+		z-index: 2;
+	}
+
+	.newsletter-titlebar-title {
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: #1d2935;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		flex: 1;
+		margin-right: 10px;
+		text-shadow: 0 1px 0 #fff;
+	}
+
+	.newsletter-titlebar-buttons {
+		display: flex;
+		gap: 4px;
+		padding: 0 8px;
+	}
+
+	.newsletter-titlebar-button {
+		width: 14px;
+		height: 14px;
+		border: 1px solid #2a2a2a;
+		border-radius: 2px;
+		background: #ffffff;
+		display: grid;
+		place-items: center;
+		cursor: default;
+		box-shadow: inset 0 -1px 0 #d5dbe3, inset 0 1px 0 #ffffff;
+		font-size: 9px;
+		line-height: 1;
+		color: #333;
+	}
+
+	.newsletter-content {
+		padding: 36px;
+		text-align: center;
+		position: relative;
+		z-index: 2;
+		background: #ffffff;
+	}
+
+	.newsletter-title {
+		font-size: 24px;
+		font-weight: 700;
+		color: #000;
+		margin: 0 0 12px 0;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
+
+	.newsletter-description {
+		font-size: 15px;
+		color: #444;
+		line-height: 1.6;
+		margin: 0 0 24px 0;
+	}
+
+	.newsletter-form {
+		display: flex;
+		gap: 12px;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.newsletter-input {
+		padding: 14px 18px;
+		border: 2px solid #000;
+		border-radius: 4px;
+		font-size: 14px;
+		min-width: 250px;
+		font-family: inherit;
+		box-shadow: inset 1px 1px 0 rgba(0,0,0,0.1);
+	}
+
+	.newsletter-input:focus {
+		outline: none;
+		border-color: #7aa7d9;
+		box-shadow: inset 1px 1px 0 rgba(0,0,0,0.1), 0 0 0 3px rgba(122, 167, 217, 0.2);
+	}
+
+	.newsletter-button {
+		background: #c0c0c0;
+		color: #000000;
+		padding: 14px 28px;
+		font-size: 14px;
+		font-weight: 700;
+		border: none;
+		cursor: pointer;
+		font-family: inherit;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		border-radius: 4px;
+		border: 2px outset #c0c0c0;
+		box-shadow:
+			inset 1px 1px 0 #dfdfdf,
+			inset -1px -1px 0 #808080,
+			0 0 0 1px #000000;
+	}
+
+	.newsletter-button:hover {
+		background: #dcdcdc;
+	}
+
+	.newsletter-button:active {
+		background: #b5b5b5;
+		border-color: #404040;
+		border-right-color: #ffffff;
+		border-bottom-color: #ffffff;
+		box-shadow:
+			inset -1px -1px 0 #dfdfdf,
+			inset 1px 1px 0 #808080,
+			0 0 0 1px #000000;
+	}
+
+	.newsletter-status-bar {
+		height: 22px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+		padding: 0 8px;
+		border-top: 2px solid #000;
+		background: repeating-linear-gradient(90deg, #e7eef6 0 6px, #dfe7f0 6px 12px);
+		font-size: 10px;
+		color: #1d2935;
+	}
+
+
+		/* Responsive design */
+		@media (max-width: 768px) {
+			.about-content-wrapper {
+				padding: 30px 20px;
+			}
+			
+		.content-block,
+		.team-section {
+			padding: 20px;
+		}
+		
+		.about-title {
+			padding: 12px 16px;
+		}
+
+		.newsletter-content {
+			padding: 28px;
+		}
 				
 				.about-title {
 					font-size: 36px;
@@ -349,22 +544,8 @@
 				}
 				
 				.team-section {
-					margin: 30px 0;
-				}
-				
-				.newsletter-section {
-					padding: 20px;
-					margin: 30px 0;
-				}
-				
-				.newsletter-form {
-					flex-direction: column;
-					align-items: stretch;
-				}
-				
-				.newsletter-input {
-					min-width: auto;
-					width: 100%;
+					margin-top: 30px;
+					padding-top: 30px;
 				}
 			}
 
@@ -387,10 +568,27 @@
 					font-size: 18px;
 				}
 				
-				.about-section {
-					margin: 140px 0 30px 0;
-					padding: 20px 15px;
-				}
+			.about-content-wrapper {
+				padding: 20px 15px;
+			}
+			
+		.content-block,
+		.team-section {
+			padding: 16px;
+		}
+		
+		.about-title {
+			padding: 10px 14px;
+			font-size: 32px;
+		}
+
+		.newsletter-content {
+			padding: 20px;
+		}
+
+		.newsletter-input {
+			min-width: 200px;
+		}
 				
 				.about-title {
 					font-size: 28px;
@@ -405,12 +603,8 @@
 				}
 				
 				.team-section {
-					margin: 20px 0;
-				}
-				
-				.newsletter-section {
-					padding: 15px;
-					margin: 20px 0;
+					margin-top: 20px;
+					padding-top: 20px;
 				}
 			}
 		</style>
@@ -418,9 +612,11 @@
 	<body>
 		<header class="header">
 			<div class="header-content">
-				<a href="../index.html" class="logo">EX RESEARCH</a>
+				<a href="../articles/index.html" class="logo">
+					<img src="../assets/images/3dlogo.gif" alt="EX Research">
+				</a>
 				<nav class="nav">
-					<a href="../articles/index.html">Articles</a>
+					<a href="../articles/index.html">Home</a>
 					<a href="#" class="active">About</a>
 					<a href="../contact/index.html">Contact</a>
 				</nav>
@@ -428,36 +624,76 @@
 		</header>
 
 		<div id="homepage-ui">
-			<div class="about-section">
-				<h1 class="about-title">About us</h1>
-				<p class="about-subtitle">EX Research helps you stay ahead of the internet.</p>
-				
-				<div class="about-content">
-					<p>We're a plugged-in collective of researchers and strategists who know what's real online. We're obsessed with new forms of creativity. The places where games, music, AI, and shitposting mingle and mutate. We treat dumb stuff like art.</p>
-					
-					<p>Subscribe to our newsletter for a weekly download of future-culture picks and deep-internet insights.</p>
+			<div class="about-window">
+				<div class="window-titlebar">
+					<div class="window-title">About EX Research</div>
+					<div class="window-controls">
+						<div class="window-control" title="Minimize"><span>–</span></div>
+						<div class="window-control" title="Resize"><span>□</span></div>
+						<div class="window-control" title="Close"><span>×</span></div>
+					</div>
 				</div>
-
-				<div class="team-section">
-					<h2 class="team-title">Who is behind EX?</h2>
+				
+				<div class="about-content-wrapper">
+					<h1 class="about-title">About EX</h1>
+					
 					<div class="about-content">
-						<p>The team behind EX has written for outlets including Rolling Stone, Esquire, GQ, Game Informer, Vulture, Rock Paper Shotgun, The Daily Beast, The A.V. Club, and Pitchfork. They've worked for brands including Intel, YouTube, Soundcloud, Shopify, Groupon, and Hyatt.</p>
-						
-						<p><b>Chris Breault</b> is based in St. Louis, MO.</p>
-						
-						<p><b>Clayton Purdom</b> is based in Shaker Heights, OH.</p>
-						
-						<p><b>Pao Yumol</b> is based in Los Angeles, CA.</p>
+						<div class="content-block">
+							<p>EX (EE-ECKS) means extra special and powered up. Formed by three marketing vets catching up in an Elden Ring multiplayer mod, EX is a different kind of agency. Structurally flat, limber, engineered around expertise and creativity rather than expense accounts and awards shows.</p>
+
+							<p class="about-subtitle">Our structure enables us to:</p>
+
+							<ul>
+								<li>Put client resources toward the expertise they want rather than the fancy office they don't care about</li>
+								<li>Move quickly, bolting onto new and existing projects with ease</li>
+								<li>Communicate directly with clients about their needs instead of playing telephone through a million briefs</li>
+							</ul>
+
+							<p>We actually find it's easier to nail our deadlines and stay within scope without all that overhead.</p>
+
+							<p>Our weekly newsletter is the engine of our operation – an ongoing exploration of where culture is headed that forces us to dig proactively and think concretely. We pepper it with occasional features and deep-dive research reports. (Journalism degrees don't die, they just become biz-dev initiatives.)</p>
+						</div>
+
+						<div class="team-section">
+							<p><strong>Chris Breault</strong> is based in St. Louis, MO.</p>
+							<p><strong>Sara Fisher</strong> is based in Chattanooga, TN.</p>
+							<p><strong>Clayton Purdom</strong> is based in Shaker Heights, OH.</p>
+							<p><strong>Lyn Rafil</strong> is based in Los Angeles, CA.</p>
+							<p><strong>Pao Yumol</strong> is based in Los Angeles, CA.</p>
+						</div>
+
+						<!-- Newsletter Section -->
+						<div class="newsletter-section">
+							<div class="newsletter-window">
+								<div class="newsletter-titlebar">
+									<div class="newsletter-titlebar-title">Subscribe</div>
+									<div class="newsletter-titlebar-buttons">
+										<div class="newsletter-titlebar-button">–</div>
+										<div class="newsletter-titlebar-button">□</div>
+										<div class="newsletter-titlebar-button">×</div>
+									</div>
+								</div>
+								<div class="newsletter-content">
+									<h3 class="newsletter-title">Subscribe to our newsletter</h3>
+									<p class="newsletter-description">Weekly download of future-culture picks and deep-internet insights.</p>
+									<form class="newsletter-form" id="newsletter-form">
+										<input type="email" class="newsletter-input" placeholder="Enter your email" required>
+										<button type="submit" class="newsletter-button">Subscribe</button>
+									</form>
+								</div>
+								<div class="newsletter-status-bar">
+									<span>Newsletter v1.0</span>
+									<span>Ready</span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 
-				<div class="newsletter-section">
-					<h3 class="newsletter-title">Subscribe to our newsletter</h3>
-					<p>Weekly download of future-culture picks and deep-internet insights.</p>
-					<form class="newsletter-form">
-						<input type="email" class="newsletter-input" placeholder="Enter your email" required>
-						<button type="submit" class="newsletter-button">Subscribe</button>
-					</form>
+				<div class="window-scanlines"></div>
+				<div class="status-bar">
+					<span>About v1.0</span>
+					<span>Ready</span>
 				</div>
 			</div>
 		</div>
@@ -487,6 +723,9 @@
 			let camera, scene, renderer;
 			let composer, renderPass, saoPass, ditheringPass;
 			let group;
+			
+			// Color scheme controls
+			let colorSchemes, colorSchemeNames, colorControls;
 			
 			// 2D Chatbox overlay variables
 			let overlayCanvas, overlayCtx;
@@ -827,27 +1066,24 @@
 				});
 			}
 
-			function setupNewsletterForm() {
-				const form = document.querySelector('.newsletter-form');
-				if (form) {
-					form.addEventListener('submit', function(e) {
-						e.preventDefault();
-						const email = form.querySelector('.newsletter-input').value;
-						if (email) {
-							alert('Thanks for subscribing! We\'ll be in touch soon.');
-							form.querySelector('.newsletter-input').value = '';
-						}
-					});
-				}
+		function setupNewsletterForm() {
+			const form = document.getElementById('newsletter-form');
+			if (form) {
+				form.addEventListener('submit', function(e) {
+					e.preventDefault();
+					const email = form.querySelector('.newsletter-input').value;
+					if (email) {
+						alert('Thanks for subscribing! We\'ll be in touch soon.');
+						form.querySelector('.newsletter-input').value = '';
+					}
+				});
 			}
+		}
 
-			function setupNavigation() {
-				// Navigation is now handled by direct links
-			}
+		init();
+		setupNewsletterForm();
 
-			init();
-
-			function init() {
+		function init() {
 
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
@@ -892,6 +1128,9 @@
 				const light4 = new THREE.AmbientLight( 0xffffff, 0.2 );
 				scene.add( light4 );
 
+				// Color scheme system
+				initializeColorSchemes();
+
 				const geometry = new THREE.SphereGeometry( 3, 48, 24 );
 
 				for ( let i = 0; i < 120; i ++ ) {
@@ -899,7 +1138,8 @@
 					const material = new THREE.MeshStandardMaterial();
 					material.roughness = 0.5 * Math.random() + 0.25;
 					material.metalness = 0;
-					material.color.setHSL( Math.random(), 1.0, 0.3 );
+					const c = generateColor();
+					material.color.setHSL( c.h, c.s, c.l );
 
 					const mesh = new THREE.Mesh( geometry, material );
 					mesh.position.x = Math.random() * 4 - 2;
@@ -914,9 +1154,10 @@
 
 				}
 
+				// Keyboard controls for quick scheme tweaking
+				setupColorControlsUI();
+
 				createOverlayCanvas();
-				setupNewsletterForm();
-				setupNavigation();
 
 				composer = new EffectComposer( renderer );
 				renderPass = new RenderPass( scene, camera );
@@ -955,6 +1196,130 @@
 
 				window.addEventListener( 'resize', onWindowResize );
 
+			}
+
+			// Color schemes and controls
+			function initializeColorSchemes() {
+				colorSchemes = {
+					dorficOrangeWhite: () => {
+						if (Math.random() < 0.5) {
+							const hue = 0.08 + (Math.random() - 0.5) * 0.02;
+							const s = clamp01((colorControls.s || 0.55) + (Math.random() - 0.5) * 0.08);
+							const l = clamp01((colorControls.l || 0.50) + (Math.random() - 0.5) * 0.06);
+							return { h: hue, s, l };
+						} else {
+							const l = clamp01(0.90 + (Math.random() - 0.5) * 0.06);
+							return { h: 0, s: 0.0, l };
+						}
+					},
+					dualTealPurple: () => {
+						const base = Math.random() < 0.5 ? 0.58 : 0.78;
+						return { h: clamp01(base + (Math.random() - 0.5) * getJitterH()), s: getS(), l: getL(0.03) };
+					},
+					dualBlueOrange: () => {
+						const base = Math.random() < 0.5 ? 0.60 : 0.08;
+						return { h: clamp01(base + (Math.random() - 0.5) * getJitterH()), s: getS(), l: getL(0.02) };
+					},
+					dualForestRose: () => {
+						const base = Math.random() < 0.5 ? 0.33 : 0.95;
+						return { h: clamp01(base + (Math.random() - 0.5) * getJitterH()), s: getS(0.4, 0.15), l: getL(0.04) };
+					},
+					multicolorMuted: () => {
+						return { h: Math.random(), s: getS(0.45, 0.15), l: getL(0.05, 0.33) };
+					},
+					warmMuted: () => {
+						const warm = 0.02 + Math.random() * 0.18;
+						return { h: warm, s: getS(0.45, 0.12), l: getL(0.05, 0.36) };
+					},
+					coolMuted: () => {
+						const cool = 0.55 + Math.random() * 0.25;
+						return { h: cool, s: getS(0.45, 0.12), l: getL(0.05, 0.36) };
+					},
+					grayscale: () => {
+						const l = clamp01((getBaseL() - 0.02) + (Math.random() - 0.5) * 0.08);
+						return { h: 0, s: 0, l };
+					}
+				};
+				colorSchemeNames = Object.keys(colorSchemes);
+				const params = new URLSearchParams(window.location.search);
+				const initialScheme = params.get('scheme') && colorSchemes[params.get('scheme')] ? params.get('scheme') : 'dualTealPurple';
+				colorControls = {
+					schemeIndex: colorSchemeNames.indexOf(initialScheme),
+					s: clamp01(parseFloat(params.get('s')) || 0.5),
+					l: clamp01(parseFloat(params.get('l')) || 0.4),
+					jitterH: clamp01(parseFloat(params.get('j')) || 0.06)
+				};
+			}
+
+			function getSchemeName() {
+				return colorSchemeNames[(colorControls.schemeIndex + colorSchemeNames.length) % colorSchemeNames.length];
+			}
+
+			function getS(base = 0.5, range = 0.1) {
+				const sBase = colorControls.s || base;
+				return clamp01(sBase + (Math.random() - 0.5) * range);
+			}
+
+			function getBaseL(defaultL = 0.4) {
+				return colorControls.l || defaultL;
+			}
+
+			function getL(range = 0.06, defaultL = 0.4) {
+				const lBase = getBaseL(defaultL);
+				return clamp01(lBase + (Math.random() - 0.5) * range);
+			}
+
+			function getJitterH() { return colorControls.jitterH; }
+			function clamp01(x) { return Math.max(0, Math.min(1, x)); }
+
+			function generateColor() {
+				const scheme = colorSchemes[getSchemeName()];
+				return scheme();
+			}
+
+			function applyColorsToGroup() {
+				if (!group) return;
+				group.children.forEach(obj => {
+					if (obj.material && obj.material.color) {
+						const c = generateColor();
+						obj.material.color.setHSL(c.h, c.s, c.l);
+					}
+				});
+				updateURLParams();
+				console.log('Applied scheme:', getSchemeName(), 's=', colorControls.s.toFixed(2), 'l=', colorControls.l.toFixed(2));
+			}
+
+			function updateURLParams() {
+				const params = new URLSearchParams(window.location.search);
+				params.set('scheme', getSchemeName());
+				params.set('s', String(colorControls.s.toFixed(2)));
+				params.set('l', String(colorControls.l.toFixed(2)));
+				params.set('j', String(colorControls.jitterH.toFixed(2)));
+				history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
+			}
+
+			function setupColorControlsUI() {
+				window.addEventListener('keydown', (e) => {
+					if (e.key === ']') { colorControls.schemeIndex = (colorControls.schemeIndex + 1) % colorSchemeNames.length; applyColorsToGroup(); }
+					if (e.key === '[') { colorControls.schemeIndex = (colorControls.schemeIndex - 1 + colorSchemeNames.length) % colorSchemeNames.length; applyColorsToGroup(); }
+					if (e.key === 'S') { colorControls.s = clamp01(colorControls.s + 0.05); applyColorsToGroup(); }
+					if (e.key === 's') { colorControls.s = clamp01(colorControls.s - 0.05); applyColorsToGroup(); }
+					if (e.key === 'L') { colorControls.l = clamp01(colorControls.l + 0.05); applyColorsToGroup(); }
+					if (e.key === 'l') { colorControls.l = clamp01(colorControls.l - 0.05); applyColorsToGroup(); }
+					if (e.key === 'J') { colorControls.jitterH = clamp01(colorControls.jitterH + 0.02); applyColorsToGroup(); }
+					if (e.key === 'j') { colorControls.jitterH = clamp01(colorControls.jitterH - 0.02); applyColorsToGroup(); }
+					if (e.key === 'r') { applyColorsToGroup(); }
+					if (e.key >= '1' && e.key <= '9') {
+						const idx = parseInt(e.key, 10) - 1;
+						if (idx < colorSchemeNames.length) { colorControls.schemeIndex = idx; applyColorsToGroup(); }
+					}
+					if (e.key === '0') {
+						const dorficIdx = colorSchemeNames.indexOf('dorficOrangeWhite');
+						if (dorficIdx !== -1) { colorControls.schemeIndex = dorficIdx; applyColorsToGroup(); }
+					}
+				});
+				// Apply initial colors from URL params
+				applyColorsToGroup();
 			}
 
 			function onWindowResize() {

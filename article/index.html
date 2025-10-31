@@ -19,12 +19,12 @@
 			}
 
             .content {
-                max-width: 700px;
-                padding: 0 20px;
+                max-width: 750px;
+                padding: 0 30px;
                 margin: 0 auto;
                 font-size: 18px;
-                line-height: 1.6;
-                color: #000;
+                line-height: 1.7;
+                color: #1a1a1a;
                 font-family: Public Sans, sans-serif;
             }
 
@@ -186,66 +186,334 @@
                 100% { background-position-y: 8px; } 
             }
             
+            .content h2 {
+                font-size: 32px;
+                line-height: 1.3;
+                font-weight: 700;
+                margin-top: 32px;
+                margin-bottom: 16px;
+                color: #000;
+            }
+
+            .content h3 {
+                font-size: 24px;
+                line-height: 1.4;
+                font-weight: 600;
+                margin-top: 24px;
+                margin-bottom: 12px;
+                color: #000;
+            }
+
             .content p {
-                margin-bottom: 18px;
-                font-size: 20px;
+                margin-bottom: 16px;
+                font-size: 19px;
                 font-family: Public Sans, sans-serif;
-                line-height: 1.6;
+                line-height: 1.7;
             }
             
             .content ul {
-                margin-bottom: 18px;
+                margin-bottom: 16px;
+                padding-left: 20px;
             }
 
             .content li {
-                margin-bottom: 10px;
-                margin-left: 20px;
+                margin-bottom: 8px;
+                font-size: 19px;
+                line-height: 1.7;
                 list-style-type: disc;
+            }
+
+            .content hr {
+                border: none;
+                text-align: center;
+                margin: 40px 0;
+                height: auto;
+                line-height: 1;
+            }
+
+            .content hr::before {
+                content: "✺";
+                font-size: 28px;
+                color: #333;
+            }
+
+            .content strong {
+                font-weight: 600;
+                color: #000;
+            }
+
+            .content em {
+                font-style: italic;
+            }
+
+            .content a {
+                color: #0066cc;
+                text-decoration: none;
+                border-bottom: 1px solid rgba(0, 102, 204, 0.3);
+                transition: border-color 0.2s ease;
+            }
+
+            .content a:hover {
+                border-bottom-color: #0066cc;
             }
 
             .pullquote {
                 position: relative;
-                background: rgba(255,255,255,0.06);
-                border: 1px solid rgba(255,255,255,0.2);
+                background: rgba(0, 0, 0, 0.02);
+                border: 1px solid rgba(0, 0, 0, 0.1);
                 border-radius: 8px;
-                padding: 18px 20px 18px 28px;
+                padding: 20px 20px 20px 28px;
+                margin: 24px 0;
             }
 
-            .pullquote .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #ff6db3; border-radius: 4px 0 0 4px; }
-            .pullquote p { font-size: 20px; line-height: 1.6; margin: 0; }
+            .pullquote .bar { 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                bottom: 0; 
+                width: 4px; 
+                background: #ff6db3; 
+                border-radius: 4px 0 0 4px; 
+            }
+            
+            .pullquote p { 
+                font-size: 21px; 
+                line-height: 1.7; 
+                margin: 0;
+                font-weight: 400;
+            }
 
             .image {
-                margin: 24px 0;
+                margin: 28px auto;
                 text-align: center;
+                position: relative;
+                display: block;
+                width: 100%;
             }
+            
+            .image-wrapper {
+                position: relative;
+                display: inline-block;
+                margin: 0 auto;
+            }
+            
             .image img {
                 max-width: 700px;
+                width: 100%;
                 height: auto;
+                display: block;
+                position: relative;
+                z-index: 1;
+                margin: 0 auto;
             }
+            
+            /* Scanner overlay */
+            .image-scanner {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 40px;
+                height: 40px;
+                border: 1px solid #4a90e2;
+                background: rgba(74, 144, 226, 0.15);
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                box-shadow: 
+                    0 0 8px rgba(74, 144, 226, 0.4),
+                    inset 0 0 8px rgba(74, 144, 226, 0.2);
+                transform-origin: center center;
+                z-index: 10;
+            }
+            
+            .image-scanner::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 6px;
+                height: 6px;
+                background: #4a90e2;
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                box-shadow: 0 0 4px #4a90e2;
+            }
+            
+            .image-scanner::after {
+                content: attr(data-status);
+                position: absolute;
+                bottom: -35px;
+                right: -50px;
+                font-family: 'Public Sans', monospace;
+                font-size: 10px;
+                color: #000;
+                white-space: nowrap;
+                font-weight: bold;
+                text-shadow: 1px 1px 0px #fff, -1px -1px 0px #fff, 1px -1px 0px #fff, -1px 1px 0px #fff;
+            }
+            
+            /* Black corners on image */
+            .image-corner-tl,
+            .image-corner-br {
+                position: absolute;
+                width: 12px;
+                height: 12px;
+                border: 2px solid #000;
+                pointer-events: none;
+                opacity: 0;
+                z-index: 2;
+                transition: opacity 0.6s ease 0.8s;
+            }
+            
+            .image-corner-tl {
+                top: -6px;
+                left: -6px;
+                border-right: none;
+                border-bottom: none;
+            }
+            
+            .image-corner-br {
+                bottom: -6px;
+                right: -6px;
+                border-left: none;
+                border-top: none;
+            }
+            
+            /* Identified text in bottom right */
+            .image-identified-text {
+                position: absolute;
+                bottom: -25px;
+                right: 0;
+                font-family: 'Public Sans', monospace;
+                font-size: 10px;
+                color: #000;
+                font-weight: bold;
+                white-space: nowrap;
+                text-shadow: 
+                    1px 1px 0px #fff,
+                    -1px -1px 0px #fff,
+                    1px -1px 0px #fff,
+                    -1px 1px 0px #fff;
+                pointer-events: none;
+                z-index: 3;
+                opacity: 0;
+                transition: opacity 0.6s ease 1s;
+            }
+            
+            /* Scanner starts growing */
+            .image-wrapper.scanning .image-scanner {
+                opacity: 1;
+                animation: scannerGrow 0.8s ease-out forwards;
+            }
+            
+            /* When fully grown, turn green and fade out scanner */
+            .image-wrapper.identified .image-scanner {
+                border-color: #2ecc71;
+                background: rgba(46, 204, 113, 0.15);
+                box-shadow: 
+                    0 0 15px rgba(46, 204, 113, 0.6),
+                    inset 0 0 10px rgba(46, 204, 113, 0.3);
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                transform: none;
+                /* Fade out scanner after showing Identified status */
+                animation: scannerFadeOut 0.6s ease 0.5s forwards;
+            }
+            
+            .image-wrapper.identified .image-scanner::before {
+                background: #2ecc71;
+                box-shadow: 0 0 4px #2ecc71;
+            }
+            
+            .image-wrapper.identified .image-scanner::after {
+                color: #2ecc71;
+            }
+            
+            @keyframes scannerFadeOut {
+                to {
+                    opacity: 0;
+                }
+            }
+            
+            /* Hide separate "Identified" text since scanner has its own */
+            .image-identified-text {
+                display: none;
+            }
+            
+            .image-wrapper.identified img {
+                /* border: 3px solid #2ecc71; */
+                box-shadow: 
+                    0 0 15px rgba(46, 204, 113, 0.6),
+                    inset 0 0 10px rgba(46, 204, 113, 0.3),
+                    0 0 0 2px rgba(46, 204, 113, 0.4);
+                background: rgba(46, 204, 113, 0.1);
+            }
+            
+            .image-wrapper.identified .image-corner-tl,
+            .image-wrapper.identified .image-corner-br {
+                opacity: 0.8;
+            }
+            
+            .image-wrapper.identified .image-identified-text {
+                opacity: 1;
+            }
+            
+            @keyframes scannerGrow {
+                from {
+                    width: 40px;
+                    height: 40px;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+                to {
+                    width: 100%;
+                    height: 100%;
+                    top: 0;
+                    left: 0;
+                    transform: none;
+                }
+            }
+            
             .image-caption {
-                font-size: 12px;
-                color: #2d2d2d;
-                margin-top: 8px;
-                text-align: left;
+                font-size: 15px;
+                color: #666;
+                margin-top: 16px;
+                text-align: center;
+                line-height: 1.6;
+                font-style: italic;
             }
 
             .toggle-card {
                 margin: 24px 0;
                 text-align: left;
-                border: 1px solid #000;
+                border: 1px solid rgba(0, 0, 0, 0.15);
                 border-radius: 8px;
-                background: rgba(245, 244, 244, 0.823);
-                padding: 32px;
+                background: rgba(0, 0, 0, 0.02);
+                padding: 20px 24px;
+                transition: background 0.2s ease;
+            }
+
+            .toggle-card:hover {
+                background: rgba(0, 0, 0, 0.03);
             }
 
             .toggle-card-content {
-                /* font-size: 14px; */
-                /* line-height: 1.4; */
-                /* font-weight: 400; */
-                /* font-family: inter, sans-serif; */
                 text-align: left;
-                margin-top: 8px;
+                margin-top: 16px;
                 display: none;
+            }
+
+            .toggle-card-content p {
+                font-size: 18px;
+                line-height: 1.7;
+                margin-bottom: 16px;
+            }
+
+            .toggle-card-content p:last-child {
+                margin-bottom: 0;
             }
 
             .toggle-card.open .toggle-card-content {
@@ -258,12 +526,13 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                gap: 8px;
+                gap: 12px;
             }
 
             .toggle-card-title {
-                font-size: 20px;
-                font-weight: bold;
+                font-size: 19px;
+                font-weight: 600;
+                color: #000;
             }
 
             /* Water background styles */
@@ -278,12 +547,34 @@
             }
 
             .content {
-                background: rgba(230, 230, 230, 0.95);
+                background: rgba(245, 245, 245, 0.97);
                 backdrop-filter: blur(10px);
                 border-radius: 8px;
-                padding: 40px;
+                padding: 40px 40px;
                 margin: 20px auto;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            }
+
+            @media (max-width: 768px) {
+                .content {
+                    padding: 30px 24px;
+                    margin: 15px auto;
+                }
+                
+                .content h2 {
+                    font-size: 28px;
+                    margin-top: 28px;
+                }
+                
+                .content h3 {
+                    font-size: 22px;
+                    margin-top: 24px;
+                }
+                
+                .content p,
+                .content li {
+                    font-size: 18px;
+                }
             }
 
             /* Header styles from articles page */
@@ -576,44 +867,166 @@
             <div class="article-meta">
                 <p>EX Research</p>
                 <p>Jul 10, 2024</p>
-                <p>23 min</p>
                 <p>Special Report</p>
             </div>
             <div class="window-scanlines"></div>
         </div>
         <div class="content">
-            <h2 class="section-title">Introduction: Should I care about <em>Roblox</em>? 🤔</h2>
-            <p>You’ve heard of <em>Roblox</em>. If you’re a parent, you might be hearing about <em>Roblox</em> right this instant. If not, maybe you've seen the game’s eye‑popping numbers:</p>
-            <ul class="bullets">
-                <li>Either the #1 or #2 game in the US, depending who you ask <a href="#">[link]</a></li>
-                <li>$4B valuation to a $45B IPO (with a later drop) <a href="#">[link]</a></li>
-                <li>77.7M daily active users <a href="#">[link]</a></li>
-                <li>Each playing 2.4 hours per day on average <a href="#">[link]</a></li>
-                <li>Including half of all US youth age 12 to 17 <a href="#">[link]</a></li>
+            <h2>Introduction: Should I care about <em>Roblox</em>? 🤔</h2>
+            <p>You've heard of <em>Roblox</em>. If you're a parent, you might be hearing about <em>Roblox</em> right this instant. If not, maybe you've seen the game's eye-popping numbers:</p>
+            <ul>
+                <li>Either the #1 or #2 game in the US, depending who you ask <a href="https://newzoo.com/resources/rankings/top-20-pc-games">[link]</a></li>
+                <li>$4 billion valuation to a $45 billion IPO (with a later drop) <a href="https://www.cnbc.com/2024/05/09/roblox-shares-drop-nearly-30percent-as-company-cuts-annual-bookings-forecast-on-muted-player-spending.html">[link]</a></li>
+                <li>77.7 million daily active users <a href="https://ir.roblox.com/news/news-details/2024/Roblox-Reports-First-Quarter-2024-Financial-Results/">[link]</a></li>
+                <li>Each playing 2.4 hours per day on average <a href="https://brands.roblox.com/why-roblox">[link]</a></li>
+                <li>Including half of all US youth age 12 to 17 <a href="https://www.cnn.com/2024/05/08/tech/roblox-earnings-2024/index.html">[link]</a></li>
             </ul>
-            <p>We publish a weekly newsletter about culture and technology, so we see Roblox constantly. LEGO-headed Roblox memes and blocky anime battles are all over video platforms and Discord servers. But the platform’s thriving ecosystem of experiences and influencers remains baffling to nearly all adults, including us.
+            <p>We publish a weekly newsletter about culture and technology, so we see <em>Roblox</em> constantly. LEGO-headed <em>Roblox</em> memes and blocky anime battles are all over video platforms and Discord servers. But the platform's thriving ecosystem of experiences and influencers remains baffling to nearly all adults, including us.</p>
+            
+            <p>In 2020, the <em>New York Times</em> called <em>Roblox</em> "this generation's version of going to the mall" <a href="https://www.nytimes.com/2020/08/16/technology/roblox-tweens-videogame-coronavirus.html">[link]</a>. But it's a mall where half the stores are run by kids (is that legal?), salespeople pounce on you at the entrance to every shop, and some shady vendor around the corner claims to be selling Kim Kardashian's sex tape. Many of the businesses are jokes, and others claim to do everything at once, like a 3-in-1 men's hair product: they're obstacle courses, role-playing games, and pet simulators all in one.</p>
+            
+            <p>We wanted to understand what was happening in the mall. So we turned our red <em>Roblox</em> caps backwards and started greeting our fellow kids. After many hours and thousands of Robux spent, we returned with a list of reasons to care about <em>Roblox</em>, even if you don't like the place. We've divided them into three sections for your convenience: the business, the games, and the culture.</p>
 
-                In 2020, the New York Times called Roblox “this generation’s version of going to the mall” [link]. But it’s a mall where half the stores are run by kids (is that legal?), salespeople pounce on you at the entrance to every shop, and some shady vendor around the corner claims to be selling Kim Kardashian’s sex tape. Many of the businesses are jokes, and others claim to do everything at once, like a 3-in-1 men’s hair product: they’re obstacle courses, role-playing games, and pet simulators all in one. 
-                
-                We wanted to understand what was happening in the mall. So we turned our red Roblox caps backwards and started greeting our fellow kids. After many hours and thousands of Robux spent, we returned with a list of reasons to care about Roblox, even if you don’t like the place. We’ve divided them into three sections for your convenience: the business, the games, and the culture. </p>
+            <hr>
+
+            <h2>Table of contents</h2>
+            <h3><a href="#part-one">Part One: Why is <em>Roblox</em> so huge?</a></h3>
+            <ul>
+                <li>It's the closest thing we have to a metaverse.</li>
+                <li>It's grown steadily for decades.</li>
+                <li>It's a training ground for developers.</li>
+            </ul>
+            <h3><a href="#part-two">Part Two: Why do kids (still) play <em>Roblox</em>?</a></h3>
+            <ul>
+                <li>It draws you in through social networks.</li>
+                <li>You can choose your own adventure.</li>
+                <li>Gameplay diversity is its own draw.</li>
+                <li>Nostalgia for childhood experiences is powerful.</li>
+                <li>Its trends influence the wider world of games.</li>
+                <li>It's become a stage for other media.</li>
+            </ul>
+            <h3><a href="#part-three">Part Three: Why do I see <em>Roblox</em> avatars everywhere?</a></h3>
+            <ul>
+                <li><em>Roblox</em> fashion captures the online cultural zeitgeist.</li>
+                <li>Its fashion scene continues to evolve.</li>
+                <li>In-game shopping experiences mimic real ones.</li>
+            </ul>
+
+            <hr>
+
+            <h2 id="part-one">Part One: Why is <em>Roblox</em> so huge?</h2>
 
                 <div class="image">
-                    <img src="assets/image.png" alt="Roblox mall">
-                    <p class="image-caption">Roblox mall</p>
+                    <div class="image-wrapper">
+                        <div class="image-scanner" data-status="Scanning"></div>
+                        <div class="image-corner-tl"></div>
+                        <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/banner2.jpg" alt="Roblox banner">
+                        <div class="image-identified-text">Identified</div>
+                    </div>
+                <p class="image-caption">Roblox game environments</p>
                 </div>
 
-                <p>It’s the closest thing we have to a metaverse.<br>
+            <h3 id="metaverse">It's the closest thing we have to a metaverse.</h3>
+            <p>Nobody wants to hear the word "metaverse" any more. Bundled with cryptocurrency, consumer VR, and generative AI into the nebulously defined concept of Web3, the metaverse so far has been bad tech demos and consumer-last product initiatives.</p>
 
-                    Nobody wants to hear the word “metaverse” any more. Bundled with cryptocurrency, consumer VR, and generative AI into the nebulously defined concept of Web3, the metaverse so far has been bad tech demos and consumer-last product initiatives.<br>    
+            <p>But companies are still chasing the dream. Though Disney folded their "metaverse" team in 2023, there's still enormous investment and interest in metaverse platforms like Epic's <em>Fortnite</em>, Microsoft's <em>Minecraft</em>, and Meta's <em>Horizon Worlds</em>. (In the last case, maybe just investment.) All of these platforms want to back into the coherent, profitable, wildly popular ecosystem Roblox already has.</p>
                     
-                    But companies are still chasing the dream. Though Disney folded their “metaverse” team in 2023, there’s still enormous investment and interest in metaverse platforms like Epic’s Fortnite, Microsoft’s Minecraft, and Meta’s Horizon Worlds. (In the last case, maybe just investment.) All of these platforms want to back into the coherent, profitable, wildly popular ecosystem Roblox already has.<br>
-                    
-                    The tech theorist Matthew Ball, who sort of staked everything on becoming “the metaverse guy,” defined the metaverse as</p>
+            <p>The tech theorist Matthew Ball, who sort of staked everything on becoming "the metaverse guy," defined the metaverse as</p>
 
                     <blockquote class="pullquote">
                         <span class="bar"></span>
-                        <p>“A massively scaled and interoperable network of real-time rendered 3D virtual worlds and environments which can be experienced synchronously and persistently by an effectively unlimited number of users with an individual sense of presence, and with continuity of data, such as identity, history, entitlements, objects, communications, and payments.” <a href="#">[link]</a></p>
+                <p>"A massively scaled and interoperable network of real-time rendered 3D virtual worlds and environments which can be experienced synchronously and persistently by an effectively unlimited number of users with an individual sense of presence, and with continuity of data, such as identity, history, entitlements, objects, communications, and payments." <a href="https://www.matthewball.co/all/forwardtothemetaverseprimer">[link]</a></p>
                     </blockquote>
+
+            <p>While this conjures up images of <em>Snow Crash/Ready Player One</em> cyberscapes, it also describes plain old <em>Roblox</em>. Players pop into and out of millions of different 3D "experiences" that they select from a browser. Their clothes and aesthetic remain coherent as they participate in different games, exchange in-game currency, and interact with friends.</p>
+
+            <p>The gulf between tech-world hype and reality is vast. You still can't bring an NFT of your dog into <em>Rainbow Six: Siege</em>, get work done in VR, or live inside of an Apple ad. But <em>Roblox</em> shows that a metaverse is both possible and highly lucrative. The company leaned into this last year, calling their platform "the tech stack for the metaverse." <a href="https://blog.roblox.com/2023/03/tech-stack-metaverse/">[link]</a></p>
+
+            <h3 id="growth">It's grown steadily for decades.</h3>
+            <p><em>Roblox</em> had a 15-year head start on its major competition. <em>Minecraft</em> takes off in the early 2010s, <em>Fortnite</em> explodes in 2017, and a tiny blip of interest in "the metaverse" appears in 2020. Interest in <em>Roblox</em>, in red, grows steadily in the background year over year.</p>
+
+            <div class="image">
+                <div class="image-wrapper">
+                    <div class="image-scanner" data-status="Scanning"></div>
+                    <div class="image-corner-tl"></div>
+                    <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/unnamed_002.png" alt="Google Trends comparison">
+                    <div class="image-identified-text">Identified</div>
+                </div>
+                <p class="image-caption">via Google Trends</p>
+            </div>
+
+            <p>The company started in 2004 as <em>Dynablocks</em>, then changed the game's name to <em>Roblox</em> and launched it in 2006. A mobile version followed in 2012. In 2013, developers began earning real-world money from their creations. The platform exploded in popular consciousness due to the pandemic in 2020, and went public in 2021.</p>
+
+            <p>Throughout all of this, <em>Roblox</em> has had one CEO: original co-creator David Basczucki, aka "Builderman," whose avatar used to greet players on sign-up. It's wildly anomalous for any tech company, let alone a game company, to have such steady leadership over this span — no hostile takeovers, cancellations, or corporate mergers.</p>
+
+            <p>While players eventually age out of <em>Roblox</em>, it retains enough of them that that its daily active user growth looks like every platform's dream:</p>
+
+            <div class="image">
+                <div class="image-wrapper">
+                    <div class="image-scanner" data-status="Scanning"></div>
+                    <div class="image-corner-tl"></div>
+                    <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/unnamed.png" alt="Daily active users growth">
+                    <div class="image-identified-text">Identified</div>
+                </div>
+                <p class="image-caption">via Backlinko</p>
+            </div>
+
+            <h3 id="developers">It's a training ground for developers.</h3>
+            <p>There are more than 40 million games on <em>Roblox</em>, and some 3 million developers using the platform's free, intuitive level-building tools. The company has worked to nurture this diverse creator ecosystem with a range of initiatives: their own asset store, an annual developer's conference, and recently an in-game career center <a href="https://www.theverge.com/2023/8/10/23827740/roblox-virtual-career-center-job-interviews">[link]</a> and an AI assistant <a href="https://blog.roblox.com/2023/09/revolutionizing-creation-roblox/">[link]</a>.</p>
+
+            <p>Some of these young developers turn into indie devs like Zeekerss, whose solo project <em>Lethal Company</em> made $52 million last year on Steam <a href="https://www.gamesradar.com/lethal-company-was-made-by-one-person-and-now-its-up-there-with-baldurs-gate-3-and-starfield-as-one-of-the-best-selling-steam-games-of-2023/">[link]</a>. Others remain on the platform, subsisting on the Robux that flow to the top experiences on the Trending page.</p>
+
+            <p><em>Roblox</em> games are usually free, but monetized through "boosts," game passes, and tolls paid in Robux. A lot of stuff flies here that would outrage the mainstream gaming audience, like paying to respawn in a horror game, or offering players a chance to buy a Gold AK-47 in the first seconds of a survival game.</p>
+
+            <p>There's a reason games push microtransactions so hard: the platform takes a hefty cut of everything developers make. Users can buy 1,000 Robux for $12.50, but devs cash out 1,000 Robux for $3.50.</p>
+
+            <hr>
+
+            <h2 id="part-two">Part Two: Why do kids (still) play <em>Roblox</em>?</h2>
+
+            <div class="image">
+                <div class="image-wrapper">
+                    <div class="image-scanner" data-status="Scanning"></div>
+                    <div class="image-corner-tl"></div>
+                    <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/bloxfruits.png" alt="Blox Fruits game">
+                    <div class="image-identified-text">Identified</div>
+                </div>
+                <p class="image-caption">Blox Fruits, an anime MMORPG</p>
+            </div>
+
+            <h3 id="social">It draws you in through social networks.</h3>
+            <p>Jumping into <em>Roblox</em> on your own can be disorienting. You load up an experience and are immediately confronted with layers of pop-ups, an unskinned default-looking user interface, and minimal tutorials. Everyone in chat has meme names and is trying to trade houses or babies with each other.</p>
+
+            <p>You could say <em>Roblox</em> is confusing because it isn't "for" you — it's for kids — but kids aren't born understanding how to play <em>Blox Fruits</em>. They hear about a game at the lunch table, on Discord, or from TikTokers and YouTubers who provide "the missing tutorial."</p>
+
+            <h3 id="adventure">You can choose your own adventure.</h3>
+            <p>Three of the top five most-visited games in <em>Roblox</em> history are social roleplaying (RP) experiences: <em>Brookhaven RP</em>, <em>Adopt Me!</em>, and <em>MeepCity</em>. These aren't D&D-style roleplaying games. They're all about hanging out, customizing your house and avatar, and pretending to have grown-up jobs and roles.</p>
+
+            <p><em>Roblox</em>'s roleplaying scene seems to cover a lot of traditional "girl game" ground. The hugely popular <em>Royale High</em>, for example, is a dress-up-focused experience that prominently features royalty, fairy, and mermaid-themed realms. But roleplay games defy easy stereotyping: in 2021, <em>Roblox</em> released their own breakdown showing that <em>Brookhaven</em> was the most popular game for both boys and girls across age groups.</p>
+
+            <div class="image">
+                <div class="image-wrapper">
+                    <div class="image-scanner" data-status="Scanning"></div>
+                    <div class="image-corner-tl"></div>
+                    <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/EX_Roblox_Bargraph_v04.png" alt="Game popularity chart">
+                    <div class="image-identified-text">Identified</div>
+                </div>
+                <p class="image-caption">Most popular Roblox games by visit count</p>
+            </div>
+
+            <h3 id="diversity">Gameplay diversity is its own draw.</h3>
+            <p>Though roleplaying games have an outsize presence at the top of the charts, nearly all the players we spoke to pointed to the variety of <em>Roblox</em> experiences as the main reason they use the platform.</p>
+
+            <p><strong>Obbys</strong><br>One of the oldest <em>Roblox</em> genres, obstacle courses are probably the most pick-up-and-play addictive genre for people who don't care about <em>Roblox</em>. Games like the randomly-remixed <em>Tower of Hell</em>, which typically have no checkpoints and feature dramatic falls back to the beginning, anticipated the streamer craze for climbing rage games like <em>Only Up!</em>.</p>
+
+            <p><strong>Horror</strong><br>The numerous horror games on <em>Roblox</em> resist generalization. They range from <em>Dead by Daylight</em> clones like <em>Flee the Facility</em> to narrative-driven experiences like the <em>Resident Evil 7</em>-inspired <em>The Butchery</em>.</p>
+
+            <p><strong>Tycoons</strong><br>Tycoons are an old genre that refuses to die. They're idler games — clicking buttons, gathering resources, getting frustrated and paying Robux to speed things up.</p>
 
                     <div class="toggle-card">
                         <summary>
@@ -621,34 +1034,172 @@
                             <span class="caret">▾</span>
                         </summary>
                         <div class="toggle-card-content">
-                            <p>While playing Roblox, we often asked other players what they thought of the game or Roblox in general. Eventually, we found a more direct way to interview players: entering lobbies in the e-begging game PLS DONATE and giving kids Robux to answer questions. <br>
+                    <p>While playing <em>Roblox</em>, we often asked other players what they thought of the game or <em>Roblox</em> in general. Eventually, we found a more direct way to interview players: entering lobbies in the e-begging game <em>PLS DONATE</em> and giving kids Robux to answer questions.</p>
+                    
+                    <p><strong>Tl;dr:</strong> <em>Roblox</em> players love roleplaying, play both RP and action games with friends, and see variety as the platform's greatest strength.</p>
+                    
+                    <p>When asked about their favorite games, most players' picks were from the top of the charts: social roleplaying game <em>Adopt Me!</em>, anime MMORPG <em>Blox Fruits</em>, dress-up game <em>Dress to Impress</em> ("dti"), social deduction game <em>Murder Mystery 2</em> ("mm2"), multiplayer action game <em>BedWars</em>, or asymmetric horror game <em>Survive the Killer</em> ("stk").</p>
+                    
+                    <p>Several players mentioned <em>Murderers vs Sheriffs Duels</em> ("I 1v1 my friends in murd vs sheriffs"), an interesting game that doesn't have a clear non-<em>Roblox</em> analogue. It's a third-person team-based shooter that's built to highlight trickshots and flashy melee plays.</p>
+                    
+                    <p>When asked what they liked about <em>Roblox</em> itself, almost everyone pointed to the platform's variety of gameplay experiences. Some were confused when asked to compare it to other games. "ii only roblox man," said one interviewee, who was dressed as a Cinnamon Toast Crunch square in a top hat.</p>
+                </div>
+            </div>
 
-                                Tl;dr: Roblox players love roleplaying, play both RP and action games with friends, and see variety as the platform’s greatest strength.<br>
-                                
-                                When asked about their favorite games, most players’ picks were from the top of the charts: social roleplaying game Adopt Me!, anime MMORPG Blox Fruits, dress-up game Dress to Impress (“dti”), social deduction game Murder Mystery 2 (“mm2”), multiplayer action game BedWars, or asymmetric horror game Survive the Killer (“stk”). <br><br>            
-                                
-                                Several players mentioned Murderers vs Sheriffs Duels (“I 1v1 my friends in murd vs sheriffs”), an interesting game that doesn’t have a clear non-Roblox analogue. It’s a third-person team-based shooter that’s built to highlight trickshots and flashy melee plays [link].<br><br>
-                                
-                                Nearly everyone was into roleplaying games. One player mentioned liking a GTAish cops-and-robbers RP game, Emergency Response: Liberty County. (“You can have a gun…and be criminal.”) Another player mentioned liking Blox Fruits for the “grinding,” but when asked if he liked any “other RPGs,” he named the social RP game Brookhaven — illuminating the difference between our old-timer sense of the word (to mean, like, Final Fantasy) and its meaning in Roblox (social roleplaying).<br><br>
-                                
-                                Most players didn’t make any bold guesses when asked what games they thought would be popular in future — most named stuff that was already big, like “Escape the X” obbys. One called out Head Hunter, an ambitious parkour/melee deathmatch game that died out but has been promising a “revival update.”<br><br>
-                                
-                                When asked what they liked about Roblox itself, almost everyone pointed to the platform’s variety of gameplay experiences. Some were confused when asked to compare it to other games. “ii only roblox man,” said one interviewee, who was dressed as a Cinnamon Toast Crunch square in a top hat.</p>
+            <h3 id="nostalgia">Nostalgia for childhood experiences is powerful.</h3>
+            <p>Did we mention <em>Roblox</em> has been around since 2006? There are people with an adult job and 2.5 kids who remember old <em>Roblox</em> games the way that millennials remember <em>Super Mario World</em>.</p>
+
+            <p><strong><em>Work at a Pizza Place</em> — 2008</strong><br>While "job sims" like <em>Supermarket Simulator</em> took years to bubble up to the mainstream, Robloxians have been making an honest buck slinging pies for more than 15 years.</p>
+
+            <p><strong><em>Natural Disaster Survival</em> — 2011</strong><br>This is almost the perfect low-stakes hangout game. Dozens of players get dropped into a random map, then a disaster (or multi-disaster) strikes, and everyone is left scrambling for high ground.</p>
+
+            <div class="image">
+                <div class="image-wrapper">
+                    <div class="image-scanner" data-status="Scanning"></div>
+                    <div class="image-corner-tl"></div>
+                    <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/doors1-1.png" alt="Doors game">
+                    <div class="image-identified-text">Identified</div>
                         </div>
                     </div>
 
-                    <h2 class="section-title">Part Three: Why do I see Roblox everywhere?</h2>
-                    <p>
-                        Roblox fashion captures the online cultural zeitgeist.
+            <div class="image">
+                <div class="image-wrapper">
+                    <div class="image-scanner" data-status="Scanning"></div>
+                    <div class="image-corner-tl"></div>
+                    <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/natural-disaster-survival1-1.png" alt="Natural Disaster Survival">
+                    <div class="image-identified-text">Identified</div>
+                </div>
+            </div>
 
-Roblox culture revolves around avatars — a persistent identity made of digital goods bought by the player. That’s where all the Robux go: players bought 1.6 billion cosmetic items in the first nine months of 2023 [link]. If you want to argue that Roblox is a metaverse, avatars are the key.<br><br>
+            <div class="image">
+                <div class="image-wrapper">
+                    <div class="image-scanner" data-status="Scanning"></div>
+                    <div class="image-corner-tl"></div>
+                    <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/cartride1-3.png" alt="Cart ride game">
+                    <div class="image-identified-text">Identified</div>
+                </div>
+            </div>
 
-Avatar trends reflect online culture. Icons from mascot horror games (Poppy Playtime), seasonal anime shows (Jujutsu Kaisen), and other popular YouTube phenomena (Skibidi Toilet) circulate through avatar marketplaces. It’s an ecosystem that rapidly adapts to new trends, matching the pace of shortform video platforms.<br><br>
+            <div class="image">
+                <div class="image-wrapper">
+                    <div class="image-scanner" data-status="Scanning"></div>
+                    <div class="image-corner-tl"></div>
+                    <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/tower-of-hell1-1.png" alt="Tower of Hell">
+                    <div class="image-identified-text">Identified</div>
+                </div>
+            </div>
 
-As a result, designing avatars demands both technical skill and cultural savvy. For most of Roblox’s lifespan, Roblox Studio has only helped with translating 3D models into avatar pieces, and designers have had to rely on off-platform tools like Blender or Maya for modeling and animation. However, Roblox Corp has spent the past few years building systems that encourage all users to become vendors of cosmetic UGC, loosening prior restrictions on who can sell their work on official marketplaces. <br><br>
+            <p class="image-caption"><em>Roblox</em> games we actually like</p>
 
-This past March, for example, Roblox Corp released the “Rights Manager,” a program that assists copyright holders in issuing takedown requests [link]. Until recently, Roblox users needed to apply to the game’s “UGC Program” to sell anything; in April, however, Roblox Corp announced that any user can sell UGC so long as they’re ID-verified and a premium subscription holder [link]. <br><br>
-                    </p>
+            <h3 id="trends">Its trends influence the wider world of games.</h3>
+            <p>The climbing game <em>Only Up!</em>, which was briefly all the rage among streamers in June 2023, was clearly descended from two things: <em>Getting Over It with Bennett Foddy</em> and the endless 3D jumping puzzles of <em>Roblox</em> obbies.</p>
+
+            <p>There's such a chaotic mix of concepts on the platform's games tab that it's often hard to tell whether a specific idea came from <em>Roblox</em>, was further developed through the platform's clone wars, or was simply copied from somewhere obscure off-platform.</p>
+
+            <h3 id="media">It's become a stage for other media.</h3>
+            <p>Some creators are telling stories not just about <em>Roblox</em> but also <em>through Roblox</em>. A <em>Roblox</em> plugin called Moon Animator has emerged as a more accessible alternative to Blender or Maya, giving animators an easy way to work with <em>Roblox</em> avatars and environments.</p>
+
+            <p>Animated <em>Roblox</em> sketches appear on both YouTube and TikTok. The clips fit right into today's short-form video landscape, which is defined by remixing and re-appropriation.</p>
+
+            <hr>
+
+            <h2 id="part-three">Part Three: Why do I see <em>Roblox</em> avatars everywhere?</h2>
+
+            <div class="image">
+                <div class="image-wrapper">
+                    <div class="image-scanner" data-status="Scanning"></div>
+                    <div class="image-corner-tl"></div>
+                    <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/drain-gang-roblox1-1.png" alt="Drain Gang Roblox avatars">
+                    <div class="image-identified-text">Identified</div>
+                </div>
+                <p class="image-caption">via r/Draingang</p>
+            </div>
+
+            <h3 id="fashion"><em>Roblox</em> fashion captures the online cultural zeitgeist.</h3>
+            <p><em>Roblox</em> culture revolves around avatars — a persistent identity made of digital goods bought by the player. That's where all the Robux go: players bought 1.6 billion cosmetic items in the first nine months of 2023 <a href="https://blog.roblox.com/2024/04/making-creation-and-expression-easier-for-anyone-on-marketplace/">[link]</a>. If you want to argue that <em>Roblox</em> is a metaverse, avatars are the key.</p>
+
+            <p>Avatar trends reflect online culture. Icons from mascot horror games (<em>Poppy Playtime</em>), seasonal anime shows (<em>Jujutsu Kaisen</em>), and other popular YouTube phenomena (Skibidi Toilet) circulate through avatar marketplaces. It's an ecosystem that rapidly adapts to new trends, matching the pace of shortform video platforms.</p>
+
+            <p>As a result, designing avatars demands both technical skill and cultural savvy. For most of <em>Roblox</em>'s lifespan, Roblox Studio has only helped with translating 3D models into avatar pieces, and designers have had to rely on off-platform tools like Blender or Maya for modeling and animation.</p>
+
+            <h3 id="evolution">Its fashion scene continues to evolve.</h3>
+            <p>Avatars come in different "rig types" that determine how articulate different models are. There are currently three supported types: R6, R15, and Rthro. The numbers 6 and 15 indicate how many "joints" the avatar has; more joints means more articulation and detail.</p>
+
+            <p>Though the avatar has more or less stayed true to its LEGO-inspired roots, it's undergone a number of changes since the platform's inception.</p>
+
+            <div class="image">
+                <div class="image-wrapper">
+                    <div class="image-scanner" data-status="Scanning"></div>
+                    <div class="image-corner-tl"></div>
+                    <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/EX_Roblox_Timeline_v01.png" alt="Roblox timeline">
+                    <div class="image-identified-text">Identified</div>
+                </div>
+                <p class="image-caption">Roblox avatar evolution timeline</p>
+            </div>
+
+            <h3 id="shopping">In-game shopping experiences mimic real ones.</h3>
+            <p>Avatar tastes are fickle and largely depend on the player. For example, to some players, the shriveled right leg piece of the Korblox Deathspeaker set — one of the most expensive sets on the market — is a goofy-looking badge of pride; for others, it's an obnoxious status symbol flaunted by <em>Roblox</em>'s one percent.</p>
+
+            <p>An easy way to gauge the state of <em>Roblox</em> avatar trends is to consult the playerbase's favored avatar customization tool. <em>Catalog Avatar Creator</em>, a <em>Roblox</em> game, is currently the most popular choice for assembling avatars and browsing UGC. The 2.2B-visit experience has become a Rosetta Stone for decoding the shifting tastes of <em>Roblox</em>'s Gen Alpha population.</p>
+
+            <p><em>CAC</em> fits neatly into the conception of <em>Roblox</em> as a metaverse or mall. It's a social dressing room where users can try avatar pieces on for free, then purchase them to wear in any game that supports their avatar rig.</p>
+
+            <div class="image">
+                <div class="image-wrapper">
+                    <div class="image-scanner" data-status="Scanning"></div>
+                    <div class="image-corner-tl"></div>
+                    <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/unnamed_003.png" alt="Catalog Avatar Creator screenshot">
+                    <div class="image-identified-text">Identified</div>
+                </div>
+                <p class="image-caption">screenshot from Catalog Avatar Creator</p>
+            </div>
+
+            <p>Other trends include:</p>
+            <ul>
+                <li>"Realistic" recreations of characters from across the landscape of internet horror</li>
+                <li>"Halloween"-themed avatars of original characters, mostly tending towards the monstrous or demonic</li>
+                <li>Riffs on the default <em>Roblox</em> avatar, especially ones that make him look jacked</li>
+                <li>Avatars that incorporate entire set pieces, transforming them into walking dioramas</li>
+                <li>"Alt" fashion that borrows from hyper-online aesthetics</li>
+            </ul>
+
+            <hr>
+
+            <h2>Epilogue: So, should I care about <em>Roblox</em>?</h2>
+
+            <div class="image">
+                <div class="image-wrapper">
+                    <div class="image-scanner" data-status="Scanning"></div>
+                    <div class="image-corner-tl"></div>
+                    <div class="image-corner-br"></div>
+                    <img src="assets/What’s the deal with Roblox_ An EX Special Report_files/only-roblox-man-2-1.png" alt="One of our esteemed interviewees">
+                    <div class="image-identified-text">Identified</div>
+                </div>
+                <p class="image-caption">one of our esteemed interviewees</p>
+            </div>
+
+            <p>We've talked about the games, the fashion, and the numbers. We've talked to a Cinnamon Toast Crunch square about why he likes <em>BedWars</em>. After all that, should you care about <em>Roblox</em>?</p>
+
+            <p>Yes, if —</p>
+
+            <p><strong>You have kids.</strong> They're probably playing it right now.</p>
+
+            <p><strong>You are, for some reason, invested in the idea of the metaverse.</strong> <em>Roblox</em> isn't just the blueprint for the metaverse; it's the only one of the major competing entities with a ground-up creative culture.</p>
+
+            <p><strong>You care about internet culture.</strong> If you want to understand the internet, you have to understand games. Game ideas, memes, fashion, and developers themselves flow freely from the <em>Roblox</em>-verse into the wider web, making it essential background.</p>
+
+            <p><strong>You care about game history.</strong> Games like <em>Work at a Pizza Place</em> and <em>Natural Disaster Survival</em> are notable in their own right — not because they inspired other games, but because they're actual mainstream gaming hits that rarely get mentioned outside <em>Roblox</em> communities.</p>
+
+            <p><strong>You're curious about the future of games.</strong> Kids who grew up on <em>Roblox</em> are now designing new games and social experiences that will reshape the internet.</p>
+
+            <p><strong>You want to know what the hell is going on.</strong> Have you seen a singing nugget on TikTok with a familiar face? Have you been threatened by a smirking man with a red dodgeball? Where do these things come from? <em>Roblox</em>. It's always <em>Roblox</em>.</p>
         </div>
 
         <script>
@@ -679,6 +1230,40 @@ This past March, for example, Roblox Corp released the “Rights Manager,” a p
 
             // Initialize navigation when page loads
             document.addEventListener('DOMContentLoaded', setupNavigation);
+            
+            // Image identification animation on scroll
+            document.addEventListener('DOMContentLoaded', function() {
+                const imageWrappers = document.querySelectorAll('.image-wrapper');
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const wrapper = entry.target;
+                            
+                            // Phase 1: Start scanning (scanner grows)
+                            wrapper.classList.add('scanning');
+                            const scanner = wrapper.querySelector('.image-scanner');
+                            scanner.setAttribute('data-status', 'Scanning');
+                            
+                            // Phase 2: After scanner finishes growing, turn green and show final frame
+                            setTimeout(() => {
+                                wrapper.classList.add('identified');
+                                scanner.setAttribute('data-status', 'Identified');
+                            }, 800); // Match animation duration (0.8s)
+                            
+                            // Unobserve after triggering to avoid re-triggering
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.5, // Trigger when 50% of image is visible
+                    rootMargin: '0px'
+                });
+                
+                imageWrappers.forEach(wrapper => {
+                    observer.observe(wrapper);
+                });
+            });
         </script>
 
         <script>

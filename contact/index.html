@@ -223,16 +223,22 @@
 				flex: 1;
 				overflow-y: auto;
 				overflow-x: hidden;
+				background: url('../assets/images/cloud2.png') no-repeat center center;
+				background-size: cover;
 			}
 
 			.contact-title {
 				font-size: 48px;
-				font-weight: 700;
-				color: #000;
-				margin: 0 0 24px 0;
-				font-family: 'Arial Narrow', monospace;
-				line-height: 1.1;
-				letter-spacing: -1px;
+			font-weight: 700;
+			color: #000;
+			margin: 0 0 24px 0;
+			font-family: 'Arial Narrow', monospace;
+			line-height: 1.1;
+			letter-spacing: -1px;
+			background: #c0c0c0;
+			padding: 16px 20px;
+			border: 2px outset #c0c0c0;
+			text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
 			}
 
 			.contact-subtitle {
@@ -247,7 +253,6 @@
 				font-size: 18px;
 				color: #333;
 				line-height: 1.6;
-				margin: 0 0 40px 0;
 				font-weight: 400;
 			}
 
@@ -255,13 +260,13 @@
 				margin: 0 0 24px 0;
 			}
 
-			.contact-form {
-				background: #f8f8f8;
-				border: 1px solid #ddd;
-				border-radius: 8px;
-				padding: 30px;
-				margin: 40px 0;
-			}
+		.contact-form {
+			background: lightgray;
+			border: 2px inset lightgray;
+			padding: 30px;
+			margin: 40px auto;
+			max-width: 600px;
+		}
 
 			.form-group {
 				margin-bottom: 24px;
@@ -282,7 +287,7 @@
 				width: 100%;
 				padding: 12px 16px;
 				border: 1px solid #ccc;
-				border-radius: 4px;
+				/* border-radius: 4px; */
 				font-size: 16px;
 				font-family: inherit;
 				box-sizing: border-box;
@@ -325,16 +330,192 @@
 				background: #dcdcdc;
 			}
 
-			.form-button:active {
-				background: #b5b5b5;
-				border-color: #404040;
-				border-right-color: #ffffff;
-				border-bottom-color: #ffffff;
-				box-shadow:
-					inset -1px -1px 0 #dfdfdf,
-					inset 1px 1px 0 #808080,
-					0 0 0 1px #000000;
-			}
+		.form-button:active {
+			background: #b5b5b5;
+			border-color: #404040;
+			border-right-color: #ffffff;
+			border-bottom-color: #ffffff;
+			box-shadow:
+				inset -1px -1px 0 #dfdfdf,
+				inset 1px 1px 0 #808080,
+				0 0 0 1px #000000;
+		}
+
+		/* Newsletter Section */
+		.newsletter-section {
+			margin: 60px auto 40px auto;
+			max-width: 600px;
+		}
+
+		.newsletter-window {
+			background: #ffffff;
+			border: 1px solid #101010;
+			border-radius: 4px;
+			position: relative;
+			overflow: hidden;
+			box-shadow:
+				0 0 0 2px #000,
+				0 0 0 4px #7aa7d9,
+				0 0 0 6px #000,
+				6px 6px 0 #00000020,
+				12px 12px 0 #00000015;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.newsletter-window::after {
+			content: '';
+			position: absolute;
+			inset: 0;
+			pointer-events: none;
+			background:
+				repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px),
+				repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px);
+			opacity: .7;
+		}
+
+		.newsletter-titlebar {
+			height: 32px;
+			background: linear-gradient(to bottom, #e9eef3, #cfd6de);
+			border-bottom: 2px solid #000;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 0 0 10px;
+			box-shadow: inset 0 -2px 0 #7aa7d9, inset 0 2px 0 #ffffff;
+			position: relative;
+			z-index: 2;
+		}
+
+		.newsletter-titlebar-title {
+			font-size: 11px;
+			font-weight: 600;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			color: #1d2935;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			flex: 1;
+			margin-right: 10px;
+			text-shadow: 0 1px 0 #fff;
+		}
+
+		.newsletter-titlebar-buttons {
+			display: flex;
+			gap: 4px;
+			padding: 0 8px;
+		}
+
+		.newsletter-titlebar-button {
+			width: 14px;
+			height: 14px;
+			border: 1px solid #2a2a2a;
+			border-radius: 2px;
+			background: #ffffff;
+			display: grid;
+			place-items: center;
+			cursor: default;
+			box-shadow: inset 0 -1px 0 #d5dbe3, inset 0 1px 0 #ffffff;
+			font-size: 9px;
+			line-height: 1;
+			color: #333;
+		}
+
+		.newsletter-content {
+			padding: 36px;
+			text-align: center;
+			position: relative;
+			z-index: 2;
+			background: #ffffff;
+		}
+
+		.newsletter-title {
+			font-size: 24px;
+			font-weight: 700;
+			color: #000;
+			margin: 0 0 12px 0;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+		}
+
+		.newsletter-description {
+			font-size: 15px;
+			color: #444;
+			line-height: 1.6;
+			margin: 0 0 24px 0;
+		}
+
+		.newsletter-form {
+			display: flex;
+			gap: 12px;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+
+		.newsletter-input {
+			padding: 14px 18px;
+			border: 2px solid #000;
+			border-radius: 4px;
+			font-size: 14px;
+			min-width: 250px;
+			font-family: inherit;
+			box-shadow: inset 1px 1px 0 rgba(0,0,0,0.1);
+		}
+
+		.newsletter-input:focus {
+			outline: none;
+			border-color: #7aa7d9;
+			box-shadow: inset 1px 1px 0 rgba(0,0,0,0.1), 0 0 0 3px rgba(122, 167, 217, 0.2);
+		}
+
+		.newsletter-button {
+			background: #c0c0c0;
+			color: #000000;
+			padding: 14px 28px;
+			font-size: 14px;
+			font-weight: 700;
+			border: none;
+			cursor: pointer;
+			font-family: inherit;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			border-radius: 4px;
+			border: 2px outset #c0c0c0;
+			box-shadow:
+				inset 1px 1px 0 #dfdfdf,
+				inset -1px -1px 0 #808080,
+				0 0 0 1px #000000;
+		}
+
+		.newsletter-button:hover {
+			background: #dcdcdc;
+		}
+
+		.newsletter-button:active {
+			background: #b5b5b5;
+			border-color: #404040;
+			border-right-color: #ffffff;
+			border-bottom-color: #ffffff;
+			box-shadow:
+				inset -1px -1px 0 #dfdfdf,
+				inset 1px 1px 0 #808080,
+				0 0 0 1px #000000;
+		}
+
+		.newsletter-status-bar {
+			height: 22px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			padding: 0 8px;
+			border-top: 2px solid #000;
+			background: repeating-linear-gradient(90deg, #e7eef6 0 6px, #dfe7f0 6px 12px);
+			font-size: 10px;
+			color: #1d2935;
+		}
 
 
 			.hidden {
@@ -469,10 +650,14 @@
 					font-size: 16px;
 				}
 				
-				.contact-form {
-					padding: 20px;
-					margin: 30px 0;
-				}
+			.contact-form {
+				padding: 20px;
+				margin: 30px auto;
+			}
+
+			.newsletter-content {
+				padding: 28px;
+			}
 			}
 
 			@media (max-width: 480px) {
@@ -519,15 +704,25 @@
 					font-size: 15px;
 				}
 				
-				.contact-form {
-					padding: 15px;
-					margin: 20px 0;
-				}
+			.contact-form {
+				padding: 15px;
+				margin: 20px auto;
+			}
+
+			.newsletter-content {
+				padding: 20px;
+			}
+
+			.newsletter-input {
+				min-width: 200px;
+			}
 				
 				.window-title {
 					font-size: 11px;
 				}
 			}
+
+
 		</style>
 	</head>
 	<body>
@@ -558,11 +753,11 @@
 				<div class="contact-content-wrapper">
 					<h1 class="contact-title">Get in touch</h1>
 					
-					<div class="contact-content">
-						<p>Whether you're looking for strategic insights, creative collaboration, or just want to share something weird you found online, we'd love to hear from you.</p>
-					</div>
 
 					<form class="contact-form" id="contact-form">
+						<div class="contact-content">
+							<p>Whether you're looking for strategic insights, creative collaboration, or just want to share something weird you found online, we'd love to hear from you.</p>
+						</div>
 						<div class="form-group">
 							<label for="name" class="form-label">Name</label>
 							<input type="text" id="name" name="name" class="form-input" required>
@@ -588,9 +783,35 @@
 							<textarea id="message" name="message" class="form-textarea" required placeholder="Tell us about your project, question, or that weird meme you can't stop thinking about..."></textarea>
 						</div>
 						
-						<button type="submit" class="form-button">Send Message</button>
-					</form>
+					<button type="submit" class="form-button">Send Message</button>
+				</form>
+
+				<!-- Newsletter Section -->
+				<div class="newsletter-section">
+					<div class="newsletter-window">
+						<div class="newsletter-titlebar">
+							<div class="newsletter-titlebar-title">Subscribe</div>
+							<div class="newsletter-titlebar-buttons">
+								<div class="newsletter-titlebar-button">–</div>
+								<div class="newsletter-titlebar-button">□</div>
+								<div class="newsletter-titlebar-button">×</div>
+							</div>
+						</div>
+						<div class="newsletter-content">
+							<h3 class="newsletter-title">Subscribe to our newsletter</h3>
+							<p class="newsletter-description">Weekly download of future-culture picks and deep-internet insights.</p>
+							<form class="newsletter-form" id="newsletter-form">
+								<input type="email" class="newsletter-input" placeholder="Enter your email" required>
+								<button type="submit" class="newsletter-button">Subscribe</button>
+							</form>
+						</div>
+						<div class="newsletter-status-bar">
+							<span>Newsletter v1.0</span>
+							<span>Ready</span>
+						</div>
+					</div>
 				</div>
+			</div>
 				
 				<!-- <div class="status-bar">
 					<span>EX Research Contact v1.0</span>
@@ -745,28 +966,52 @@
 			function create2DChatboxes() {
 				chatboxes2D = [];
 				
-				const initialCount = 6 + Math.floor(Math.random() * 4);
+				const initialCount = 8 + Math.floor(Math.random() * 6);
 				
+				// Spawn them over time with random delays to create popup effect
 				for (let i = 0; i < initialCount; i++) {
-					const chatbox = createNewChatbox();
-					const gridCols = Math.ceil(Math.sqrt(initialCount));
-					const gridRows = Math.ceil(initialCount / gridCols);
-					const col = i % gridCols;
-					const row = Math.floor(i / gridCols);
-					
-					const cellWidth = (overlayCanvas.width / pixelScale) / gridCols;
-					const cellHeight = (overlayCanvas.height / pixelScale) / gridRows;
-					
-					chatbox.x = (col * cellWidth) + (Math.random() * cellWidth * 0.8);
-					chatbox.y = (row * cellHeight) + (Math.random() * cellHeight * 0.8);
-					
-					chatbox.x = Math.max(0, Math.min(chatbox.x, overlayCanvas.width / pixelScale - chatbox.width));
-					chatbox.y = Math.max(0, Math.min(chatbox.y, overlayCanvas.height / pixelScale - chatbox.height));
-					
-					chatboxes2D.push(chatbox);
+					setTimeout(() => {
+						spawnPopupChatbox();
+					}, Math.random() * 3000); // Random delay up to 3 seconds
 				}
 			}
 
+			function spawnPopupChatbox() {
+				const baseWidth = 240;
+				const baseHeight = 72;
+				
+				const scaledWidth = baseWidth / pixelScale;
+				const scaledHeight = baseHeight / pixelScale;
+				const caretMargin = 20 / pixelScale;
+				const margin = 40 / pixelScale;
+				
+				// Random position anywhere on screen
+				const x = margin + Math.random() * (overlayCanvas.width / pixelScale - scaledWidth - margin * 2);
+				const y = margin + Math.random() * (overlayCanvas.height / pixelScale - scaledHeight - caretMargin - margin * 2);
+				
+				const chatbox = {
+					x: x,
+					y: y,
+					vx: 0,
+					vy: 0,
+					width: scaledWidth,
+					height: scaledHeight,
+					text: 'EX Research',
+					textStyles: generateRandomTextStyles(),
+					styleUpdateTime: 0,
+					// Popup animation properties
+					spawnTime: performance.now(),
+					popupDuration: 200, // Pop-in animation duration in ms
+					scale: 0,
+					opacity: 0,
+					lifetime: 5000 + Math.random() * 3000, // Stay visible for 5-8 seconds
+					fadeOutStart: null,
+					fadeOutDuration: 300
+				};
+				
+				chatboxes2D.push(chatbox);
+			}
+			
 			function createNewChatbox(startX = null, speedTier = 'normal') {
 				const baseWidth = 240;
 				const baseHeight = 72;
@@ -848,12 +1093,48 @@
 				const speed = window.chatboxControls ? window.chatboxControls.speed : 1.0;
 				const connectionDistance = window.chatboxControls ? window.chatboxControls.connectionDistance * 12 : 40;
 				
+				// Spawn new popups randomly
 				if (currentTime - lastSpawnTime > spawnInterval) {
-					chatboxes2D.push(createNewChatbox(null, 'normal'));
+					spawnPopupChatbox();
 					lastSpawnTime = currentTime;
+					// Vary the spawn interval to make it less predictable
+					spawnInterval = 1500 + Math.random() * 2000;
 				}
 				
 				chatboxes2D = chatboxes2D.filter(chatbox => {
+					// Update popup animation
+					if (chatbox.spawnTime !== undefined) {
+						const timeSinceSpawn = currentTime - chatbox.spawnTime;
+						
+						// Pop-in animation
+						if (timeSinceSpawn < chatbox.popupDuration) {
+							const progress = timeSinceSpawn / chatbox.popupDuration;
+							// Elastic pop effect
+							chatbox.scale = Math.min(1, progress * 1.2);
+							chatbox.opacity = progress;
+						} else {
+							chatbox.scale = 1;
+							chatbox.opacity = 1;
+						}
+						
+						// Check if it's time to fade out
+						if (chatbox.fadeOutStart === null && timeSinceSpawn > chatbox.lifetime) {
+							chatbox.fadeOutStart = currentTime;
+						}
+						
+						// Fade out animation
+						if (chatbox.fadeOutStart !== null) {
+							const fadeProgress = (currentTime - chatbox.fadeOutStart) / chatbox.fadeOutDuration;
+							chatbox.opacity = Math.max(0, 1 - fadeProgress);
+							chatbox.scale = 1 - fadeProgress * 0.2; // Shrink slightly while fading
+							
+							// Remove if fade out is complete
+							if (fadeProgress >= 1) {
+								return false;
+							}
+						}
+					}
+					
 					chatbox.x += chatbox.vx * speed;
 					chatbox.y += chatbox.vy * speed;
 					
@@ -872,7 +1153,7 @@
 						chatbox.vy = -Math.abs(chatbox.vy) * 0.5;
 					}
 					
-					return chatbox.x > -chatbox.width - 20;
+					return chatbox.x > -chatbox.width - 20 || chatbox.spawnTime !== undefined;
 				});
 				
 				overlayCtx.strokeStyle = 'black';
@@ -905,6 +1186,21 @@
 				const caretSize = baseCaretSize / pixelScale;
 				const caretX = chatbox.x + (baseCaretOffset / pixelScale);
 				const caretY = chatbox.y + chatbox.height;
+
+				// Apply scale and opacity for popup effect
+				overlayCtx.save();
+				
+				const scale = chatbox.scale !== undefined ? chatbox.scale : 1;
+				const opacity = chatbox.opacity !== undefined ? chatbox.opacity : 1;
+				
+				overlayCtx.globalAlpha = opacity;
+				
+				// Scale from center of chatbox
+				const centerX = chatbox.x + chatbox.width / 2;
+				const centerY = chatbox.y + chatbox.height / 2;
+				overlayCtx.translate(centerX, centerY);
+				overlayCtx.scale(scale, scale);
+				overlayCtx.translate(-centerX, -centerY);
 
 				overlayCtx.fillStyle = 'white';
 				overlayCtx.strokeStyle = 'black';
@@ -962,38 +1258,55 @@
 					overlayCtx.fillText(fragment.text, currentX, textY);
 					currentX += overlayCtx.measureText(fragment.text).width;
 				});
+				
+				overlayCtx.restore();
 			}
 
-			function setupContactForm() {
-				const form = document.getElementById('contact-form');
-				if (form) {
-					form.addEventListener('submit', function(e) {
-						e.preventDefault();
-						
-						// Get form data
-						const formData = new FormData(form);
-						const data = {
-							name: formData.get('name'),
-							email: formData.get('email'),
-							company: formData.get('company'),
-							subject: formData.get('subject'),
-							message: formData.get('message')
-						};
-						
-						// Simple validation
-						if (!data.name || !data.email || !data.subject || !data.message) {
-							alert('Please fill in all required fields.');
-							return;
-						}
-						
-						// Simulate form submission
-						alert(`Thanks for reaching out, ${data.name}! We'll get back to you at ${data.email} soon.`);
-						form.reset();
-					});
-				}
+		function setupContactForm() {
+			const form = document.getElementById('contact-form');
+			if (form) {
+				form.addEventListener('submit', function(e) {
+					e.preventDefault();
+					
+					// Get form data
+					const formData = new FormData(form);
+					const data = {
+						name: formData.get('name'),
+						email: formData.get('email'),
+						company: formData.get('company'),
+						subject: formData.get('subject'),
+						message: formData.get('message')
+					};
+					
+					// Simple validation
+					if (!data.name || !data.email || !data.subject || !data.message) {
+						alert('Please fill in all required fields.');
+						return;
+					}
+					
+					// Simulate form submission
+					alert(`Thanks for reaching out, ${data.name}! We'll get back to you at ${data.email} soon.`);
+					form.reset();
+				});
 			}
+		}
 
-			init();
+		function setupNewsletterForm() {
+			const form = document.getElementById('newsletter-form');
+			if (form) {
+				form.addEventListener('submit', function(e) {
+					e.preventDefault();
+					const email = form.querySelector('.newsletter-input').value;
+					if (email) {
+						alert('Thanks for subscribing! We\'ll be in touch soon.');
+						form.querySelector('.newsletter-input').value = '';
+					}
+				});
+			}
+		}
+
+		init();
+		setupNewsletterForm();
 
 			function init() {
 

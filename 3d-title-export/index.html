@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>EX Research - 3D Title Export</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<style>
+	body {
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		/* Chroma key green for green screen */
+		background-color: #00FF00;
+	}
+
+		#container {
+			width: 100vw;
+			height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		#title-canvas {
+			width: 800px;
+			height: 300px;
+			display: block;
+		}
+
+		#instructions {
+			position: fixed;
+			top: 10px;
+			left: 10px;
+			background: rgba(0, 0, 0, 0.8);
+			color: white;
+			padding: 15px;
+			border-radius: 8px;
+			font-family: monospace;
+			font-size: 12px;
+			max-width: 350px;
+			z-index: 100;
+			line-height: 1.5;
+		}
+
+		#instructions h3 {
+			margin: 0 0 10px 0;
+			font-size: 14px;
+		}
+
+		#instructions ul {
+			margin: 5px 0;
+			padding-left: 20px;
+		}
+
+		#instructions li {
+			margin: 3px 0;
+		}
+
+		#instructions button {
+			margin-top: 10px;
+			padding: 5px 10px;
+			background: #4a90e2;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-family: monospace;
+		}
+
+		#instructions button:hover {
+			background: #357abd;
+		}
+
+		.hidden {
+			display: none !important;
+		}
+	</style>
+</head>
+<body>
+	<div id="instructions">
+		<h3>🎬 Recording Instructions</h3>
+		<p><strong>Current size:</strong> 800x300px</p>
+		<p><strong>How to record:</strong></p>
+		<ul>
+			<li><strong>Mac:</strong> Use QuickTime Player → File → New Screen Recording → Select this area</li>
+			<li><strong>Windows:</strong> Use OBS Studio or ScreenToGif</li>
+			<li><strong>Web tools:</strong> Use ScreenToGif.com or Giphy Capture</li>
+		</ul>
+		<p><strong>Tips:</strong></p>
+		<ul>
+			<li>Record for ~4-5 seconds for a smooth loop</li>
+			<li>Remove green screen using video editor or ezgif.com</li>
+			<li>Green background = chroma key for easy removal</li>
+		</ul>
+		<button id="hide-instructions">Hide Instructions</button>
+	</div>
+
+	<div id="container">
+		<div id="title-canvas"></div>
+	</div>
+
+	<script type="importmap">
+		{
+			"imports": {
+				"three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+				"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+			}
+		}
+	</script>
+
+	<script type="module">
+		import * as THREE from 'three';
+		import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+		import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+
+		let titleRenderer, titleScene, titleCamera, titleMesh, titleMount, exMesh, researchMesh;
+
+		function init() {
+			titleMount = document.getElementById('title-canvas');
+			
+			const w = 800;
+			const h = 300;
+			
+		// Create renderer with green screen background
+		titleRenderer = new THREE.WebGLRenderer({ 
+			antialias: true, 
+			alpha: false,
+			preserveDrawingBuffer: true // Important for capturing frames
+		});
+		titleRenderer.setPixelRatio(window.devicePixelRatio);
+		titleRenderer.setSize(w, h, false);
+		titleRenderer.setClearColor(0x00FF00, 1); // Chroma key green background
+			titleMount.appendChild(titleRenderer.domElement);
+
+			// Setup scene
+			titleScene = new THREE.Scene();
+			titleCamera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+			titleCamera.position.set(0, 0, 16);
+
+			// Lighting setup - bright and clear
+			const key = new THREE.DirectionalLight(0xffffff, 2.0);
+			key.position.set(2, 3, 5);
+			titleScene.add(key);
+			
+			const fill = new THREE.DirectionalLight(0xa0b9ff, 1.2);
+			fill.position.set(-3, 2, 2);
+			titleScene.add(fill);
+			
+			const rim = new THREE.DirectionalLight(0xfff0d0, 1.0);
+			rim.position.set(0, -2, -4);
+			titleScene.add(rim);
+			
+			const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+			titleScene.add(ambient);
+
+			// Load font and create 3D text
+			const textLoader = new FontLoader();
+			textLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', function(font) {
+				
+			function createTextMesh(str, material) {
+				const geo = new TextGeometry(str, {
+					font: font,
+					size: 3.0,
+					height: 0.7,
+					curveSegments: 8,
+					bevelEnabled: true,
+					bevelThickness: 0.25,
+					bevelSize: 0.15,
+					bevelSegments: 3
+				});
+				geo.computeBoundingBox();
+				const mesh = new THREE.Mesh(geo, material);
+				return { mesh, geo };
+			}
+
+			// Materials with vibrant colors
+			const exMaterial = new THREE.MeshPhysicalMaterial({
+				color: 0xffd700, // Golden yellow
+				metalness: 0.1,
+				roughness: 0.3,
+				reflectivity: 0.8,
+				clearcoat: 0.8,
+				clearcoatRoughness: 0.1,
+				emissive: 0x886600
+			});
+			
+			const researchMaterial = new THREE.MeshPhongMaterial({
+				color: 0xff69b4, // Hot pink
+				shininess: 80,
+				specular: 0xffffff,
+				emissive: 0x883355
+			});
+
+			const { mesh: exMeshLocal, geo: exGeo } = createTextMesh('EX', exMaterial);
+			const { mesh: researchMeshLocal, geo: researchGeo } = createTextMesh('Research', researchMaterial);
+
+			// Get widths and center the combined text
+			const exBB = exGeo.boundingBox;
+			const exW = exBB.max.x - exBB.min.x;
+			const exCenterX = (exBB.max.x + exBB.min.x) / 2;
+			
+			const resBB = researchGeo.boundingBox;
+			const resW = resBB.max.x - resBB.min.x;
+			const resCenterX = (resBB.max.x + resBB.min.x) / 2;
+			
+			const spacing = 1;
+			const totalW = exW + resW + spacing;
+			
+			// Position meshes to center the entire title
+			exMeshLocal.position.x = -totalW / 2 - exBB.min.x;
+			researchMeshLocal.position.x = exMeshLocal.position.x + exW + spacing - resBB.min.x;
+
+				// Store for animation
+				exMesh = exMeshLocal;
+				researchMesh = researchMeshLocal;
+				
+				// Group both meshes
+				const grp = new THREE.Group();
+				grp.add(exMeshLocal);
+				grp.add(researchMeshLocal);
+				titleScene.add(grp);
+				titleMesh = grp;
+			});
+
+			// Handle window resize
+			window.addEventListener('resize', onWindowResize);
+			
+			// Start animation loop
+			animate();
+		}
+
+		function onWindowResize() {
+			// Keep fixed size for consistent recording
+			const w = 800;
+			const h = 300;
+			titleRenderer.setSize(w, h, false);
+			titleCamera.aspect = w / h;
+			titleCamera.updateProjectionMatrix();
+		}
+
+		function animate() {
+			requestAnimationFrame(animate);
+			render();
+		}
+
+		function render() {
+			if (titleRenderer && titleScene && titleCamera) {
+				const time = performance.now() * 0.001;
+				
+				// Animate EX and Research separately with gentle floating motion
+				if (exMesh) {
+					exMesh.rotation.y = Math.sin(time) * 0.2;
+					exMesh.position.y = Math.sin(time * 0.7) * 0.1;
+				}
+				if (researchMesh) {
+					researchMesh.rotation.y = Math.sin(time + 1.5) * 0.15;
+					researchMesh.position.y = Math.sin(time * 0.5 + 2) * 0.08;
+				}
+				
+				titleRenderer.render(titleScene, titleCamera);
+			}
+		}
+
+		// Hide instructions button
+		document.getElementById('hide-instructions').addEventListener('click', function() {
+			document.getElementById('instructions').classList.add('hidden');
+		});
+
+		// Initialize when page loads
+		init();
+	</script>
+</body>
+</html>
+
