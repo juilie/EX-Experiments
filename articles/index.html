@@ -1011,12 +1011,47 @@
 				border-top: none;
 			}
 
+	.section-header {
+		text-align: center;
+		margin: 0 0 60px 0;
+		pointer-events: auto;
+		background: rgba(255, 255, 255, 0.95);
+		backdrop-filter: blur(10px);
+		border: 1px solid #000;
+		border-radius: 10px;
+		box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+		padding: 32px;
+		max-width: 600px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.section-header-title {
+		font-size: 56px;
+		font-weight: 700;
+		color: #000;
+		margin: 0;
+		letter-spacing: -0.5px;
+	}
+
+	@media (max-width: 768px) {
+		.section-header-title {
+			font-size: 40px;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.section-header-title {
+			font-size: 32px;
+		}
+	}
+
 	.services-section {
 		position: relative;
 		display: grid;
-		grid-template-columns: repeat(2, 1fr);
+		grid-template-columns: repeat(4, 1fr);
 		gap: 32px;
-		margin: 0 auto 60px auto;
+		margin: 0 auto 80px auto;
 		pointer-events: auto;
 		width: 100%;
 		max-width: 900px;
@@ -1070,32 +1105,50 @@
 		}
 
 		.service-card:hover .service-browser-window {
-			transform: translateY(-3px);
+			transform: translateY(-4px);
 			box-shadow: 
 				0 0 0 2px #000,
 				0 0 0 4px #7aa7d9,
 				0 0 0 6px #000,
-				8px 12px 0 #00000030,
-				16px 18px 0 #00000020;
+				8px 14px 0 #00000035,
+				16px 20px 0 #00000022;
 		}
 
-		.service-browser-window {
-			background: #ffffff;
-			border: 1px solid #101010;
-			border-radius: 4px;
-			position: relative;
-			overflow: hidden;
-			box-shadow:
-				0 0 0 2px #000,
-				0 0 0 4px #7aa7d9,
-				0 0 0 6px #000,
-				6px 6px 0 #00000020,
-				12px 12px 0 #00000015;
-			display: flex;
-			flex-direction: column;
-			transition: transform 0.3s ease, box-shadow 0.3s ease;
-			transform-style: preserve-3d;
+		/* Brighten backgrounds on hover */
+		.service-card:hover .research-bg {
+			background: linear-gradient(135deg, rgba(106, 179, 255, 0.08) 0%, rgba(255, 255, 255, 1) 50%);
 		}
+
+		.service-card:hover .strategy-bg {
+			background: linear-gradient(135deg, rgba(179, 128, 217, 0.08) 0%, rgba(255, 255, 255, 1) 50%);
+		}
+
+		.service-card:hover .curation-bg {
+			background: linear-gradient(135deg, rgba(38, 201, 168, 0.08) 0%, rgba(255, 255, 255, 1) 50%);
+		}
+
+		.service-card:hover .creative-bg {
+			background: linear-gradient(135deg, rgba(255, 157, 92, 0.08) 0%, rgba(255, 255, 255, 1) 50%);
+		}
+
+	.service-browser-window {
+		background: #ffffff;
+		border: 1px solid #101010;
+		border-radius: 4px;
+		position: relative;
+		overflow: hidden;
+		box-shadow:
+			0 0 0 2px #000,
+			0 0 0 4px #7aa7d9,
+			0 0 0 6px #000,
+			6px 6px 0 #00000020,
+			12px 12px 0 #00000015;
+		display: flex;
+		flex-direction: column;
+		transition: transform 0.3s ease, box-shadow 0.3s ease;
+		transform-style: preserve-3d;
+		height: 100%;
+	}
 
 		.service-browser-window::after {
 			content: '';
@@ -1103,21 +1156,21 @@
 			inset: 0;
 			pointer-events: none;
 			background:
-				repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px),
-				repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px);
-			opacity: .7;
+				repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.01) 3px 4px),
+				repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,0.01) 3px 4px);
+			opacity: .3;
 		}
 
-		.service-browser-window-titlebar {
-			height: 32px;
-			background: linear-gradient(to bottom, #e9eef3, #cfd6de);
-			border-bottom: 2px solid #000;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 0 0 0 10px;
-			box-shadow: inset 0 -2px 0 #7aa7d9, inset 0 2px 0 #ffffff;
-		}
+	.service-browser-window-titlebar {
+		height: 32px;
+		background: linear-gradient(to bottom, #e9eef3, #cfd6de);
+		border-bottom: 2px solid #000;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 0 0 10px;
+		box-shadow: inset 0 -2px 0 #7aa7d9, inset 0 2px 0 #ffffff;
+	}
 
 		.service-browser-window-titlebar-title {
 			font-size: 11px;
@@ -1163,17 +1216,26 @@
 		}
 
 	.service-browser-content {
-		padding: 32px;
+		padding: 28px;
 		position: relative;
 		z-index: 1;
 	}
 
-	.service-title {
-		font-size: 28px;
-		font-weight: 700;
-		color: #000;
-		margin: 0 0 16px 0;
-		letter-spacing: -0.5px;
+	/* Subtle colored backgrounds */
+	.research-bg {
+		background: linear-gradient(135deg, rgba(106, 179, 255, 0.04) 0%, rgba(255, 255, 255, 1) 50%);
+	}
+
+	.strategy-bg {
+		background: linear-gradient(135deg, rgba(179, 128, 217, 0.04) 0%, rgba(255, 255, 255, 1) 50%);
+	}
+
+	.curation-bg {
+		background: linear-gradient(135deg, rgba(38, 201, 168, 0.04) 0%, rgba(255, 255, 255, 1) 50%);
+	}
+
+	.creative-bg {
+		background: linear-gradient(135deg, rgba(255, 157, 92, 0.04) 0%, rgba(255, 255, 255, 1) 50%);
 	}
 
 	.service-description {
@@ -1181,14 +1243,67 @@
 		color: #444;
 		line-height: 1.7;
 		margin: 0;
+		position: relative;
+		z-index: 2;
 	}
+
+	/* Base styles for all service background patterns */
+	.service-browser-content[class*="-bg"] {
+		position: relative;
+		overflow: hidden;
+	}
+
+	/* Pattern overlay - subtle texture covering whole card */
+	.service-browser-content[class*="-bg"]::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-repeat: repeat;
+		background-size: 35px 35px;
+		mask-image: linear-gradient(to bottom left, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.12) 50%, transparent 100%);
+		-webkit-mask-image: linear-gradient(to bottom left, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.12) 50%, transparent 100%);
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	/* Icon-specific background images with subtle colors */
+	.service-browser-content.research-bg::before {
+		background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="%236ab3ff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>');
+	}
+
+	.service-browser-content.strategy-bg::before {
+		background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="%23b380d9" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 1-.837.276c-.47-.07-.802-.48-.968-.925a2.501 2.501 0 1 0-3.214 3.214c.446.166.855.497.925.968a.979.979 0 0 1-.276.837l-1.61 1.611a2.404 2.404 0 0 1-1.705.706 2.402 2.402 0 0 1-1.704-.706l-1.568-1.568a1.026 1.026 0 0 0-.877-.289c-.493.074-.84.504-1.02.968a2.5 2.5 0 1 1-3.237-3.237c.464-.18.894-.527.967-1.02a1.026 1.026 0 0 0-.289-.877l-1.568-1.568A2.402 2.402 0 0 1 1.998 12c0-.617.236-1.234.706-1.704L4.23 8.77c.24-.24.581-.353.917-.303.515.077.877.528 1.073 1.01a2.5 2.5 0 1 0 3.259-3.259c-.482-.196-.933-.558-1.01-1.073-.05-.336.062-.676.303-.917l1.525-1.525A2.402 2.402 0 0 1 12 1.998c.617 0 1.234.236 1.704.706l1.568 1.568c.23.23.556.338.877.29.493-.074.84-.504 1.02-.968a2.5 2.5 0 1 1 3.237 3.237c-.464.18-.894.527-.967 1.02Z"/></svg>');
+	}
+
+	.service-browser-content.curation-bg::before {
+		background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="%2326c9a8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h6"/></svg>');
+	}
+
+	.service-browser-content.creative-bg::before {
+		background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="%23ff9d5c" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>');
+	}
+
+	.service-title {
+		font-size: 24px;
+		font-weight: 700;
+		color: #000;
+		margin: 0 0 20px 0;
+		padding: 0;
+		letter-spacing: -0.3px;
+		position: relative;
+		z-index: 2;
+	}
+
 
 	/* Newsletter window styles */
 	.newsletter-wrapper {
 		position: relative;
 		width: 100%;
-		max-width: 600px;
-		margin: 0 auto;
+		max-width: 700px;
+		margin: 0 auto 80px auto;
 		z-index: 150;
 		perspective: 1000px;
 	}
@@ -1320,6 +1435,25 @@
 			0 0 0 1px #000000;
 	}
 
+	.newsletter-cta {
+		margin-top: 24px;
+		padding-top: 24px;
+		border-top: 2px solid #e0e0e0;
+	}
+
+	.newsletter-cta-link {
+		color: #000;
+		text-decoration: none;
+		font-size: 15px;
+		font-weight: 600;
+		transition: color 0.3s ease;
+		display: inline-block;
+	}
+
+	.newsletter-cta-link:hover {
+		color: #666;
+	}
+
 	@media (max-width: 768px) {
 		.newsletter-content {
 			padding: 28px;
@@ -1335,10 +1469,187 @@
 			width: 100%;
 		}
 	}
-			
-		</style>
+
+	/* Clients section styles */
+	.clients-wrapper {
+		position: relative;
+		width: 100%;
+		max-width: 900px;
+		margin: 0 auto 80px auto;
+		z-index: 150;
+		perspective: 1000px;
+	}
+
+	.clients-window {
+		background: #ffffff;
+		border: 1px solid #101010;
+		border-radius: 4px;
+		position: relative;
+		overflow: hidden;
+		box-shadow:
+			0 0 0 2px #000,
+			0 0 0 4px #7aa7d9,
+			0 0 0 6px #000,
+			6px 6px 0 #00000020,
+			12px 12px 0 #00000015;
+		display: flex;
+		flex-direction: column;
+		transition: transform 0.3s ease, box-shadow 0.3s ease;
+		opacity: 0;
+		transform: rotateY(-180deg) rotateX(-20deg) scale(0.8);
+	}
+
+	.clients-window.animate {
+		animation: spinIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+		animation-delay: 0.5s;
+	}
+
+	.clients-window.animate:hover {
+		transform: translateY(-3px);
+		box-shadow: 
+			0 0 0 2px #000,
+			0 0 0 4px #7aa7d9,
+			0 0 0 6px #000,
+			8px 12px 0 #00000030,
+			16px 18px 0 #00000020;
+	}
+
+	.clients-window::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background:
+			repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px),
+			repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,0.02) 3px 4px);
+		opacity: .7;
+	}
+
+	.clients-content {
+		padding: 36px;
+		position: relative;
+		z-index: 1;
+	}
+
+	.clients-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 32px;
+	}
+
+	.client-item {
+		text-align: center;
+	}
+
+	.client-title {
+		font-size: 20px;
+		font-weight: 700;
+		color: #000;
+		margin: 0 0 12px 0;
+		letter-spacing: -0.3px;
+	}
+
+	.client-description {
+		font-size: 15px;
+		color: #444;
+		line-height: 1.6;
+		margin: 0;
+	}
+
+	@media (max-width: 768px) {
+		.clients-grid {
+			grid-template-columns: 1fr;
+			gap: 24px;
+		}
+		
+	.clients-content {
+		padding: 28px;
+	}
+}
+
+#color-controls {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	background: rgba(0, 0, 0, 0.9);
+	color: white;
+	padding: 20px;
+	border-radius: 8px;
+	font-family: monospace;
+	font-size: 12px;
+	z-index: 10000;
+	min-width: 220px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+	transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#color-controls.hidden {
+	opacity: 0;
+	pointer-events: none;
+	transform: translateY(-20px);
+}
+
+#color-controls h3 {
+	margin: 0 0 15px 0;
+	font-size: 14px;
+	text-align: center;
+	border-bottom: 1px solid #444;
+	padding-bottom: 10px;
+}
+
+.color-control {
+	margin-bottom: 15px;
+}
+
+.color-control label {
+	display: block;
+	margin-bottom: 5px;
+	font-weight: bold;
+}
+
+.color-control input[type="color"] {
+	width: 100%;
+	height: 40px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.color-control .color-value {
+	margin-top: 5px;
+	font-size: 11px;
+	color: #aaa;
+	text-align: center;
+}
+
+.hotkey-hint {
+	text-align: center;
+	font-size: 10px;
+	color: #888;
+	margin-top: 10px;
+	padding-top: 10px;
+	border-top: 1px solid #444;
+}
+		
+	</style>
 	</head>
 	<body>
+	<!-- Color Controls Panel -->
+	<div id="color-controls" class="hidden">
+		<h3>🎨 Color Controls</h3>
+		<div class="color-control">
+			<label for="ex-color">EX Color:</label>
+			<input type="color" id="ex-color" value="#ffd700">
+			<div class="color-value" id="ex-color-value">#FFD700</div>
+		</div>
+		<div class="color-control">
+			<label for="research-color">Research Color:</label>
+			<input type="color" id="research-color" value="#ff69b4">
+			<div class="color-value" id="research-color-value">#FF69B4</div>
+		</div>
+		<div class="hotkey-hint">Press 'C' to toggle</div>
+	</div>
+
 	<!-- Landing Section (first screen with 3D title) -->
 	<div id="landing-section">
 		<div id="landing-card-wrapper">
@@ -1401,7 +1712,9 @@
 				</div>
 			</div> -->
 
-			<!-- <h2 class="section-title" style="margin-top: 20px; margin-bottom: 20px; padding-bottom: 20px;">Services</h2> -->
+			<div class="section-header">
+				<h2 class="section-header-title">How We Help</h2>
+			</div>
 
 		<div class="services-section">
 			<div class="service-card">
@@ -1414,7 +1727,7 @@
 							<div class="service-browser-window-titlebar-button">×</div>
 						</div>
 					</div>
-					<div class="service-browser-content">
+					<div class="service-browser-content research-bg">
 						<h3 class="service-title">Research</h3>
 						<p class="service-description">Deep dives into data and communities to explain what's lighting up the dashboard.</p>
 					</div>
@@ -1430,7 +1743,7 @@
 							<div class="service-browser-window-titlebar-button">×</div>
 						</div>
 					</div>
-					<div class="service-browser-content">
+					<div class="service-browser-content strategy-bg">
 						<h3 class="service-title">Strategy</h3>
 						<p class="service-description">Bullshit-free plans of action that survive contact with tomorrow's internet.</p>
 					</div>
@@ -1446,7 +1759,7 @@
 							<div class="service-browser-window-titlebar-button">×</div>
 						</div>
 					</div>
-					<div class="service-browser-content">
+					<div class="service-browser-content curation-bg">
 						<h3 class="service-title">Curation</h3>
 						<p class="service-description">Cultural insights across music, games, internet culture, and more.</p>
 					</div>
@@ -1462,38 +1775,75 @@
 							<div class="service-browser-window-titlebar-button">×</div>
 						</div>
 					</div>
-					<div class="service-browser-content">
+					<div class="service-browser-content creative-bg">
 						<h3 class="service-title">Creative</h3>
 						<p class="service-description">Copy that can code switch from corporate polish to social lunacy.</p>
 					</div>
 				</div>
 			</div>
+		</div>
 
-			<!-- <div class="newsletter-wrapper">
-				<div class="newsletter-window">
-					<div class="window-titlebar">
-						<div class="window-title">Subscribe</div>
-						<div class="window-controls">
-							<div class="window-control" title="Minimize"><span>–</span></div>
-							<div class="window-control" title="Resize"><span>□</span></div>
-							<div class="window-control" title="Close"><span>×</span></div>
-						</div>
-					</div>
-					<div class="newsletter-content">
-						<h3 class="newsletter-title">Subscribe to our newsletter</h3>
-						<p class="newsletter-description">Weekly download of future-culture picks and deep-internet insights.</p>
-						<form class="newsletter-form">
-							<input type="email" class="newsletter-input" placeholder="Enter your email" required>
-							<button type="submit" class="newsletter-button">Subscribe</button>
-						</form>
-					</div>
-					<div class="window-scanlines"></div>
-					<div class="status-bar">
-						<span>Newsletter v1.0</span>
-						<span>Ready</span>
+		<div class="newsletter-wrapper">
+			<div class="newsletter-window">
+				<div class="window-titlebar">
+					<div class="window-title">Subscribe</div>
+					<div class="window-controls">
+						<div class="window-control" title="Minimize"><span>–</span></div>
+						<div class="window-control" title="Resize"><span>□</span></div>
+						<div class="window-control" title="Close"><span>×</span></div>
 					</div>
 				</div>
-			</div> -->
+				<div class="newsletter-content">
+					<h3 class="newsletter-title">We take the internet weirdly seriously</h3>
+					<p class="newsletter-description">Subscribe to our newsletter for a weekly download of cultural picks, super-online trends, and deep-internet explainers.</p>
+					<form class="newsletter-form">
+						<input type="email" class="newsletter-input" placeholder="Enter your email" required>
+						<button type="submit" class="newsletter-button">READ NOW</button>
+					</form>
+					<div class="newsletter-cta">
+						<a href="../article/index.html" class="newsletter-cta-link">Check out our latest research report →</a>
+					</div>
+				</div>
+				<div class="window-scanlines"></div>
+				<div class="status-bar">
+					<span>Newsletter v1.0</span>
+					<span>Ready</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="clients-wrapper">
+			<div class="clients-window">
+				<div class="window-titlebar">
+					<div class="window-title">We Help Clients Including</div>
+					<div class="window-controls">
+						<div class="window-control" title="Minimize"><span>–</span></div>
+						<div class="window-control" title="Resize"><span>□</span></div>
+						<div class="window-control" title="Close"><span>×</span></div>
+					</div>
+				</div>
+				<div class="clients-content">
+					<div class="clients-grid">
+						<div class="client-item">
+							<h4 class="client-title">Marketing Agencies</h4>
+							<p class="client-description">We bolt on easily to existing projects to provide quick-hit expertise.</p>
+						</div>
+						<div class="client-item">
+							<h4 class="client-title">Culture Industry</h4>
+							<p class="client-description">We help games, music, and other culture orgs pull off and promote new ideas.</p>
+						</div>
+						<div class="client-item">
+							<h4 class="client-title">Tech Companies</h4>
+							<p class="client-description">We help marketers understand and work with deep-internet culture and communities.</p>
+						</div>
+					</div>
+				</div>
+				<div class="window-scanlines"></div>
+				<div class="status-bar">
+					<span>Clients v1.0</span>
+					<span>Ready</span>
+				</div>
+			</div>
 		</div>
 			<div class="articles-section">
 				<div class="articles-browser-window">
@@ -1544,8 +1894,9 @@
 		let composer, renderPass, saoPass, ditheringPass;
 		let group;
 		
-		// 3D title variables
-		let titleRenderer, titleScene, titleCamera, titleMesh, titleMount, exMesh, researchMesh;
+	// 3D title variables
+	let titleRenderer, titleScene, titleCamera, titleMesh, titleMount, exMesh, researchMesh;
+	let exMaterial, researchMaterial;
 		
 		// Color scheme controls
 		let colorSchemes, colorSchemeNames, colorControls;
@@ -2357,6 +2708,7 @@
 function setupScrollAnimations() {
 	const serviceCards = document.querySelectorAll('.service-card');
 	const newsletterWindow = document.querySelector('.newsletter-window');
+	const clientsWindow = document.querySelector('.clients-window');
 	
 	const observerOptions = {
 		root: null,
@@ -2382,6 +2734,11 @@ function setupScrollAnimations() {
 	// Observe newsletter window
 	if (newsletterWindow) {
 		observer.observe(newsletterWindow);
+	}
+
+	// Observe clients window
+	if (clientsWindow) {
+		observer.observe(clientsWindow);
 	}
 }
 
@@ -2788,22 +3145,22 @@ function setupScrollAnimations() {
 					return { mesh, geo };
 				}
 
-				// Materials: EX and Research - colors that complement the soft pastel palette
-				const exMaterial = new THREE.MeshPhysicalMaterial({
-					color: 0xffd700, // warm golden yellow
-					metalness: 0.1,
-					roughness: 0.3,
-					reflectivity: 0.8,
-					clearcoat: 0.8,
-					clearcoatRoughness: 0.1,
-					emissive: 0x886600
-				});
-				const researchMaterial = new THREE.MeshPhongMaterial({
-					color: 0xff69b4, // soft hot pink
-					shininess: 80,
-					specular: 0xffffff,
-					emissive: 0x883355
-				});
+			// Materials: EX and Research - colors that complement the soft pastel palette
+			exMaterial = new THREE.MeshPhysicalMaterial({
+				color: 0xffd700, // warm golden yellow
+				metalness: 0.1,
+				roughness: 0.3,
+				reflectivity: 0.8,
+				clearcoat: 0.8,
+				clearcoatRoughness: 0.1,
+				emissive: 0x886600
+			});
+			researchMaterial = new THREE.MeshPhongMaterial({
+				color: 0xff69b4, // soft hot pink
+				shininess: 80,
+				specular: 0xffffff,
+				emissive: 0x883355
+			});
 
 				const { mesh: exMeshLocal, geo: exGeo } = createTextMesh('EX', exMaterial);
 				const { mesh: researchMeshLocal, geo: researchGeo } = createTextMesh('Research', researchMaterial);
@@ -2839,10 +3196,44 @@ function setupScrollAnimations() {
 				titleCamera.aspect = cw / ch;
 				titleCamera.updateProjectionMatrix();
 			}
-			window.addEventListener('resize', resizeTitle);
-			setTimeout(resizeTitle, 450);
-		}
+		window.addEventListener('resize', resizeTitle);
+		setTimeout(resizeTitle, 450);
+	}
 
-	</script>
+	// Color picker event listeners
+	document.getElementById('ex-color').addEventListener('input', function(e) {
+		if (exMaterial) {
+			const color = new THREE.Color(e.target.value);
+			exMaterial.color.copy(color);
+			// Update emissive to be a darker version of the color
+			exMaterial.emissive.copy(color).multiplyScalar(0.3);
+			document.getElementById('ex-color-value').textContent = e.target.value.toUpperCase();
+		}
+	});
+
+	document.getElementById('research-color').addEventListener('input', function(e) {
+		if (researchMaterial) {
+			const color = new THREE.Color(e.target.value);
+			researchMaterial.color.copy(color);
+			// Update emissive to be a darker version of the color
+			researchMaterial.emissive.copy(color).multiplyScalar(0.3);
+			document.getElementById('research-color-value').textContent = e.target.value.toUpperCase();
+		}
+	});
+
+	// Hotkey to toggle color controls (C key)
+	document.addEventListener('keydown', function(e) {
+		// Check if 'C' key is pressed (not in an input field)
+		if (e.key === 'c' || e.key === 'C') {
+			// Don't trigger if user is typing in an input field
+			if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+				return;
+			}
+			const colorControls = document.getElementById('color-controls');
+			colorControls.classList.toggle('hidden');
+		}
+	});
+
+</script>
 	</body>
 </html>

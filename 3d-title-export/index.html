@@ -28,6 +28,7 @@
 		}
 
 		#instructions {
+			display: none;
 			position: fixed;
 			top: 10px;
 			left: 10px;
@@ -71,15 +72,66 @@
 			background: #357abd;
 		}
 
-		.hidden {
-			display: none !important;
-		}
+	.hidden {
+		display: none !important;
+	}
+
+	#color-controls {
+		position: fixed;
+		top: 10px;
+		right: 10px;
+		background: rgba(0, 0, 0, 0.8);
+		color: white;
+		padding: 15px;
+		border-radius: 8px;
+		font-family: monospace;
+		font-size: 12px;
+		z-index: 100;
+		min-width: 200px;
+	}
+
+	#color-controls h3 {
+		margin: 0 0 15px 0;
+		font-size: 14px;
+		text-align: center;
+	}
+
+	.color-control {
+		margin-bottom: 15px;
+	}
+
+	.color-control label {
+		display: block;
+		margin-bottom: 5px;
+		font-weight: bold;
+	}
+
+	.color-control input[type="color"] {
+		width: 100%;
+		height: 40px;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+
+	.color-control .color-value {
+		margin-top: 5px;
+		font-size: 11px;
+		color: #aaa;
+		text-align: center;
+	}
 	</style>
 </head>
 <body>
 	<div id="instructions">
 		<h3>🎬 Recording Instructions</h3>
 		<p><strong>Current size:</strong> 800x300px</p>
+		<p><strong>Camera Controls:</strong></p>
+		<ul>
+			<li><strong>Left click + drag:</strong> Rotate camera</li>
+			<li><strong>Right click + drag:</strong> Pan camera</li>
+			<li><strong>Scroll wheel:</strong> Zoom in/out</li>
+		</ul>
 		<p><strong>How to record:</strong></p>
 		<ul>
 			<li><strong>Mac:</strong> Use QuickTime Player → File → New Screen Recording → Select this area</li>
@@ -93,6 +145,20 @@
 			<li>Green background = chroma key for easy removal</li>
 		</ul>
 		<button id="hide-instructions">Hide Instructions</button>
+	</div>
+
+	<div id="color-controls">
+		<h3>🎨 Color Controls</h3>
+		<div class="color-control">
+			<label for="ex-color">EX Color:</label>
+			<input type="color" id="ex-color" value="#ffd700">
+			<div class="color-value" id="ex-color-value">#ffd700</div>
+		</div>
+		<div class="color-control">
+			<label for="research-color">Research Color:</label>
+			<input type="color" id="research-color" value="#ff69b4">
+			<div class="color-value" id="research-color-value">#ff69b4</div>
+		</div>
 	</div>
 
 	<div id="container">
@@ -109,11 +175,13 @@
 	</script>
 
 	<script type="module">
-		import * as THREE from 'three';
-		import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-		import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+	import * as THREE from 'three';
+	import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+	import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-		let titleRenderer, titleScene, titleCamera, titleMesh, titleMount, exMesh, researchMesh;
+	let titleRenderer, titleScene, titleCamera, titleMesh, titleMount, exMesh, researchMesh;
+	let exMaterial, researchMaterial, controls;
 
 		function init() {
 			titleMount = document.getElementById('title-canvas');
@@ -132,12 +200,21 @@
 		titleRenderer.setClearColor(0x00FF00, 1); // Chroma key green background
 			titleMount.appendChild(titleRenderer.domElement);
 
-			// Setup scene
-			titleScene = new THREE.Scene();
-			titleCamera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-			titleCamera.position.set(0, 0, 16);
+		// Setup scene
+		titleScene = new THREE.Scene();
+		titleCamera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+		titleCamera.position.set(0, 0, 16);
 
-			// Lighting setup - bright and clear
+		// Setup OrbitControls
+		controls = new OrbitControls(titleCamera, titleRenderer.domElement);
+		controls.enableDamping = true;
+		controls.dampingFactor = 0.05;
+		controls.screenSpacePanning = false;
+		controls.minDistance = 5;
+		controls.maxDistance = 50;
+		controls.maxPolarAngle = Math.PI;
+
+		// Lighting setup - bright and clear
 			const key = new THREE.DirectionalLight(0xffffff, 2.0);
 			key.position.set(2, 3, 5);
 			titleScene.add(key);
@@ -173,23 +250,23 @@
 				return { mesh, geo };
 			}
 
-			// Materials with vibrant colors
-			const exMaterial = new THREE.MeshPhysicalMaterial({
-				color: 0xffd700, // Golden yellow
-				metalness: 0.1,
-				roughness: 0.3,
-				reflectivity: 0.8,
-				clearcoat: 0.8,
-				clearcoatRoughness: 0.1,
-				emissive: 0x886600
-			});
-			
-			const researchMaterial = new THREE.MeshPhongMaterial({
-				color: 0xff69b4, // Hot pink
-				shininess: 80,
-				specular: 0xffffff,
-				emissive: 0x883355
-			});
+		// Materials with vibrant colors
+		exMaterial = new THREE.MeshPhysicalMaterial({
+			color: 0xffd700, // Golden yellow
+			metalness: 0.1,
+			roughness: 0.3,
+			reflectivity: 0.8,
+			clearcoat: 0.8,
+			clearcoatRoughness: 0.1,
+			emissive: 0x886600
+		});
+		
+		researchMaterial = new THREE.MeshPhongMaterial({
+			color: 0xff69b4, // Hot pink
+			shininess: 80,
+			specular: 0xffffff,
+			emissive: 0x883355
+		});
 
 			const { mesh: exMeshLocal, geo: exGeo } = createTextMesh('EX', exMaterial);
 			const { mesh: researchMeshLocal, geo: researchGeo } = createTextMesh('Research', researchMaterial);
@@ -243,31 +320,57 @@
 			render();
 		}
 
-		function render() {
-			if (titleRenderer && titleScene && titleCamera) {
-				const time = performance.now() * 0.001;
-				
-				// Animate EX and Research separately with gentle floating motion
-				if (exMesh) {
-					exMesh.rotation.y = Math.sin(time) * 0.2;
-					exMesh.position.y = Math.sin(time * 0.7) * 0.1;
-				}
-				if (researchMesh) {
-					researchMesh.rotation.y = Math.sin(time + 1.5) * 0.15;
-					researchMesh.position.y = Math.sin(time * 0.5 + 2) * 0.08;
-				}
-				
-				titleRenderer.render(titleScene, titleCamera);
+	function render() {
+		if (titleRenderer && titleScene && titleCamera) {
+			const time = performance.now() * 0.001;
+			
+			// Animate EX and Research separately with gentle floating motion
+			if (exMesh) {
+				exMesh.rotation.y = Math.sin(time) * 0.2;
+				exMesh.position.y = Math.sin(time * 0.7) * 0.1;
 			}
+			if (researchMesh) {
+				researchMesh.rotation.y = Math.sin(time + 1.5) * 0.15;
+				researchMesh.position.y = Math.sin(time * 0.5 + 2) * 0.08;
+			}
+			
+			// Update controls
+			if (controls) {
+				controls.update();
+			}
+			
+			titleRenderer.render(titleScene, titleCamera);
 		}
+	}
 
-		// Hide instructions button
-		document.getElementById('hide-instructions').addEventListener('click', function() {
-			document.getElementById('instructions').classList.add('hidden');
-		});
+	// Hide instructions button
+	document.getElementById('hide-instructions').addEventListener('click', function() {
+		document.getElementById('instructions').classList.add('hidden');
+	});
 
-		// Initialize when page loads
-		init();
+	// Color picker event listeners
+	document.getElementById('ex-color').addEventListener('input', function(e) {
+		if (exMaterial) {
+			const color = new THREE.Color(e.target.value);
+			exMaterial.color.copy(color);
+			// Update emissive to be a darker version of the color
+			exMaterial.emissive.copy(color).multiplyScalar(0.3);
+			document.getElementById('ex-color-value').textContent = e.target.value.toUpperCase();
+		}
+	});
+
+	document.getElementById('research-color').addEventListener('input', function(e) {
+		if (researchMaterial) {
+			const color = new THREE.Color(e.target.value);
+			researchMaterial.color.copy(color);
+			// Update emissive to be a darker version of the color
+			researchMaterial.emissive.copy(color).multiplyScalar(0.3);
+			document.getElementById('research-color-value').textContent = e.target.value.toUpperCase();
+		}
+	});
+
+	// Initialize when page loads
+	init();
 	</script>
 </body>
 </html>
