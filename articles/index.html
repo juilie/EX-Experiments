@@ -90,7 +90,7 @@
 			align-items: center;
 			pointer-events: auto;
 			font-family: 'Arial Narrow', monospace;
-			padding: 140px 20px 0px 20px;
+			padding: 100px 20px 0px 20px;
 			box-sizing: border-box;
 			z-index: 300;
 		}
@@ -377,6 +377,7 @@
 			border-top: 2px solid #000;
 			background: repeating-linear-gradient(90deg, #e7eef6 0 6px, #dfe7f0 6px 12px);
 			font-size: 10px;
+			margin: 0;
 			color: #1d2935;
 		}
 
@@ -400,10 +401,12 @@
 				color: #000;
 			}
 
-			.newsletter-title {
-				font-size: 16px;
+			h3.newsletter-title {
+				font-size: 32px;
 				font-weight: 700;
-				color: #000;
+				line-height: 1.2;
+				color: white !important;
+				text-shadow: 2px 2px 2px black;
 				margin: 0 0 15px 0;
 				text-transform: uppercase;
 				letter-spacing: 1px;
@@ -472,17 +475,17 @@
 	}
 
 	.articles-browser-window {
-		background: #ffffff;
-		border: 1px solid #101010;
-		border-radius: 4px;
+		/* background: #ffffff; */
+		/* border: 1px solid #101010; */
+		/* border-radius: 4px; */
 		position: relative;
 		overflow: hidden;
-		box-shadow:
+		/* box-shadow:
 			0 0 0 2px #000,
 			0 0 0 4px #7aa7d9,
 			0 0 0 6px #000,
 			6px 6px 0 #00000020,
-			12px 12px 0 #00000015;
+			12px 12px 0 #00000015; */
 		display: flex;
 		flex-direction: column;
 	}
@@ -510,6 +513,7 @@
 		box-shadow: inset 0 -2px 0 #7aa7d9, inset 0 2px 0 #ffffff;
 		position: relative;
 		z-index: 2;
+		display: none;
 	}
 
 	.articles-browser-titlebar-title {
@@ -1015,23 +1019,187 @@
 		text-align: center;
 		margin: 0 0 60px 0;
 		pointer-events: auto;
-		background: rgba(255, 255, 255, 0.95);
-		backdrop-filter: blur(10px);
-		border: 1px solid #000;
-		border-radius: 10px;
-		box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-		padding: 32px;
+		background: rgb(255, 255, 255);
+		border: 4px solid black;
+		box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+		background-image: url('../assets/images/cloud2.png');
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		padding: 8px 16px;
 		max-width: 600px;
 		margin-left: auto;
 		margin-right: auto;
+		margin-bottom: 80px;
+		position: relative;
+		animation: floatHeader 4s ease-in-out infinite;
+		/* animation: floatCaret 4s ease-in-out infinite; */
+		transform-origin: center bottom;
+		opacity: 0;
+		transform: scale(0.95) translateY(20px);
+		min-height: 80px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 140px;
+		transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+
+	.section-header.show {
+		animation: floatHeader 4s ease-in-out infinite, fadeInBubble 0.4s ease-out forwards;
+	}
+
+	@keyframes floatHeader {
+		0%, 100% {
+			transform: translateY(0px);
+		}
+		50% {
+			transform: translateY(-10px);
+		}
+	}
+
+	@keyframes fadeInScale {
+		0% {
+			opacity: 0;
+			transform: scale(0.9) translateY(20px);
+		}
+		100% {
+			opacity: 1;
+			transform: scale(1) translateY(0);
+		}
+	}
+
+	@keyframes fadeInBubble {
+		to {
+			opacity: 1;
+			transform: scale(1) translateY(0);
+		}
+	}
+
+	/* Caret/tail at bottom of section header (speech bubble style) */
+	.section-header::after {
+		content: '';
+		position: absolute;
+		bottom: -21px;
+		left: 35px;
+		transform: translateX(-50%) rotate(45deg);
+		width: 35px;
+		height: 35px;
+		background: white;
+		background-image: url('../assets/images/cloud2.png');
+		background-size: 450px auto;
+		background-position: calc(90% - 30%) calc(100% + 18px);
+		background-repeat: no-repeat;
+		border-right: 4px solid black;
+		border-bottom: 4px solid black;
+		z-index: 1;
+		animation: floatCaret 4s ease-in-out infinite;
+	}
+
+	@keyframes floatCaret {
+		0%, 100% {
+			transform: translateX(-50%) rotate(45deg) translateY(0px);
+		}
+		50% {
+			transform: translateX(-50%) rotate(45deg) translateY(2px);
+		}
+	}
+
+	/* Hide the top part of the caret that extends into the header */
+	.section-header::before {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 3px;
+		/* background: white; */
+		z-index: 2;
 	}
 
 	.section-header-title {
 		font-size: 56px;
-		font-weight: 700;
+		font-weight: 900;
 		color: #000;
 		margin: 0;
 		letter-spacing: -0.5px;
+		text-shadow: 
+			2px 2px 0px rgba(255,255,255,0.8),
+			-1px -1px 0px rgba(255,255,255,0.8),
+			3px 3px 8px rgba(0,0,0,0.3);
+		position: relative;
+		z-index: 1;
+		opacity: 0;
+		white-space: nowrap;
+		transform: scaleX(0.2);
+		transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease-out;
+	}
+
+	.section-header-title.show {
+		opacity: 1;
+		transform: scaleX(1);
+	}
+
+	/* Typing indicator inside bubble */
+	.typing-indicator {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.typing-indicator.show {
+		animation: fadeInTyping 0.3s ease-out forwards;
+	}
+
+	.typing-indicator.hide {
+		animation: fadeOutTyping 0.2s ease-out forwards;
+	}
+
+	@keyframes fadeInTyping {
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes fadeOutTyping {
+		to {
+			opacity: 0;
+		}
+	}
+
+	.typing-dot {
+		width: 10px;
+		height: 10px;
+		background: #000;
+		border-radius: 50%;
+		animation: typingBounce 1s infinite ease-in-out;
+	}
+
+	.typing-dot:nth-child(1) {
+		animation-delay: 0s;
+	}
+
+	.typing-dot:nth-child(2) {
+		animation-delay: 0.15s;
+	}
+
+	.typing-dot:nth-child(3) {
+		animation-delay: 0.3s;
+	}
+
+	@keyframes typingBounce {
+		0%, 60%, 100% {
+			transform: translateY(0);
+			opacity: 0.4;
+		}
+		30% {
+			transform: translateY(-8px);
+			opacity: 1;
+		}
 	}
 
 	@media (max-width: 768px) {
@@ -1287,7 +1455,7 @@
 	}
 
 	.service-title {
-		font-size: 24px;
+		font-size: 32px;
 		font-weight: 700;
 		color: #000;
 		margin: 0 0 20px 0;
@@ -1298,12 +1466,25 @@
 	}
 
 
+	/* Newsletter and clients wrapper */
+	.newsletter-clients-wrapper {
+		display: flex;
+		gap: 32px;
+		justify-content: center;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		max-width: 1200px;
+		margin: 0 auto 80px auto;
+		z-index: 150;
+	}
+
 	/* Newsletter window styles */
 	.newsletter-wrapper {
 		position: relative;
 		width: 100%;
-		max-width: 700px;
-		margin: 0 auto 80px auto;
+		max-width: 500px;
+		flex: 1;
+		min-width: 300px;
 		z-index: 150;
 		perspective: 1000px;
 	}
@@ -1324,6 +1505,7 @@
 		flex-direction: column;
 		transition: transform 0.3s ease, box-shadow 0.3s ease;
 		opacity: 0;
+		width: 100%;
 		transform: rotateY(-180deg) rotateX(-20deg) scale(0.8);
 	}
 
@@ -1353,8 +1535,73 @@
 		opacity: .7;
 	}
 
+	#newsletter-cloud-bg {
+		position: absolute;
+		top: 40px; /* Start below the titlebar */
+		left: 0;
+		width: 100%;
+		height: calc(100% - 62px); /* Account for titlebar (40px) + status bar (22px) */
+		z-index: 0;
+		pointer-events: none;
+		overflow: hidden;
+	}
+
+	#newsletter-cloud-bg canvas {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	.newsletter-sticker {
+		position: absolute;
+		top: -10px;
+		left: -12%;
+		width: 175px;
+		height: auto;
+		z-index: 10;
+		pointer-events: none;
+		opacity: 0;
+		transform: scale(2) rotate(-33deg);
+		filter: blur(10px);
+		transition: none;
+	}
+
+	.newsletter-sticker.animate {
+		animation: stickerIntro 0.5s ease-in-out forwards;
+	}
+
+	@keyframes stickerIntro {
+		0% {
+			opacity: 0;
+			transform: scale(2) rotate(-33deg);
+			filter: blur(10px);
+		}
+		100% {
+			opacity: 1;
+			transform: scale(1) rotate(-33deg);
+			filter: blur(0px);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.newsletter-sticker {
+			width: 100px;
+			top: 100px;
+			right: 15px;
+		}
+	}
+
+	@keyframes stickerFloat {
+		0%, 100% {
+			transform: rotate(15deg) translateY(0px);
+		}
+		50% {
+			transform: rotate(17deg) translateY(-5px);
+		}
+	}
+
 	.newsletter-content {
-		padding: 36px;
+		padding: 24px;
 		text-align: center;
 		position: relative;
 		z-index: 1;
@@ -1367,13 +1614,19 @@
 		margin: 0 0 12px 0;
 		text-transform: uppercase;
 		letter-spacing: 1px;
+		/* font-family: 'ff7', 'Arial Narrow', monospace; */
 	}
 
-	.newsletter-description {
-		font-size: 15px;
-		color: #444;
-		line-height: 1.6;
+	p.newsletter-description {
+		font-size: 16px;
+		color: white !important;
+		background-color: rgba(128, 128, 128, 0.564);
+		border: 2px inset gray;
+		padding: 12px;
+		line-height: 1.2;
+		text-shadow: 2px 2px 2px black;
 		margin: 0 0 24px 0;
+		/* font-family: 'ff7', 'Arial Narrow', monospace; */
 	}
 
 	.newsletter-form {
@@ -1385,7 +1638,7 @@
 	}
 
 	.newsletter-input {
-		padding: 14px 18px;
+		padding: 14px 18px !important;
 		border: 2px solid #000;
 		border-radius: 4px;
 		font-size: 14px;
@@ -1403,7 +1656,7 @@
 	.newsletter-button {
 		background: #c0c0c0;
 		color: #000000;
-		padding: 14px 28px;
+		padding: 8px 12px !important;
 		font-size: 14px;
 		font-weight: 700;
 		letter-spacing: 0.02em;
@@ -1437,12 +1690,15 @@
 
 	.newsletter-cta {
 		margin-top: 24px;
-		padding-top: 24px;
-		border-top: 2px solid #e0e0e0;
 	}
 
 	.newsletter-cta-link {
-		color: #000;
+		color: white;
+		text-shadow: 1px 1px 2px black;
+		box-shadow: 1px 1px 2px black;
+		padding: 4px 8px;
+		background-color: rgba(0, 0, 0, 0.161);
+		border: 2px outset black;
 		text-decoration: none;
 		font-size: 15px;
 		font-weight: 600;
@@ -1451,7 +1707,8 @@
 	}
 
 	.newsletter-cta-link:hover {
-		color: #666;
+		text-decoration: underline;
+		color: white;
 	}
 
 	@media (max-width: 768px) {
@@ -1474,8 +1731,9 @@
 	.clients-wrapper {
 		position: relative;
 		width: 100%;
-		max-width: 900px;
-		margin: 0 auto 80px auto;
+		max-width: 500px;
+		flex: 1;
+		min-width: 300px;
 		z-index: 150;
 		perspective: 1000px;
 	}
@@ -1501,7 +1759,7 @@
 
 	.clients-window.animate {
 		animation: spinIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-		animation-delay: 0.5s;
+		animation-delay: 0.4s;
 	}
 
 	.clients-window.animate:hover {
@@ -1526,46 +1784,141 @@
 	}
 
 	.clients-content {
-		padding: 36px;
+		padding: 28px;
 		position: relative;
 		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 30px;
+		background: url(../assets/images/clouds.png) no-repeat center center;
+		background-size: cover;
 	}
 
-	.clients-grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 32px;
+	.client-chatbox {
+		position: relative;
+		background: rgb(255, 255, 255);
+		border: 4px solid black;
+		box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+		background-image: url('../assets/images/cloud2.png');
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		padding: 16px 20px;
+		max-width: 85%;
+		margin-bottom: 10px;
+		/* animation: floatHeader 4s ease-in-out infinite; */
 	}
 
-	.client-item {
-		text-align: center;
+	.client-chatbox-left {
+		align-self: flex-start;
+		margin-left: 0;
 	}
 
-	.client-title {
-		font-size: 20px;
+	.client-chatbox-right {
+		align-self: flex-end;
+		margin-right: 0;
+	}
+
+	/* Caret on left side (for right-aligned chatboxes) */
+	.client-chatbox-right::after {
+		content: '';
+		position: absolute;
+		bottom: -21px;
+		right: 35px;
+		transform: translateX(50%) rotate(45deg);
+		width: 35px;
+		height: 35px;
+		background: white;
+		background-image: url('../assets/images/cloud2.png');
+		background-size: 450px auto;
+		background-position: calc(90% - 30%) calc(100% + 18px);
+		background-repeat: no-repeat;
+		border-right: 4px solid black;
+		border-bottom: 4px solid black;
+		z-index: 1;
+		/* animation: floatCaret 4s ease-in-out infinite; */
+	}
+
+	/* Caret on right side (for left-aligned chatboxes) */
+	.client-chatbox-left::after {
+		content: '';
+		position: absolute;
+		bottom: -21px;
+		left: 35px;
+		transform: translateX(-50%) rotate(45deg);
+		width: 35px;
+		height: 35px;
+		background: white;
+		background-image: url('../assets/images/cloud2.png');
+		background-size: 450px auto;
+		background-position: calc(90% - 30%) calc(100% + 18px);
+		background-repeat: no-repeat;
+		border-right: 4px solid black;
+		border-bottom: 4px solid black;
+		z-index: 1;
+		/* animation: floatCaret 4s ease-in-out infinite; */
+	}
+
+	/* Hide the top part of the caret that extends into the chatbox */
+	.client-chatbox::before {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 3px;
+		z-index: 2;
+	}
+
+	.client-chatbox-label {
+		font-size: 18px;
 		font-weight: 700;
 		color: #000;
-		margin: 0 0 12px 0;
-		letter-spacing: -0.3px;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		margin-bottom: 8px;
+		/* font-family: 'ff7', 'Arial Narrow', monospace; */
 	}
 
-	.client-description {
-		font-size: 15px;
-		color: #444;
+	.client-chatbox-text {
+		font-size: 12px;
+		line-height: 0.2;
 		line-height: 1.6;
-		margin: 0;
+		color: #000;
+		/* font-family: 'ff7', 'Arial Narrow', monospace; */
+		position: relative;
+		z-index: 10;
 	}
 
 	@media (max-width: 768px) {
-		.clients-grid {
-			grid-template-columns: 1fr;
+		.newsletter-clients-wrapper {
+			flex-direction: column;
 			gap: 24px;
 		}
-		
-	.clients-content {
-		padding: 28px;
+
+		.newsletter-wrapper,
+		.clients-wrapper {
+			max-width: 100%;
+		}
+
+		.clients-content {
+			padding: 24px;
+			gap: 24px;
+		}
+
+		.client-chatbox {
+			max-width: 90%;
+			padding: 14px 18px;
+		}
+
+		.client-chatbox-label {
+			font-size: 16px;
+		}
+
+		.client-chatbox-text {
+			font-size: 13px;
+		}
 	}
-}
 
 #color-controls {
 	position: fixed;
@@ -1712,8 +2065,13 @@
 				</div>
 			</div> -->
 
-			<div class="section-header">
-				<h2 class="section-header-title">How We Help</h2>
+			<div class="section-header" id="how-we-help-header">
+				<div class="typing-indicator" id="typing-indicator">
+					<div class="typing-dot"></div>
+					<div class="typing-dot"></div>
+					<div class="typing-dot"></div>
+				</div>
+				<h2 class="section-header-title" id="section-title">How We Help</h2>
 			</div>
 
 		<div class="services-section">
@@ -1783,65 +2141,68 @@
 			</div>
 		</div>
 
-		<div class="newsletter-wrapper">
-			<div class="newsletter-window">
-				<div class="window-titlebar">
-					<div class="window-title">Subscribe</div>
-					<div class="window-controls">
-						<div class="window-control" title="Minimize"><span>–</span></div>
-						<div class="window-control" title="Resize"><span>□</span></div>
-						<div class="window-control" title="Close"><span>×</span></div>
+		<div class="newsletter-clients-wrapper">
+			<div class="newsletter-wrapper">
+				<img src="assets/stickersub.png" alt="Subscribe sticker" class="newsletter-sticker">
+				<div class="newsletter-window">
+					<div class="window-titlebar">
+						<div class="window-title">Subscribe</div>
+						<div class="window-controls">
+							<div class="window-control" title="Minimize"><span>–</span></div>
+							<div class="window-control" title="Resize"><span>□</span></div>
+							<div class="window-control" title="Close"><span>×</span></div>
+						</div>
 					</div>
-				</div>
-				<div class="newsletter-content">
-					<h3 class="newsletter-title">We take the internet weirdly seriously</h3>
-					<p class="newsletter-description">Subscribe to our newsletter for a weekly download of cultural picks, super-online trends, and deep-internet explainers.</p>
-					<form class="newsletter-form">
-						<input type="email" class="newsletter-input" placeholder="Enter your email" required>
-						<button type="submit" class="newsletter-button">READ NOW</button>
-					</form>
-					<div class="newsletter-cta">
-						<a href="../article/index.html" class="newsletter-cta-link">Check out our latest research report →</a>
+					
+					<div id="newsletter-cloud-bg"></div>
+					<div class="newsletter-content">
+						<h3 class="newsletter-title">We take the internet weirdly seriously</h3>
+						<p class="newsletter-description">Subscribe to our newsletter for a weekly download of cultural picks, super-online trends, and deep-internet explainers.</p>
+						<form class="newsletter-form">
+							<input type="email" class="newsletter-input" placeholder="Enter your email" required>
+							<button type="submit" class="newsletter-button">READ NOW</button>
+						</form>
+						<div class="newsletter-cta">
+							<a href="../article/index.html" class="newsletter-cta-link">Check out our latest research report →</a>
+						</div>
 					</div>
-				</div>
-				<div class="window-scanlines"></div>
-				<div class="status-bar">
-					<span>Newsletter v1.0</span>
-					<span>Ready</span>
+					<div class="window-scanlines"></div>
+					<div class="status-bar">
+						<span>Newsletter v1.0</span>
+						<span>Ready</span>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="clients-wrapper">
-			<div class="clients-window">
-				<div class="window-titlebar">
-					<div class="window-title">We Help Clients Including</div>
-					<div class="window-controls">
-						<div class="window-control" title="Minimize"><span>–</span></div>
-						<div class="window-control" title="Resize"><span>□</span></div>
-						<div class="window-control" title="Close"><span>×</span></div>
-					</div>
-				</div>
-				<div class="clients-content">
-					<div class="clients-grid">
-						<div class="client-item">
-							<h4 class="client-title">Marketing Agencies</h4>
-							<p class="client-description">We bolt on easily to existing projects to provide quick-hit expertise.</p>
-						</div>
-						<div class="client-item">
-							<h4 class="client-title">Culture Industry</h4>
-							<p class="client-description">We help games, music, and other culture orgs pull off and promote new ideas.</p>
-						</div>
-						<div class="client-item">
-							<h4 class="client-title">Tech Companies</h4>
-							<p class="client-description">We help marketers understand and work with deep-internet culture and communities.</p>
+			<div class="clients-wrapper">
+				<div class="clients-window">
+					<div class="window-titlebar">
+						<div class="window-title">About EX</div>
+						<div class="window-controls">
+							<div class="window-control" title="Minimize"><span>–</span></div>
+							<div class="window-control" title="Resize"><span>□</span></div>
+							<div class="window-control" title="Close"><span>×</span></div>
 						</div>
 					</div>
-				</div>
-				<div class="window-scanlines"></div>
-				<div class="status-bar">
-					<span>Clients v1.0</span>
-					<span>Ready</span>
+					<div class="clients-content">
+						<div class="client-chatbox client-chatbox-left">
+							<div class="client-chatbox-label">Marketing Agencies</div>
+							<div class="client-chatbox-text">We bolt on easily to existing projects to provide quick-hit expertise.</div>
+						</div>
+						<div class="client-chatbox client-chatbox-right">
+							<div class="client-chatbox-label">Culture Industry</div>
+							<div class="client-chatbox-text">We help games, music, and other culture orgs pull off and promote new ideas.</div>
+						</div>
+						<div class="client-chatbox client-chatbox-left">
+							<div class="client-chatbox-label">Tech Companies</div>
+							<div class="client-chatbox-text">We help marketers understand and work with deep-internet culture and communities.</div>
+						</div>
+					</div>
+					<div class="window-scanlines"></div>
+					<div class="status-bar">
+						<span>About v1.0</span>
+						<span>Ready</span>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -1856,7 +2217,14 @@
 						</div>
 					</div>
 					<div class="articles-browser-content">
-						<h2 class="articles-main-title">Recent Posts</h2>
+						<div class="section-header" id="recent-posts-header">
+							<div class="typing-indicator" id="recent-posts-typing-indicator">
+								<div class="typing-dot"></div>
+								<div class="typing-dot"></div>
+								<div class="typing-dot"></div>
+							</div>
+							<h2 class="section-header-title" id="recent-posts-title">Recent Posts</h2>
+						</div>
 						<div class="articles-grid" id="articles-grid">
 							<!-- Articles will be populated by JavaScript -->
 						</div>
@@ -1882,6 +2250,7 @@
 		import Stats from 'three/addons/libs/stats.module.js';
 		import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 		import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+		import { TTFLoader } from 'three/addons/loaders/TTFLoader.js';
 
 		import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 		import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -1900,6 +2269,131 @@
 		
 		// Color scheme controls
 		let colorSchemes, colorSchemeNames, colorControls;
+
+		// Newsletter cloud background variables
+		let newsletterCloudRenderer, newsletterCloudScene, newsletterCloudCamera, newsletterCloudMesh;
+		let lastNewsletterCloudRenderTime = 0;
+		const newsletterCloudFrameIntervalMs = 50; // ~20 FPS for clouds
+		const NewsletterCloudShader = {
+			uniforms: {
+				'time': { value: 0.0 },
+				'resolution': { value: new THREE.Vector2() }
+			},
+			vertexShader: `
+				varying vec2 vUv;
+				void main() {
+					vUv = uv;
+					gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+				}
+			`,
+			fragmentShader: `
+				uniform float time;
+				uniform vec2 resolution;
+				varying vec2 vUv;
+
+				const float cloudscale = 0.8;
+				const float speed = 0.02;
+				const float clouddark = 0.4;
+				const float cloudlight = 0.4;
+				const float cloudcover = 0.3;
+				const float cloudalpha = 6.0;
+				const float skytint = 0.6;
+				const vec3 skycolour1 = vec3(0.15, 0.3, 0.5);
+				const vec3 skycolour2 = vec3(0.3, 0.6, 0.9);
+
+				const mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );
+
+				vec2 hash( vec2 p ) {
+					p = vec2(dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)));
+					return -1.0 + 2.0*fract(sin(p)*43758.5453123);
+				}
+
+				float noise( in vec2 p ) {
+					const float K1 = 0.366025404; // (sqrt(3)-1)/2;
+					const float K2 = 0.211324865; // (3-sqrt(3))/6;
+					vec2 i = floor(p + (p.x+p.y)*K1);
+					vec2 a = p - i + (i.x+i.y)*K2;
+					vec2 o = (a.x>a.y) ? vec2(1.0,0.0) : vec2(0.0,1.0);
+					vec2 b = a - o + K2;
+					vec2 c = a - 1.0 + 2.0*K2;
+					vec3 h = max(0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );
+					vec3 n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));
+					return dot(n, vec3(70.0));
+				}
+
+				float fbm(vec2 n) {
+					float total = 0.0, amplitude = 0.1;
+					for (int i = 0; i < 7; i++) {
+						total += noise(n) * amplitude;
+						n = m * n;
+						amplitude *= 0.4;
+					}
+					return total;
+				}
+
+				void main() {
+					vec2 p = vUv;
+					vec2 uv = p*vec2(resolution.x/resolution.y,1.0);
+					float t = time * speed;
+					float q = fbm(uv * cloudscale * 0.5);
+
+					float r = 0.0;
+					uv *= cloudscale;
+					uv -= q - t;
+					float weight = 0.8;
+					for (int i=0; i<8; i++){
+						r += abs(weight*noise( uv ));
+						uv = m*uv + t;
+						weight *= 0.7;
+					}
+
+					float f = 0.0;
+					uv = p*vec2(resolution.x/resolution.y,1.0);
+					uv *= cloudscale;
+					uv -= q - t;
+					weight = 0.7;
+					for (int i=0; i<8; i++){
+						f += weight*noise( uv );
+						uv = m*uv + t;
+						weight *= 0.6;
+					}
+
+					f *= r + f;
+
+					float c = 0.0;
+					float t2 = time * speed * 2.0;
+					uv = p*vec2(resolution.x/resolution.y,1.0);
+					uv *= cloudscale*2.0;
+					uv -= q - t2;
+					weight = 0.4;
+					for (int i=0; i<7; i++){
+						c += weight*noise( uv );
+						uv = m*uv + t2;
+						weight *= 0.6;
+					}
+
+					float c1 = 0.0;
+					float t3 = time * speed * 3.0;
+					uv = p*vec2(resolution.x/resolution.y,1.0);
+					uv *= cloudscale*3.0;
+					uv -= q - t3;
+					weight = 0.4;
+					for (int i=0; i<7; i++){
+						c1 += abs(weight*noise( uv ));
+						uv = m*uv + t3;
+						weight *= 0.6;
+					}
+
+					c += c1;
+
+					vec3 skycolour = mix(skycolour2, skycolour1, p.y);
+					vec3 cloudcolour = vec3(1.1, 1.1, 0.9) * clamp((clouddark + cloudlight*c), 0.0, 1.0);
+					f = cloudcover + cloudalpha*f*r;
+					vec3 result = mix(skycolour, clamp(skytint * skycolour + cloudcolour, 0.0, 1.0), clamp(f + c, 0.0, 1.0));
+					gl_FragColor = vec4( result, 1.0 );
+				}
+			`
+		};
 			
 			// 2D Chatbox overlay variables
 			let overlayCanvas, overlayCtx;
@@ -1908,6 +2402,8 @@
 			let lastSpawnTime = 0;
 			let spawnInterval = 1200; // Spawn new chatbox every 1.2 seconds
 			let pixelScale = 2; // How much to scale down for pixelation
+			let chatboxColorTransition = 0; // 0 = white, 1 = dark blue theme
+			let transitionStartTime = 0;
 			
 			// Cloud image system
 			let cloudImages = [];
@@ -2434,14 +2930,26 @@
 			function drawChatboxes() {
 				if (!overlayCtx) return;
 				
-				overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-				
 				const currentTime = performance.now();
+				
+				// Color transition disabled for now
+				// if (transitionStartTime > 0) {
+				// 	const elapsed = currentTime - transitionStartTime;
+				// 	chatboxColorTransition = Math.min(elapsed / 1000, 1);
+				// }
+				// const bgLightness = Math.floor(255 * (1 - chatboxColorTransition));
+				// overlayCanvas.style.backgroundColor = `rgb(${bgLightness}, ${bgLightness}, ${bgLightness})`;
+				
+				overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 				
 				updateCloudImages(currentTime);
 				updateWanderingScanners(currentTime);
 				
-				const speed = window.chatboxControls ? window.chatboxControls.speed : 1.0;
+				// Slow down speed after enter is clicked
+				let speed = window.chatboxControls ? window.chatboxControls.speed : 1.0;
+				if (transitionStartTime > 0) {
+					speed *= 0.3; // Reduce speed to 30% for easier reading
+				}
 				const connectionDistance = window.chatboxControls ? window.chatboxControls.connectionDistance * 12 : 40;
 				
 				if (currentTime - lastSpawnTime > spawnInterval) {
@@ -2502,25 +3010,10 @@
 				const caretX = chatbox.x + (baseCaretOffset / pixelScale);
 				const caretY = chatbox.y + chatbox.height;
 
-				const isFF7Style = window.chatboxControls && window.chatboxControls.style === 'ff7';
-
-				if (isFF7Style) {
-					const gradient = overlayCtx.createLinearGradient(
-						chatbox.x, chatbox.y, 
-						chatbox.x, chatbox.y + chatbox.height
-					);
-					gradient.addColorStop(0, '#1e3a5f');
-					gradient.addColorStop(0.5, '#0f1f3d');
-					gradient.addColorStop(1, '#061426');
-					
-					overlayCtx.fillStyle = gradient;
-					overlayCtx.strokeStyle = '#4a6fa5';
-					overlayCtx.lineWidth = Math.max(1, Math.round(2 / pixelScale));
-				} else {
-					overlayCtx.fillStyle = 'white';
-					overlayCtx.strokeStyle = 'black';
-					overlayCtx.lineWidth = Math.max(1, Math.round(4 / pixelScale));
-				}
+				// Color transition disabled - using white chatboxes
+				overlayCtx.fillStyle = 'white';
+				overlayCtx.strokeStyle = 'black';
+				overlayCtx.lineWidth = Math.max(1, Math.round(4 / pixelScale));
 
 				overlayCtx.beginPath();
 				overlayCtx.rect(chatbox.x, chatbox.y, chatbox.width, chatbox.height);
@@ -2546,7 +3039,8 @@
 				overlayCtx.lineTo(caretX + caretSize, caretY);
 				overlayCtx.stroke();
 				
-				overlayCtx.fillStyle = isFF7Style ? 'white' : 'black';
+				// Text color - black
+				overlayCtx.fillStyle = 'black';
 				overlayCtx.textBaseline = 'middle';
 				
 				const textBaseFontSize = chatbox.height * 0.4;
@@ -2675,6 +3169,9 @@
 
 				// Enable background fade on scroll after clicking enter
 				setupBackgroundFade();
+				
+				// Start chatbox color transition
+				transitionStartTime = performance.now();
 			});
 		}
 	}
@@ -2736,11 +3233,194 @@ function setupScrollAnimations() {
 		observer.observe(newsletterWindow);
 	}
 
+	// Observe newsletter sticker for scroll-triggered animation
+	const newsletterSticker = document.querySelector('.newsletter-sticker');
+	if (newsletterSticker && newsletterWindow) {
+		// Use the same observer to trigger sticker animation when window animates
+		const stickerObserver = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					// Add a slight delay after the window starts animating
+					setTimeout(() => {
+						newsletterSticker.classList.add('animate');
+					}, 600);
+					stickerObserver.unobserve(entry.target);
+				}
+			});
+		}, observerOptions);
+		stickerObserver.observe(newsletterWindow);
+	}
+
 	// Observe clients window
 	if (clientsWindow) {
 		observer.observe(clientsWindow);
 	}
+
+	// Setup message-style animation for "How We Help" header
+	setupMessageAnimation();
+	
+	// Setup message-style animation for "Recent Posts" header
+	setupRecentPostsAnimation();
 }
+
+function setupMessageAnimation() {
+	const typingIndicator = document.getElementById('typing-indicator');
+	const headerElement = document.getElementById('how-we-help-header');
+	const titleElement = document.getElementById('section-title');
+	
+	if (!typingIndicator || !headerElement || !titleElement) return;
+	
+	// Pre-calculate the final width by temporarily making text visible but off-screen
+	const tempTitle = titleElement.cloneNode(true);
+	tempTitle.style.position = 'absolute';
+	tempTitle.style.visibility = 'hidden';
+	tempTitle.style.opacity = '1';
+	tempTitle.style.transform = 'scale(1)';
+	tempTitle.style.whiteSpace = 'nowrap';
+	headerElement.appendChild(tempTitle);
+	const finalWidth = tempTitle.offsetWidth + 32; // Add padding
+	headerElement.removeChild(tempTitle);
+	
+	const observerOptions = {
+		root: null,
+		rootMargin: '0px',
+		threshold: 0.3
+	};
+	
+	let hasTriggered = false;
+	
+	const messageObserver = new IntersectionObserver((entries) => {
+		entries.forEach(entry => {
+			if (entry.isIntersecting && !hasTriggered) {
+				hasTriggered = true;
+				
+				// Step 1: Show the bubble with typing indicator
+				headerElement.classList.add('show');
+				setTimeout(() => {
+					typingIndicator.classList.add('show');
+				}, 100);
+				
+				// Step 2: After 1.2 seconds of "typing", hide dots and expand bubble
+				setTimeout(() => {
+					typingIndicator.classList.remove('show');
+					typingIndicator.classList.add('hide');
+					
+					// Show text first
+					titleElement.classList.add('show');
+					
+					// Then expand the bubble - text and box move together
+					setTimeout(() => {
+						headerElement.style.width = finalWidth + 'px';
+					}, 50);
+				}, 1000);
+				
+				// Stop observing after triggered
+				messageObserver.unobserve(entry.target);
+			}
+		});
+	}, observerOptions);
+	
+	// Observe the header element
+	messageObserver.observe(headerElement);
+}
+
+function setupRecentPostsAnimation() {
+	const typingIndicator = document.getElementById('recent-posts-typing-indicator');
+	const headerElement = document.getElementById('recent-posts-header');
+	const titleElement = document.getElementById('recent-posts-title');
+	
+	if (!typingIndicator || !headerElement || !titleElement) return;
+	
+	// Pre-calculate the final width by temporarily making text visible but off-screen
+	const tempTitle = titleElement.cloneNode(true);
+	tempTitle.style.position = 'absolute';
+	tempTitle.style.visibility = 'hidden';
+	tempTitle.style.opacity = '1';
+	tempTitle.style.transform = 'scale(1)';
+	tempTitle.style.whiteSpace = 'nowrap';
+	headerElement.appendChild(tempTitle);
+	const finalWidth = tempTitle.offsetWidth + 32; // Add padding
+	headerElement.removeChild(tempTitle);
+	
+	const observerOptions = {
+		root: null,
+		rootMargin: '0px',
+		threshold: 0.3
+	};
+	
+	let hasTriggered = false;
+	
+	const messageObserver = new IntersectionObserver((entries) => {
+		entries.forEach(entry => {
+			if (entry.isIntersecting && !hasTriggered) {
+				hasTriggered = true;
+				
+				// Step 1: Show the bubble with typing indicator
+				headerElement.classList.add('show');
+				setTimeout(() => {
+					typingIndicator.classList.add('show');
+				}, 100);
+				
+				// Step 2: After 1.2 seconds of "typing", hide dots and expand bubble
+				setTimeout(() => {
+					typingIndicator.classList.remove('show');
+					typingIndicator.classList.add('hide');
+					
+					// Show text first
+					titleElement.classList.add('show');
+					
+					// Then expand the bubble - text and box move together
+					setTimeout(() => {
+						headerElement.style.width = finalWidth + 'px';
+					}, 50);
+				}, 1000);
+				
+				// Stop observing after triggered
+				messageObserver.unobserve(entry.target);
+			}
+		});
+	}, observerOptions);
+	
+	// Observe the header element
+	messageObserver.observe(headerElement);
+}
+
+		function initializeNewsletterCloud() {
+			const cloudContainer = document.getElementById('newsletter-cloud-bg');
+			if (!cloudContainer) return;
+
+			newsletterCloudRenderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
+			newsletterCloudRenderer.setPixelRatio(Math.max(1, Math.min(window.devicePixelRatio, 1.5) * 0.5));
+			newsletterCloudRenderer.setSize(cloudContainer.clientWidth, cloudContainer.clientHeight);
+			newsletterCloudRenderer.domElement.style.position = 'absolute';
+			newsletterCloudRenderer.domElement.style.top = '0';
+			newsletterCloudRenderer.domElement.style.left = '0';
+			newsletterCloudRenderer.domElement.style.width = '100%';
+			newsletterCloudRenderer.domElement.style.height = '100%';
+			cloudContainer.appendChild(newsletterCloudRenderer.domElement);
+
+			newsletterCloudScene = new THREE.Scene();
+			newsletterCloudCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+			const plane = new THREE.PlaneGeometry(2, 2);
+			const cloudMaterial = new THREE.ShaderMaterial({
+				uniforms: NewsletterCloudShader.uniforms,
+				vertexShader: NewsletterCloudShader.vertexShader,
+				fragmentShader: NewsletterCloudShader.fragmentShader
+			});
+			newsletterCloudMesh = new THREE.Mesh(plane, cloudMaterial);
+			newsletterCloudScene.add(newsletterCloudMesh);
+			NewsletterCloudShader.uniforms.resolution.value.set(cloudContainer.clientWidth, cloudContainer.clientHeight);
+
+			// Handle resize
+			const resizeObserver = new ResizeObserver(() => {
+				if (cloudContainer && newsletterCloudRenderer) {
+					newsletterCloudRenderer.setSize(cloudContainer.clientWidth, cloudContainer.clientHeight);
+					newsletterCloudRenderer.setPixelRatio(Math.max(1, Math.min(window.devicePixelRatio, 1.5) * 0.5));
+					NewsletterCloudShader.uniforms.resolution.value.set(cloudContainer.clientWidth, cloudContainer.clientHeight);
+				}
+			});
+			resizeObserver.observe(cloudContainer);
+		}
 
 		init();
 
@@ -2827,6 +3507,7 @@ function setupScrollAnimations() {
 	setupEnterButton();
 	setupScrollAnimations();
 	initializeThreeTitle();
+	initializeNewsletterCloud();
 				
 				setTimeout(() => {
 					if (cloudImages.length === 0) {
@@ -2964,6 +3645,15 @@ function setupScrollAnimations() {
 				}
 				
 				titleRenderer.render(titleScene, titleCamera);
+			}
+
+			// Render newsletter cloud background at reduced frame rate
+			const now = performance.now();
+			if (newsletterCloudRenderer && newsletterCloudScene && newsletterCloudCamera && 
+				now - lastNewsletterCloudRenderTime >= newsletterCloudFrameIntervalMs) {
+				NewsletterCloudShader.uniforms.time.value = (now * 0.001);
+				newsletterCloudRenderer.render(newsletterCloudScene, newsletterCloudCamera);
+				lastNewsletterCloudRenderTime = now;
 			}
 		}
 
