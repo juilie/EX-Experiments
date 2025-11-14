@@ -10,7 +10,7 @@
 
 			@font-face {
 				font-family: 'ff7';
-				src: url('assets/Final_Fantasy_VII.ttf') format('truetype');
+				src: url('./assets/AG5.ttf') format('truetype');
 			}
 
 		html {
@@ -1784,12 +1784,12 @@
 	}
 
 	.clients-content {
-		padding: 28px;
+		padding: 20px;
 		position: relative;
 		z-index: 1;
 		display: flex;
 		flex-direction: column;
-		gap: 30px;
+		gap: 20px;
 		background: url(../assets/images/clouds.png) no-repeat center center;
 		background-size: cover;
 	}
@@ -1803,9 +1803,9 @@
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;
-		padding: 16px 20px;
+		padding: 12px 16px;
 		max-width: 85%;
-		margin-bottom: 10px;
+		margin-bottom: 8px;
 		/* animation: floatHeader 4s ease-in-out infinite; */
 	}
 
@@ -1823,18 +1823,18 @@
 	.client-chatbox-right::after {
 		content: '';
 		position: absolute;
-		bottom: -21px;
-		right: 35px;
+		bottom: -16px;
+		right: 30px;
 		transform: translateX(50%) rotate(45deg);
-		width: 35px;
-		height: 35px;
+		width: 28px;
+		height: 28px;
 		background: white;
 		background-image: url('../assets/images/cloud2.png');
 		background-size: 450px auto;
 		background-position: calc(90% - 30%) calc(100% + 18px);
 		background-repeat: no-repeat;
-		border-right: 4px solid black;
-		border-bottom: 4px solid black;
+		border-right: 3px solid black;
+		border-bottom: 3px solid black;
 		z-index: 1;
 		/* animation: floatCaret 4s ease-in-out infinite; */
 	}
@@ -1843,18 +1843,18 @@
 	.client-chatbox-left::after {
 		content: '';
 		position: absolute;
-		bottom: -21px;
-		left: 35px;
+		bottom: -16px;
+		left: 30px;
 		transform: translateX(-50%) rotate(45deg);
-		width: 35px;
-		height: 35px;
+		width: 28px;
+		height: 28px;
 		background: white;
 		background-image: url('../assets/images/cloud2.png');
 		background-size: 450px auto;
 		background-position: calc(90% - 30%) calc(100% + 18px);
 		background-repeat: no-repeat;
-		border-right: 4px solid black;
-		border-bottom: 4px solid black;
+		border-right: 3px solid black;
+		border-bottom: 3px solid black;
 		z-index: 1;
 		/* animation: floatCaret 4s ease-in-out infinite; */
 	}
@@ -1876,14 +1876,14 @@
 		color: #000;
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
-		margin-bottom: 8px;
+		margin-bottom: 6px;
+		line-height: 1.2;
 		/* font-family: 'ff7', 'Arial Narrow', monospace; */
 	}
 
 	.client-chatbox-text {
-		font-size: 12px;
-		line-height: 0.2;
-		line-height: 1.6;
+		font-size: 16px;
+		line-height: 1.5;
 		color: #000;
 		/* font-family: 'ff7', 'Arial Narrow', monospace; */
 		position: relative;
@@ -2947,12 +2947,14 @@
 				
 				// Slow down speed after enter is clicked
 				let speed = window.chatboxControls ? window.chatboxControls.speed : 1.0;
+				let currentSpawnInterval = spawnInterval;
 				if (transitionStartTime > 0) {
 					speed *= 0.3; // Reduce speed to 30% for easier reading
+					currentSpawnInterval = spawnInterval * 5; // Spawn 5x less frequently when slowed down
 				}
 				const connectionDistance = window.chatboxControls ? window.chatboxControls.connectionDistance * 12 : 40;
 				
-				if (currentTime - lastSpawnTime > spawnInterval) {
+				if (currentTime - lastSpawnTime > currentSpawnInterval) {
 					chatboxes2D.push(createNewChatbox(null, 'normal'));
 					lastSpawnTime = currentTime;
 				}
