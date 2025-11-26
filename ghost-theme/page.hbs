@@ -1,0 +1,96 @@
+{{!< default}}
+
+<div id="homepage-ui">
+	{{#is "page"}}
+		{{#match slug "about"}}
+			<div class="about-window">
+				<div class="window-titlebar">
+					<div class="window-title">About</div>
+					<div class="window-controls">
+						<div class="window-control" title="Minimize"><span>–</span></div>
+						<div class="window-control" title="Resize"><span>□</span></div>
+						<div class="window-control" title="Close"><span>×</span></div>
+					</div>
+				</div>
+				<div class="about-content-wrapper">
+					<h1 class="about-title">{{title}}</h1>
+					<div class="about-content">
+						{{content}}
+					</div>
+				</div>
+				<div class="window-scanlines"></div>
+				<div class="status-bar">
+					<span>About v1.0</span>
+					<span>Ready</span>
+				</div>
+			</div>
+		{{else match slug "contact"}}
+			<div class="contact-window">
+				<div class="window-titlebar">
+					<div class="window-title">Contact</div>
+					<div class="window-controls">
+						<div class="window-control" title="Minimize"><span>–</span></div>
+						<div class="window-control" title="Resize"><span>□</span></div>
+						<div class="window-control" title="Close"><span>×</span></div>
+					</div>
+				</div>
+				<div class="contact-content-wrapper">
+					<h1 class="contact-title">{{title}}</h1>
+					{{#if custom_excerpt}}
+						<p class="contact-subtitle">{{custom_excerpt}}</p>
+					{{/if}}
+					<div class="contact-content">
+						{{content}}
+					</div>
+					{{#match slug "contact"}}
+						<form class="contact-form" action="#" method="post">
+							<div class="form-group">
+								<label for="name" class="form-label">Name</label>
+								<input type="text" id="name" name="name" class="form-input" required>
+							</div>
+							<div class="form-group">
+								<label for="email" class="form-label">Email</label>
+								<input type="email" id="email" name="email" class="form-input" required>
+							</div>
+							<div class="form-group">
+								<label for="message" class="form-label">Message</label>
+								<textarea id="message" name="message" class="form-textarea" rows="6" required></textarea>
+							</div>
+							<button type="submit" class="form-button">Send Message</button>
+						</form>
+					{{/match}}
+				</div>
+				<div class="window-scanlines"></div>
+				<div class="status-bar">
+					<span>Contact v1.0</span>
+					<span>Ready</span>
+				</div>
+			</div>
+		{{else}}
+			<div class="about-window">
+				<div class="window-titlebar">
+					<div class="window-title">{{title}}</div>
+					<div class="window-controls">
+						<div class="window-control" title="Minimize"><span>–</span></div>
+						<div class="window-control" title="Resize"><span>□</span></div>
+						<div class="window-control" title="Close"><span>×</span></div>
+					</div>
+				</div>
+				<div class="about-content-wrapper">
+					<h1 class="about-title">{{title}}</h1>
+					<div class="about-content">
+						{{content}}
+					</div>
+				</div>
+				<div class="window-scanlines"></div>
+				<div class="status-bar">
+					<span>Page v1.0</span>
+					<span>Ready</span>
+				</div>
+			</div>
+		{{/match}}
+	{{/is}}
+</div>
+
+<script type="module" src="{{asset "js/pages-threejs.js"}}"></script>
+

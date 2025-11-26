@@ -1,0 +1,18 @@
+<header class="header">
+	<div class="header-content">
+		<a href="{{@site.url}}" class="logo">
+			{{#if @site.logo}}
+				<img src="{{@site.logo}}" alt="{{@site.title}}">
+			{{else}}
+				<span class="logo-text">{{@site.title}}</span>
+			{{/if}}
+		</a>
+		<nav class="nav">
+			<a href="{{@site.url}}">Home</a>
+			{{#foreach @site.navigation}}
+				<a href="{{url absolute="true"}}"{{#if current}} class="active"{{/if}}>{{label}}</a>
+			{{/foreach}}
+		</nav>
+	</div>
+</header>
+
